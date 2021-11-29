@@ -1,0 +1,22 @@
+# 数据节点的配置模板
+file_system: local
+bind_ip: 192.168.16.151
+port: 50011
+chunk_size: 1024
+pass_via: true
+thread_pool_size: 12
+data_root: ../data
+code_root_dir: ../contract_work_dir
+results_root_dir: results_root
+total_bandwidth: 20000000
+certs: 
+  base_path: ../certs
+  root_cert: CA.crt
+  server_sign_key: SS.key
+  server_sign_cert: SS.crt
+  server_enc_key: SE.key
+  server_enc_cert: SE.crt
+  client_sign_key: CS.key
+  client_sign_cert: CS.crt
+  client_enc_key: CE.key
+  client_enc_cert: CE.crt

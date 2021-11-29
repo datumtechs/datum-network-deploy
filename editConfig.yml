@@ -1,0 +1,11 @@
+---
+
+# 变更组件配置
+
+- name: check config locally
+  hosts: localhost
+  any_errors_fatal: true
+  tags:
+    - always
+  roles:
+    - check_config_static

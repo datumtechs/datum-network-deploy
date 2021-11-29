@@ -1,0 +1,36 @@
+---
+# 初始化集群各个节点
+
+- name: initializing deployment target
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - check_config_static
+
+- name: check node config
+  hosts: all
+  gather_facts: false
+  become: true
+  roles:
+    - pre-ansible
+    - bootstrap
+
+- name: check system
+  hosts: all
+  any_errors_fatal: true
+  roles:
+    - check_system_static
+    - { role: check_system_optional, when: not dev_mode|default(false) }
+
+- name: tikv_servers machine benchmark
+  hosts: tikv_servers
+  gather_facts: false
+  roles:
+    - { role: machine_benchmark, when: not dev_mode|default(false) }
+
+- name: create ops scripts
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - ops

@@ -1,0 +1,176 @@
+---
+# 在各个节点安装相应服务
+
+- name: check config locally
+  hosts: localhost
+  any_errors_fatal: true
+  tags:
+    - always
+  roles:
+    - check_config_static
+
+- name: check system environment
+  hosts: monitored_servers
+  any_errors_fatal: true
+  tags:
+    - always
+  roles:
+    - check_system_dynamic
+
+- name: initializing deployment target
+  hosts: all
+  any_errors_fatal: true
+  tags:
+    - always
+  roles:
+    - check_config_dynamic
+
+- name: Pre-check PD configuration
+  hosts: pd_servers[0]
+  tags:
+    - pd
+  roles:
+    - check_config_pd
+
+- name: Pre-check TiKV configuration
+  hosts: tikv_servers[0]
+  tags:
+    - tikv
+  roles:
+    - check_config_tikv
+
+- name: Pre-check TiDB configuration
+  hosts: tidb_servers[0]
+  tags:
+    - tidb
+  roles:
+    - check_config_tidb
+
+- name: deploying node_exporter
+  hosts: monitored_servers
+  tags:
+    - node_exporter
+  roles:
+    - node_exporter
+
+- name: deploying blackbox_exporter
+  hosts: monitored_servers
+  tags:
+    - blackbox_exporter
+  roles:
+    - blackbox_exporter
+
+- name: deploying diagnostic tools
+  hosts: monitored_servers
+  tags:
+    - collect_diagnosis
+  roles:
+    - collect_diagnosis
+
+- name: deploying alertmanager
+  hosts: alertmanager_servers
+  tags:
+    - alertmanager
+  roles:
+    - alertmanager
+
+- name: deploying pushgateway
+  hosts: monitoring_servers
+  tags:
+    - pushgateway
+  roles:
+    - pushgateway
+
+- name: deploying prometheus
+  hosts: monitoring_servers
+  tags:
+    - prometheus
+  roles:
+    - prometheus
+
+- name: deploying grafana
+  hosts: grafana_servers
+  tags:
+    - grafana
+  roles:
+    - grafana
+
+- name: deploying kafka_exporter
+  hosts: kafka_exporter_servers
+  tags:
+    - kafka_exporter
+  roles:
+    - { role: kafka_exporter, when: 'enable_binlog|default(false) and kafka_addrs|default("") != ""' }
+
+# deploying TiDB cluster
+
+- name: deploying PD cluster
+  hosts: pd_servers
+  tags:
+    - pd
+  roles:
+    - pd
+
+- name: deploying TiKV cluster
+  hosts: tikv_servers
+  tags:
+    - tikv
+  roles:
+    - tikv
+
+- name: deploying TiFlash cluster
+  hosts: tiflash_servers
+  tags:
+    - tiflash
+  roles:
+    - { role: tiflash, when: cpu_architecture == 'amd64' }
+
+- name: deploying pump cluster
+  hosts: pump_servers
+  tags:
+    - pump
+  roles:
+    - { role: pump, when: enable_binlog|default(false) }
+
+- name: deploying TiDB cluster
+  hosts: tidb_servers
+  tags:
+    - tidb
+  roles:
+    - tidb
+    - { role: tispark, when: "(groups.get('spark_master', []) | length == 0 or groups.get('spark_slaves', []) | length == 0) and (deployment_method == 'binary')" }
+
+- name: deploying tispark cluster
+  hosts: spark_master,spark_slaves
+  tags:
+    - tispark
+  roles:
+    - { role: tispark, when: "groups.get('spark_master', []) | length != 0 and groups.get('spark_slaves', []) | length != 0 and deployment_method == 'binary'" }
+
+- name: deploying tidb-lightning
+  hosts: lightning_server
+  tags:
+    - lightning
+  roles:
+    - tidb_lightning
+
+- name: deploying tikv-importer
+  hosts: importer_server
+  tags:
+    - lightning
+  roles:
+    - tikv_importer
+
+- name: finalizing deployment target
+  hosts: all
+  become: true
+  roles:
+    - { role: firewalld, when: enable_firewalld is defined and enable_firewalld }
+
+- name: deploying perf-tools
+  hosts: monitored_servers
+  tags:
+    - always
+  roles:
+    - perf_tools
+
