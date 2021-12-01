@@ -1,0 +1,65 @@
+---
+
+- name: download via binary
+  get_url:
+    url: "{{ download_url }}/via"
+    dest: "{{ downloads_dir }}""
+    mode: 0644
+    force: yes
+    validate_certs: no
+
+- name: download carrier binary
+  get_url:
+    url: "{{ download_url }}/carrier"
+    dest: "{{ downloads_dir }}"
+    mode: 0644
+    force: yes
+    validate_certs: no
+
+- name: download admin binary
+  get_url:
+    url: "{{ download_url }}/admin.jar"
+    dest: "{{ downloads_dir }}"
+    mode: 0644
+    force: yes
+    validate_certs: no
+
+- name: download data binary
+  get_url:
+    url: "{{ download_url }}/data"
+    dest: "{{ downloads_dir }}"
+    mode: 0644
+    force: yes
+    validate_certs: no
+
+- name: download compute binary
+  get_url:
+    url: "{{ download_url }}/compute"
+    dest: "{{ downloads_dir }}"
+    mode: 0644
+    force: yes
+    validate_certs: no
+
+- name: download registration binary
+  get_url:
+    url: "{{ download_url }}/registration.jar"
+    dest: "{{ downloads_dir }}"
+    mode: 0644
+    force: yes
+    validate_certs: no
+
+- name: download data-center binary
+  get_url:
+    url: "{{ download_url }}/data-center.jar"
+    dest: "{{ downloads_dir }}"
+    mode: 0644
+    force: yes
+    validate_certs: no
+
+- name: download scan binary
+  get_url:
+    url: "{{ download_url }}/scan.jar"
+    dest: "{{ downloads_dir }}"
+    mode: 0644
+    force: yes
+    validate_certs: no
