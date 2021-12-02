@@ -2,556 +2,352 @@
 
 # 启动所有服务
 
-- name: check config locally
-  hosts: localhost
-  any_errors_fatal: true
+- hosts: via
   tags:
-    - always
-  roles:
-    - check_config_static
-
-- name: gather all facts, and check dest
-  hosts: all
-  any_errors_fatal: true
-  tags:
-    - always
-  roles:
-    - check_config_dynamic
-
-
-- hosts: monitored_servers
-  tags:
-    - node_exporter
+    - via
   tasks:
-    - name: start node_exporter by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_node_exporter.sh
-      when: process_supervision == 'supervise'
-
-    - name: start node_exporter by systemd
+    - name: start via by systemd
+      systemd: name=via-{{ via_client_port }}.service state=started enabled=no
       become: true
-      systemd: name=node_exporter-{{ node_exporter_port }}.service state=started enabled=no
       when: process_supervision == 'systemd'
 
-    - name: wait until the node_exporter port is up
+    - name: wait until the via port is up
       wait_for:
         host: "{{ ansible_host }}"
-        port: "{{ node_exporter_port }}"
+        port: "{{ via_client_port }}"
         state: started
-        msg: "the node_exporter port {{ node_exporter_port }} is not up"
+        msg: "the via port {{ via_client_port }} is not up"
 
-    - name: wait until the node_exporter metrics page is available
+    - name: wait until the via health page is available
       uri:
-        url: "http://{{ ansible_host }}:{{ node_exporter_port }}/metrics"
-      register: node_exporter_http_result
-      until: node_exporter_http_result.status == 200
-      retries: 12
-      delay: 5
-
-
-- hosts: monitored_servers
-  tags:
-    - blackbox_exporter
-  tasks:
-    - name: start blackbox_exporter by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_blackbox_exporter.sh
-      when: process_supervision == 'supervise'
-
-    - name: start blackbox_exporter by systemd
-      become: true
-      systemd: name=blackbox_exporter-{{ blackbox_exporter_port }}.service state=started enabled=no
-      when: process_supervision == 'systemd'
-
-    - name: wait until the blackbox_exporter port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ blackbox_exporter_port }}"
-        state: started
-        msg: "the blackbox_exporter port {{ blackbox_exporter_port }} is not up"
-
-    - name: wait until the blackbox_exporter metrics page is available
-      uri:
-        url: "http://{{ ansible_host }}:{{ blackbox_exporter_port }}/metrics"
-      register: blackbox_exporter_http_result
-      until: blackbox_exporter_http_result.status == 200
-      retries: 12
-      delay: 5
-
-
-- hosts: alertmanager_servers
-  tags:
-    - alertmanager
-  tasks:
-    - name: start alertmanager by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_alertmanager.sh
-      when: process_supervision == 'supervise'
-
-    - name: start alertmanager by systemd
-      systemd: name=alertmanager-{{ alertmanager_port }}.service state=started
-      become: true
-      when: process_supervision == 'systemd'
-
-    - name: wait until the alertmanager port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ alertmanager_port }}"
-        state: started
-        msg: "the alertmanager port {{ alertmanager_port }} is not up"
-
-
-- hosts: monitoring_servers
-  tags:
-    - pushgateway
-  tasks:
-    - name: start pushgateway by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - pushgateway
-
-    - name: start pushgateway by systemd
-      systemd: name={{ item }} state=started enabled=no
-      when: process_supervision == 'systemd'
-      become: true
-      with_items:
-        - pushgateway-{{ pushgateway_port }}.service
-
-    - name: wait until the pushgateway port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ pushgateway_port }}"
-        state: started
-        msg: "the pushgateway port {{ pushgateway_port }} is not up"
-
-    - name: wait until the pushgateway metrics page is available
-      uri:
-        url: "http://{{ ansible_host }}:{{ pushgateway_port }}/metrics"
-      register: pushgateway_http_result
-      until: pushgateway_http_result.status == 200
-      retries: 12
-      delay: 5
-
-
-- hosts: monitoring_servers
-  tags:
-    - prometheus
-  tasks:
-    - name: start prometheus by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - prometheus
-
-    - name: start prometheus by systemd
-      systemd: name={{ item }} state=started enabled=no
-      when: process_supervision == 'systemd'
-      become: true
-      with_items:
-        - prometheus-{{ prometheus_port }}.service
-
-    - name: wait until the prometheus port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ prometheus_port }}"
-        state: started
-        msg: "the prometheus port {{ prometheus_port }} is not up"
-
-    - name: wait until the prometheus metrics page is available
-      uri:
-        url: "http://{{ ansible_host }}:{{ prometheus_port }}/metrics"
-      register: prometheus_http_result
-      until: prometheus_http_result.status == 200
-      retries: 12
-      delay: 5
-
-
-- hosts: kafka_exporter_servers
-  tags:
-    - kafka_exporter
-  tasks:
-    - name: start kafka_exporter by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_kafka_exporter.sh
-      when:
-        - enable_binlog|default(false)
-        - process_supervision == 'supervise'
-
-    - name: start kafka_exporter by systemd
-      become: true
-      systemd: name=kafka_exporter-{{ kafka_exporter_port }}.service state=started enabled=no
-      when:
-        - enable_binlog|default(false)
-        - process_supervision == 'systemd'
-
-    - name: wait until the kafka_exporter port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ kafka_exporter_port }}"
-        state: started
-        msg: "the kafka_exporter port {{ kafka_exporter_port }} is not up"
-      when: enable_binlog|default(false)
-
-
-- hosts: pd_servers
-  tags:
-    - pd
-  tasks:
-    - name: start PD by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - pd
-
-    - name: start PD by systemd
-      systemd: name=pd-{{ pd_client_port }}.service state=started enabled=no
-      become: true
-      when: process_supervision == 'systemd'
-
-    - name: wait until the PD port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ pd_client_port }}"
-        state: started
-        msg: "the PD port {{ pd_client_port }} is not up"
-
-    - name: wait until the PD health page is available
-      uri:
-        url: "http://{{ ansible_host }}:{{ pd_client_port }}/health"
+        url: "http://{{ ansible_host }}:{{ via_client_port }}/health"
         return_content: yes
-      register: pd_http_result
-      until: pd_http_result.status == 200 and 'true' in pd_http_result.content
+      register: via_http_result
+      until: via_http_result.status == 200 and 'true' in via_http_result.content
       retries: 12
       delay: 5
       when: not enable_tls|default(false)
 
-    - name: wait until the PD health page is available when enable_tls
+    - name: wait until the via health page is available when enable_tls
       uri:
-        url: "https://{{ ansible_host }}:{{ pd_client_port }}/health"
+        url: "https://{{ ansible_host }}:{{ via_client_port }}/health"
         validate_certs: no
-        client_cert: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}.pem"
-        client_key: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}-key.pem"
+        client_cert: "{{ via_cert_dir }}/via-server-{{ ansible_host }}.pem"
+        client_key: "{{ via_cert_dir }}/via-server-{{ ansible_host }}-key.pem"
         return_content: yes
-      register: pd_https_result
-      until: pd_https_result.status == 200 and 'true' in pd_https_result.content
+      register: via_https_result
+      until: via_https_result.status == 200 and 'true' in via_https_result.content
       retries: 12
       delay: 5
       when: enable_tls|default(false)
 
-- hosts: tikv_servers
+
+- hosts: carrier
   tags:
-    - tikv
+    - carrier
   tasks:
-    - name: Check if tikv_port already in use
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ tikv_port }}"
-        state: stopped
-        timeout: 3
-        msg: "{{ tikv_port }} already in use"
-
-    - name: Check if tikv_status_port already in use
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ tikv_status_port }}"
-        state: stopped
-        timeout: 3
-        msg: "{{ tikv_status_port }} already in use"
-
-    - name: start TiKV by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - tikv
-
-    - name: start TiKV by systemd
-      systemd: name=tikv-{{ tikv_port }}.service state=started enabled=no
+    - name: start carrier by systemd
+      systemd: name=carrier-{{ carrier_client_port }}.service state=started enabled=no
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait until the TiKV port is up
+    - name: wait until the carrier port is up
       wait_for:
         host: "{{ ansible_host }}"
-        port: "{{ tikv_port }}"
+        port: "{{ carrier_client_port }}"
         state: started
-        msg: "the TiKV port {{ tikv_port }} is not up"
+        msg: "the carrier port {{ carrier_client_port }} is not up"
 
-    - name: wait until the TiKV status page is available
+    - name: wait until the carrier health page is available
       uri:
-        url: "http://{{ ansible_host }}:{{ tikv_status_port }}/status"
+        url: "http://{{ ansible_host }}:{{ carrier_client_port }}/health"
         return_content: yes
-      register: tikv_http_result
-      until: tikv_http_result.status == 200
+      register: carrier_http_result
+      until: carrier_http_result.status == 200 and 'true' in carrier_http_result.content
       retries: 12
       delay: 5
       when: not enable_tls|default(false)
 
-    - name: wait until the TiKV status page is available when enable_tls
+    - name: wait until the carrier health page is available when enable_tls
       uri:
-        url: "https://{{ ansible_host }}:{{ tikv_status_port }}/status"
+        url: "https://{{ ansible_host }}:{{ carrier_client_port }}/health"
         validate_certs: no
-        client_cert: "{{ tikv_cert_dir }}/tikv-server-{{ ansible_host }}.pem"
-        client_key: "{{ tikv_cert_dir }}/tikv-server-{{ ansible_host }}-key.pem"
+        client_cert: "{{ carrier_cert_dir }}/carrier-server-{{ ansible_host }}.pem"
+        client_key: "{{ carrier_cert_dir }}/carrier-server-{{ ansible_host }}-key.pem"
         return_content: yes
-      register: tikv_https_result
-      until: tikv_https_result.status == 200
-      retries: 10
+      register: carrier_https_result
+      until: carrier_https_result.status == 200 and 'true' in carrier_https_result.content
+      retries: 12
       delay: 5
       when: enable_tls|default(false)
 
-    - command: cat {{ deploy_dir }}/status/tikv.pid
-      register: new_tikv_pid
-      ignore_errors: yes
-      changed_when: false
-
-    - name: display new tikv pid
-      debug:
-        msg: "tikv binary or docker pid: {{ new_tikv_pid.stdout }}"
-
-- hosts: pd_servers[0]
-  tasks:
-    - name: wait for region replication complete
-      uri: 
-        url: "http://{{ ansible_host }}:{{ pd_client_port }}/pd/api/v1/cluster/status"
-        return content: yes
-        body_format: json
-      register: cluster_status_http
-      until: cluster_status_http.json is defined and cluster_status_http.json.is_initialized is defined and cluster_status_http.json.is_initialized == true
-      retries: 20
-      delay: 10
-      when:
-        - not enable_tls|default(false)
-        - wait_replication|default(false)
-
-- hosts: pd_servers[0]
-  tasks:
-    - name: wait for region replication complete with tls enabled
-      uri:
-        url: "https://{{ ansible_host }}:{{ pd_client_port }}/pd/api/v1/cluster/status"
-        validate_certs: no
-        client_cert: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}.pem"
-        client_key: "{{ pd_cert_dir }}/pd-server-{{ ansible_host }}-key.pem"
-        return content: yes
-        body_format: json
-      register: cluster_status_https
-      until: cluster_status_https.json is defined and cluster_status_https.json.is_initialized is defined and cluster_status_https.json.is_initialized == true
-      retries: 20
-      delay: 10
-      when:
-        - enable_tls|default(false)
-        - wait_replication|default(false)
-
-
-- hosts: pump_servers
+- hosts: admin_servers
   tags:
-    - pump
+    - admin
   tasks:
-    - name: start pump by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when:
-        - enable_binlog|default(false)
-        - process_supervision == 'supervise'
-      with_items:
-        - pump
-
-    - name: start pump by systemd
-      systemd: name=pump-{{ pump_port }}.service state=started enabled=no
-      become: true
-      when:
-        - enable_binlog|default(false)
-        - process_supervision == 'systemd'
-
-    - name: wait until the pump port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ pump_port }}"
-        state: started
-        msg: "the pump port {{ pump_port }} is not up"
-      when: enable_binlog|default(false)
-
-
-- hosts: tidb_servers
-  tags:
-    - tidb
-  tasks:
-    - name: Check if tidb_port already in use
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ tidb_port }}"
-        state: stopped
-        timeout: 3
-        msg: "{{ tidb_port }} already in use"
-
-    - name: Check if tidb_status_port already in use
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ tidb_status_port }}"
-        state: stopped
-        timeout: 3
-        msg: "{{ tidb_status_port }} already in use"
-
-    - name: start TiDB by supervise
+    - name: start admin by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       when: process_supervision == 'supervise'
       with_items:
-        - tidb
+        - admin
 
-    - name: start TiDB by systemd
-      systemd: name=tidb-{{ tidb_port }}.service state=started enabled=no
+    - name: start admin by systemd
+      systemd: name=admin-{{ admin_client_port }}.service state=started enabled=no
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait until the TiDB port is up
+    - name: wait until the admin port is up
       wait_for:
         host: "{{ ansible_host }}"
-        port: "{{ tidb_port }}"
+        port: "{{ admin_client_port }}"
         state: started
-        msg: "the TiDB port {{ tidb_port }} is not up"
+        msg: "the admin port {{ admin_client_port }} is not up"
 
-    - name: wait until the TiDB status page is available
+    - name: wait until the admin health page is available
       uri:
-        url: "http://{{ ansible_host }}:{{ tidb_status_port }}/status"
+        url: "http://{{ ansible_host }}:{{ admin_client_port }}/health"
         return_content: yes
-      register: tidb_http_result
-      until: tidb_http_result.status == 200 and 'TiDB' in tidb_http_result.content
+      register: admin_http_result
+      until: admin_http_result.status == 200 and 'true' in admin_http_result.content
       retries: 12
       delay: 5
       when: not enable_tls|default(false)
 
-    - name: wait until the TiDB status page is available when enable_tls
+    - name: wait until the admin health page is available when enable_tls
       uri:
-        url: "https://{{ ansible_host }}:{{ tidb_status_port }}/status"
+        url: "https://{{ ansible_host }}:{{ admin_client_port }}/health"
         validate_certs: no
-        client_cert: "{{ tidb_cert_dir }}/tidb-server-{{ ansible_host }}.pem"
-        client_key: "{{ tidb_cert_dir }}/tidb-server-{{ ansible_host }}-key.pem"
+        client_cert: "{{ admin_cert_dir }}/admin-server-{{ ansible_host }}.pem"
+        client_key: "{{ admin_cert_dir }}/admin-server-{{ ansible_host }}-key.pem"
         return_content: yes
-      register: tidb_https_result
-      until: tidb_https_result.status == 200 and 'TiDB' in tidb_https_result.content
-      retries: 10
+      register: admin_https_result
+      until: admin_https_result.status == 200 and 'true' in admin_https_result.content
+      retries: 12
       delay: 5
       when: enable_tls|default(false)
 
 
-- hosts: tiflash_servers
+  - hosts: data_servers
   tags:
-    - tiflash
+    - data
   tasks:
-    - name: start TiFlash by supervise
+    - name: start data by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       when: process_supervision == 'supervise'
       with_items:
-        - tiflash
+        - data
 
-    - name: start TiFlash by systemd
-      systemd: name=tiflash-{{ tcp_port }}.service state=started enabled=no
+    - name: start data by systemd
+      systemd: name=data-{{ data_client_port }}.service state=started enabled=no
       become: true
       when: process_supervision == 'systemd'
 
-    - name: wait until the TiFlash port is up
+    - name: wait until the data port is up
       wait_for:
         host: "{{ ansible_host }}"
-        port: "{{ http_port }}"
+        port: "{{ data_client_port }}"
         state: started
-        msg: "the TiFlash port {{ http_port }} is not up"
+        msg: "the data port {{ data_client_port }} is not up"
 
-    - name: wait until the TiFlash status page is available
+    - name: wait until the data health page is available
       uri:
-        url: "http://{{ ansible_host }}:{{ http_port }}/?query=select%20version()"
+        url: "http://{{ ansible_host }}:{{ data_client_port }}/health"
         return_content: yes
-      register: tiflash_http_result
-      until: tiflash_http_result.status == 200
+      register: data_http_result
+      until: data_http_result.status == 200 and 'true' in data_http_result.content
       retries: 12
       delay: 5
       when: not enable_tls|default(false)
 
+    - name: wait until the data health page is available when enable_tls
+      uri:
+        url: "https://{{ ansible_host }}:{{ data_client_port }}/health"
+        validate_certs: no
+        client_cert: "{{ data_cert_dir }}/data-server-{{ ansible_host }}.pem"
+        client_key: "{{ data_cert_dir }}/data-server-{{ ansible_host }}-key.pem"
+        return_content: yes
+      register: data_https_result
+      until: data_https_result.status == 200 and 'true' in data_https_result.content
+      retries: 12
+      delay: 5
+      when: enable_tls|default(false)
 
-- hosts: grafana_servers
+- hosts: compute_servers
   tags:
-    - grafana
-  roles:
-    - { role: grafana, grafana_exec_vars_only: true }
+    - compute
   tasks:
-    - name: start grafana by supervise
+    - name: start compute by supervise
       shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
       when: process_supervision == 'supervise'
       with_items:
-        - grafana
+        - compute
 
-    - name: start grafana by systemd
-      systemd: name=grafana-{{ grafana_port }}.service state=started enabled=no
-      when: process_supervision == 'systemd'
+    - name: start compute by systemd
+      systemd: name=compute-{{ compute_client_port }}.service state=started enabled=no
       become: true
+      when: process_supervision == 'systemd'
 
-    - name: wait until the grafana port is up
+    - name: wait until the compute port is up
       wait_for:
         host: "{{ ansible_host }}"
-        port: "{{ grafana_port }}"
+        port: "{{ compute_client_port }}"
         state: started
-        msg: "the grafana port {{ grafana_port }} is not up"
+        msg: "the compute port {{ compute_client_port }} is not up"
 
-    - name: wait until the grafana login page is available
+    - name: wait until the compute health page is available
       uri:
-        url: "http://{{ ansible_host }}:{{ grafana_port }}/login"
-      register: grafana_http_result
-      until: grafana_http_result.status == 200
+        url: "http://{{ ansible_host }}:{{ compute_client_port }}/health"
+        return_content: yes
+      register: compute_http_result
+      until: compute_http_result.status == 200 and 'true' in compute_http_result.content
       retries: 12
       delay: 5
+      when: not enable_tls|default(false)
 
-    - set_fact:
-        grafana_host: "{{ ansible_host }}"
+    - name: wait until the compute health page is available when enable_tls
+      uri:
+        url: "https://{{ ansible_host }}:{{ compute_client_port }}/health"
+        validate_certs: no
+        client_cert: "{{ compute_cert_dir }}/compute-server-{{ ansible_host }}.pem"
+        client_key: "{{ compute_cert_dir }}/compute-server-{{ ansible_host }}-key.pem"
+        return_content: yes
+      register: compute_https_result
+      until: compute_https_result.status == 200 and 'true' in compute_https_result.content
+      retries: 12
+      delay: 5
+      when: enable_tls|default(false)
 
-    - include_tasks: "common_tasks/create_grafana_api_keys.yml"
-
-    - name: import grafana data source
-      shell: >
-        chdir={{ grafana_data_dir }}
-        warn=no
-        curl -q -X POST -d @data_source.json --header 'Content-Type: application/json'
-        "http://{{ grafana_admin_user }}:{{ grafana_admin_password | urlencode | regex_replace('/','%2F') }}@127.0.0.1:{{ grafana_port }}/api/datasources"
-
-    - name: import grafana dashboards - prepare config
-      delegate_to: localhost
-      template: src=grafana.dest.json.j2 dest={{ playbook_dir }}/scripts/dests-{{ inventory_hostname }}.json
-      vars:
-        - ansible_become: false
-        - ansible_connection: local
-        - grafana_dest_config:
-            name: "{{ cluster_name | title }}"
-            url: "http://{{ grafana_host }}:{{ grafana_port }}/"
-            user: "{{ grafana_admin_user }}"
-            password: "{{ grafana_admin_password }}"
-            apikey: "{{ lookup('file', grafana_api_keys_dir + '/grafana_apikey.key') }}"
-            datasource: "{{ cluster_name }}"
-            titles:
-              br: "{{ cluster_name | title }}-Backup-Restore"
-              node: "{{ cluster_name | title }}-Node_exporter"
-              pd:   "{{ cluster_name | title }}-PD"
-              tidb: "{{ cluster_name | title }}-TiDB"
-              tidb_summary: "{{ cluster_name | title }}-TiDB-Summary"
-              tikv_summary: "{{ cluster_name | title }}-TiKV-Summary"
-              tikv_details: "{{ cluster_name | title }}-TiKV-Details"
-              tikv_trouble_shot: "{{ cluster_name | title }}-TiKV-Trouble-Shooting"
-              tiflash_summary: "{{ cluster_name | title }}-TiFlash-Summary"
-              tiflash_proxy_summary: "{{ cluster_name | title }}-TiFlash-Proxy-Summary"
-              tiflash_proxy_details: "{{ cluster_name | title }}-TiFlash-Proxy-Details"
-              binlog: "{{ cluster_name | title }}-Binlog"
-              overview: "{{ cluster_name | title }}-Overview"
-              disk_performance: "{{ cluster_name | title }}-Disk-Performance"
-              blackbox_exporter: "{{ cluster_name | title }}-Blackbox_exporter"
-              kafka_overview: "{{ cluster_name | title }}-Kafka-Overview"
-              lightning: "{{ cluster_name | title }}-Lightning"
-              performance_read: "{{ cluster_name | title }}-Performance-Read"
-              performance_write: "{{ cluster_name | title }}-Performance-Write"
-
-    - name: import grafana dashboards - run import script
-      delegate_to: localhost
-      shell: "python grafana-config-copy.py dests-{{ inventory_hostname }}.json"
-      args:
-        chdir: "{{ playbook_dir }}/scripts"
-      vars:
-        - ansible_become: false
-        - ansible_connection: local
-
-- hosts: localhost
+- hosts: registration_servers
   tags:
-    - always
-  roles:
-    - { role: dashboard_topo }
+    - registration
+  tasks:
+    - name: start registration by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
+      when: process_supervision == 'supervise'
+      with_items:
+        - registration
 
+    - name: start registration by systemd
+      systemd: name=registration-{{ registration_client_port }}.service state=started enabled=no
+      become: true
+      when: process_supervision == 'systemd'
+
+    - name: wait until the registration port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ registration_client_port }}"
+        state: started
+        msg: "the registration port {{ registration_client_port }} is not up"
+
+    - name: wait until the registration health page is available
+      uri:
+        url: "http://{{ ansible_host }}:{{ registration_client_port }}/health"
+        return_content: yes
+      register: registration_http_result
+      until: registration_http_result.status == 200 and 'true' in registration_http_result.content
+      retries: 12
+      delay: 5
+      when: not enable_tls|default(false)
+
+    - name: wait until the registration health page is available when enable_tls
+      uri:
+        url: "https://{{ ansible_host }}:{{ registration_client_port }}/health"
+        validate_certs: no
+        client_cert: "{{ registration_cert_dir }}/registration-server-{{ ansible_host }}.pem"
+        client_key: "{{ registration_cert_dir }}/registration-server-{{ ansible_host }}-key.pem"
+        return_content: yes
+      register: registration_https_result
+      until: registration_https_result.status == 200 and 'true' in registration_https_result.content
+      retries: 12
+      delay: 5
+      when: enable_tls|default(false)
+
+- hosts: storage_servers
+  tags:
+    - storage
+  tasks:
+    - name: start storage by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
+      when: process_supervision == 'supervise'
+      with_items:
+        - storage
+
+    - name: start storage by systemd
+      systemd: name=storage-{{ storage_client_port }}.service state=started enabled=no
+      become: true
+      when: process_supervision == 'systemd'
+
+    - name: wait until the storage port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ storage_client_port }}"
+        state: started
+        msg: "the storage port {{ storage_client_port }} is not up"
+
+    - name: wait until the storage health page is available
+      uri:
+        url: "http://{{ ansible_host }}:{{ storage_client_port }}/health"
+        return_content: yes
+      register: storage_http_result
+      until: storage_http_result.status == 200 and 'true' in storage_http_result.content
+      retries: 12
+      delay: 5
+      when: not enable_tls|default(false)
+
+    - name: wait until the storage health page is available when enable_tls
+      uri:
+        url: "https://{{ ansible_host }}:{{ storage_client_port }}/health"
+        validate_certs: no
+        client_cert: "{{ storage_cert_dir }}/storage-server-{{ ansible_host }}.pem"
+        client_key: "{{ storage_cert_dir }}/storage-server-{{ ansible_host }}-key.pem"
+        return_content: yes
+      register: storage_https_result
+      until: storage_https_result.status == 200 and 'true' in storage_https_result.content
+      retries: 12
+      delay: 5
+      when: enable_tls|default(false)
+
+- hosts: scan_servers
+  tags:
+    - scan
+  tasks:
+    - name: start scan by supervise
+      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
+      when: process_supervision == 'supervise'
+      with_items:
+        - scan
+
+    - name: start scan by systemd
+      systemd: name=scan-{{ scan_client_port }}.service state=started enabled=no
+      become: true
+      when: process_supervision == 'systemd'
+
+    - name: wait until the scan port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ scan_client_port }}"
+        state: started
+        msg: "the scan port {{ scan_client_port }} is not up"
+
+    - name: wait until the scan health page is available
+      uri:
+        url: "http://{{ ansible_host }}:{{ scan_client_port }}/health"
+        return_content: yes
+      register: scan_http_result
+      until: scan_http_result.status == 200 and 'true' in scan_http_result.content
+      retries: 12
+      delay: 5
+      when: not enable_tls|default(false)
+
+    - name: wait until the scan health page is available when enable_tls
+      uri:
+        url: "https://{{ ansible_host }}:{{ scan_client_port }}/health"
+        validate_certs: no
+        client_cert: "{{ scan_cert_dir }}/scan-server-{{ ansible_host }}.pem"
+        client_key: "{{ scan_cert_dir }}/scan-server-{{ ansible_host }}-key.pem"
+        return_content: yes
+      register: scan_https_result
+      until: scan_https_result.status == 200 and 'true' in scan_https_result.content
+      retries: 12
+      delay: 5
+      when: enable_tls|default(false)
