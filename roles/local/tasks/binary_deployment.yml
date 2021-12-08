@@ -1,5 +1,6 @@
 ---
 
+# go Binary executable file 
 - name: download via binary
   get_url:
     url: "{{ download_url }}/via"
@@ -43,6 +44,7 @@
     validate_certs: no
 
 
+# Java JAR packages and Web static files
 - name: download admin jar package
   get_url:
     url: "{{ download_url }}/admin.jar"
@@ -58,23 +60,6 @@
     mode: 0644
     force: yes
     validate_certs: no
-
-# - name: download data binary
-#   get_url:
-#     url: "{{ download_url }}/data"
-#     dest: "{{ downloads_dir }}"
-#     mode: 0644
-#     force: yes
-#     validate_certs: no
-
-# - name: download compute binary
-#   get_url:
-#     url: "{{ download_url }}/compute"
-#     dest: "{{ downloads_dir }}"
-#     mode: 0644
-#     force: yes
-#     validate_certs: no
-
 
 - name: download storage jar package
   get_url:
@@ -95,6 +80,48 @@
 - name: download scan Web static files
   get_url:
     url: "{{ download_url }}/scan.tar.gz"
+    dest: "{{ downloads_dir }}"
+    mode: 0644
+    force: yes
+    validate_certs: no
+
+# Python WHL file
+- name: download latticex rosetta whl package
+  get_url:
+    url: "{{ download_url }}/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl"
+    dest: "{{ downloads_dir }}"
+    mode: 0644
+    force: yes
+    validate_certs: no
+
+- name: download channel sdk whl package
+  get_url:
+    url: "{{ download_url }}/channel_sdk-2.0.0-cp36-cp36m-linux_x86_64.whl"
+    dest: "{{ downloads_dir }}"
+    mode: 0644
+    force: yes
+    validate_certs: no
+
+- name: download metis dcv whl package
+  get_url:
+    url: "{{ download_url }}/metis_dcv-0.9.1-py3-none-any.whl"
+    dest: "{{ downloads_dir }}"
+    mode: 0644
+    force: yes
+    validate_certs: no
+
+# Data and computing services startup scripts
+- name: download start data script
+  get_url:
+    url: "{{ download_url }}/start_data_svc.sh"
+    dest: "{{ downloads_dir }}"
+    mode: 0644
+    force: yes
+    validate_certs: no
+
+- name: download start computer script
+  get_url:
+    url: "{{ download_url }}/start_compute_svc.sh"
     dest: "{{ downloads_dir }}"
     mode: 0644
     force: yes

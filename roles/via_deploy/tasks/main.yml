@@ -1,0 +1,36 @@
+---
+
+- name: create deploy directories
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+  - "{{ deploy_dir }}/via"
+  - "{{ deploy_dir }}/via/conf"
+  - "{{ deploy_dir }}/via/cert"
+
+- name: "Deploy certificates"
+  copy:
+    src: "{{ via_cert_dir }}/{{ item }}"
+    dest: "{{ deploy_dir }}/via/cert/{{ item }}"
+    mode: 0600
+    backup: yes
+  with_items:
+    - ca.crt
+    - server.crt
+    - server.key
+    - client.crt
+    - client.key
+  when: sync_certs|default(false)
+
+- name: "copy configuration file"
+  copy:
+    src: "{{ playbook_dir }}/conf/via.yml"
+    dest: "{{ deploy_dir }}/via/conf/via.yml"
+    mode: 0600
+    backup: yes
+
+- name: "copy via binary Executable file"
+  copy:
+    src: "{{ downloads_dir }}/via"
+    dest: "{{ deploy_dir }}/via/via"
+    mode: 0775
+    backup: yes

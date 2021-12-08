@@ -1,0 +1,106 @@
+---
+
+- name: create deploy directories
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+  - "{{ deploy_dir }}/admin"
+  - "{{ deploy_dir }}/admin/conf"
+  - "{{ deploy_dir }}/admin/cert"
+  - "{{ deploy_dir }}/admin/cert/web"
+  - "{{ deploy_dir }}/admin/log"
+  - "{{ deploy_dir }}/admin/network"
+
+- name: "Deploy certificates"
+  copy:
+    src: "{{ admin_cert_dir }}/{{ item }}"
+    dest: "{{ deploy_dir }}/admin/cert/{{ item }}"
+    mode: 0600
+    backup: yes
+  with_items:
+    - server.pem 
+    - server.key
+  when: sync_certs|default(false)
+
+- name: "Deploy web certificates"
+  copy:
+    src: "{{ admin_cert_dir }}/web/{{ item }}"
+    dest: "{{ deploy_dir }}/admin/cert/web/{{ item }}"
+    mode: 0600
+    backup: yes
+  with_items:
+    - server.pem 
+    - server.key
+  when: sync_certs|default(false)
+
+- name: "copy configuration file"
+  copy:
+    src: "{{ playbook_dir }}/conf/admin.yml"
+    dest: "{{ deploy_dir }}/admin/conf/admin.yml"
+    mode: 0600
+    backup: yes
+
+- name: "copy admin jar package"
+  copy:
+    src: "{{ downloads_dir }}/admin.jar"
+    dest: "{{ deploy_dir }}/admin/admin"
+    mode: 0775
+    backup: yes
+
+- name: "copy admin.tar.gz"
+  copy:
+    src: "{{ downloads_dir }}/admin.tar.gz"
+    dest: "{{ deploy_dir }}/admin/network/admin.tar.gz"
+    mode: 0644
+    backup: yes
+
+- name: Extract admin.tar.gz
+  unarchive:
+    src: "{{ deploy_dir }}/admin/network/admin.tar.gz"
+    dest: "{{ deploy_dir }}/admin/network"
+
+- name: delete admin.tar.gz
+  file:
+    path: "{{ deploy_dir }}/admin/network/admin.tar.gz"
+    state: absent
+
+# 安装 mysql
+- name: Update and upgrade apt packages
+  apt:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 86400
+
+- name: Install the MySQL packages
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+    - mysql-server
+    - mysql-client
+    - python-mysqldb
+
+- name: start mysqld
+  shell: systemctl restart mysqld
+
+# 设置用户名密码
+- name: set mysql user
+  mysql_user:
+  user: root
+  password: 123456
+  update_password: always
+
+# 安装 nginx
+- name: Ansible apt install nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: "copy nginx config file"
+  copy:
+    src: "{{ admin_cert_dir }}/web/metis-admin.platon.network.conf"
+    dest: "/etc/nginx/conf.d/metis-admin.platon.network.conf"
+    mode: 0600
+    backup: yes
+
+- name: NGINX | Starting NGINX
+  service:
+    name: nginx
+    state: started

@@ -1,0 +1,35 @@
+---
+
+- name: create deploy directories
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+  - "{{ deploy_dir }}/carrier"
+  - "{{ deploy_dir }}/carrier/conf"
+  - "{{ deploy_dir }}/carrier/cert"
+  - "{{ deploy_dir }}/carrier/p2p_priv_key"
+  - "{{ deploy_dir }}/carrier/datadir"
+
+- name: "Deploy certificates"
+  copy:
+    src: "{{ carrier_cert_dir }}/{{ item }}"
+    dest: "{{ deploy_dir }}/carrier/cert/{{ item }}"
+    mode: 0600
+    backup: yes
+  with_items:
+    - server.pem 
+    - server.key
+  when: sync_certs|default(false)
+
+- name: "copy configuration file"
+  copy:
+    src: "{{ playbook_dir }}/conf/carrier.yml"
+    dest: "{{ deploy_dir }}/carrier/conf/carrier.yml"
+    mode: 0600
+    backup: yes
+
+- name: "copy carrier binary Executable file"
+  copy:
+    src: "{{ downloads_dir }}/carrier"
+    dest: "{{ deploy_dir }}/carrier/carrier"
+    mode: 0775
+    backup: yes

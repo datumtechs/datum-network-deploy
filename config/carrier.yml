@@ -7,6 +7,7 @@ no-discovery: true
 enable-debug-rpc-endpoints: true
 debug: true
 rpc-host: 127.0.0.1 
-grpc-datacenter-port: 9098 
+grpc-datacenter-port: 9098
+p2p-priv-key:
 tls-cert: C:\Users\DELL\Desktop\haiwai\node02\certs\server.pem 
 tls-key: C:\Users\DELL\Desktop\haiwai\node02\certs\server.key
