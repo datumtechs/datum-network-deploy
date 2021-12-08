@@ -10,7 +10,6 @@
   roles:
     - via_deploy
 
-
 - name: deploying carrier
   hosts: carrier
   tags:

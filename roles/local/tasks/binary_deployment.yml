@@ -3,7 +3,7 @@
 - name: download via binary
   get_url:
     url: "{{ download_url }}/via"
-    dest: "{{ downloads_dir }}""
+    dest: "{{ downloads_dir }}"
     mode: 0644
     force: yes
     validate_certs: no
@@ -16,7 +16,34 @@
     force: yes
     validate_certs: no
 
-- name: download admin binary
+# - name: download consul zip
+#   get_url:
+#     url: "{{ consul_download_url }}"
+#     dest: "{{ downloads_dir }}"
+#     mode: 0644
+#     force: yes
+#     validate_certs: no
+
+# - name: Extract consul zip 
+#   unarchive:
+#     src: "{{ downloads_dir }}/ {{ consul_zip_name }}"
+#     dest: "{{ downloads_dir }}"
+
+# - name: delete consul zip file
+#   file:
+#     path: "{{ downloads_dir }}/ {{ consul_zip_name }}"
+#     state: absent
+
+- name: download consul binary
+  get_url:
+    url: "{{ download_url }}/consul"
+    dest: "{{ downloads_dir }}"
+    mode: 0644
+    force: yes
+    validate_certs: no
+
+
+- name: download admin jar package
   get_url:
     url: "{{ download_url }}/admin.jar"
     dest: "{{ downloads_dir }}"
@@ -24,41 +51,50 @@
     force: yes
     validate_certs: no
 
-- name: download data binary
+- name: download admin Web static files
   get_url:
-    url: "{{ download_url }}/data"
+    url: "{{ download_url }}/admin.tar.gz"
     dest: "{{ downloads_dir }}"
     mode: 0644
     force: yes
     validate_certs: no
 
-- name: download compute binary
+# - name: download data binary
+#   get_url:
+#     url: "{{ download_url }}/data"
+#     dest: "{{ downloads_dir }}"
+#     mode: 0644
+#     force: yes
+#     validate_certs: no
+
+# - name: download compute binary
+#   get_url:
+#     url: "{{ download_url }}/compute"
+#     dest: "{{ downloads_dir }}"
+#     mode: 0644
+#     force: yes
+#     validate_certs: no
+
+
+- name: download storage jar package
   get_url:
-    url: "{{ download_url }}/compute"
+    url: "{{ download_url }}/storage.jar"
     dest: "{{ downloads_dir }}"
     mode: 0644
     force: yes
     validate_certs: no
 
-- name: download registration binary
-  get_url:
-    url: "{{ download_url }}/registration.jar"
-    dest: "{{ downloads_dir }}"
-    mode: 0644
-    force: yes
-    validate_certs: no
-
-- name: download data-center binary
-  get_url:
-    url: "{{ download_url }}/data-center.jar"
-    dest: "{{ downloads_dir }}"
-    mode: 0644
-    force: yes
-    validate_certs: no
-
-- name: download scan binary
+- name: download scan jar package
   get_url:
     url: "{{ download_url }}/scan.jar"
+    dest: "{{ downloads_dir }}"
+    mode: 0644
+    force: yes
+    validate_certs: no
+
+- name: download scan Web static files
+  get_url:
+    url: "{{ download_url }}/scan.tar.gz"
     dest: "{{ downloads_dir }}"
     mode: 0644
     force: yes

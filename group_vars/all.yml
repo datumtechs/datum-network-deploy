@@ -5,4 +5,7 @@ downloads_dir: "{{ playbook_dir }}/downloads"
 resources_dir: "{{ playbook_dir }}/resources"
 cert_dir:      "{{ playbook_dir }}/conf/ssl"
 
-
+# 服务静态文件下载 url
+download_url: "http://192.168.9.150/metis/"
+consul_download_url: "https://releases.hashicorp.com/consul/1.10.4/consul_1.10.4_linux_amd64.zip"
+consul_zip_name: consul_1.10.4_linux_amd64.zip
