@@ -1,0 +1,125 @@
+---
+
+- name: create deploy directories
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+  - "{{ deploy_dir }}/data"
+  - "{{ deploy_dir }}/data/conf"
+  - "{{ deploy_dir }}/data/cert"
+  - "{{ deploy_dir }}/data/whl"
+  - "{{ deploy_dir }}/data/data_root"
+  - "{{ deploy_dir }}/data/contract_work_dir"
+  - "{{ deploy_dir }}/data/result_root"
+
+- name: "Deploy certificates"
+  copy:
+    src: "{{ data_cert_dir }}/{{ item }}"
+    dest: "{{ deploy_dir }}/data/cert/{{ item }}"
+    mode: 0600
+    backup: yes
+  with_items:
+    - server.pem 
+    - server.key
+  when: sync_certs|default(false)
+
+- name: "copy configuration file"
+  copy:
+    src: "{{ playbook_dir }}/conf/data.yml"
+    dest: "{{ deploy_dir }}/data/conf/data.yml"
+    mode: 0600
+    backup: yes
+
+- name: Install python3.6
+  become: yes
+  shell: cd /usr/bin && ln -sf python3.6 python && ln -sf python3.6 python3 && ln -sf pip3 pip && python -m pip install --upgrade pip
+
+# 安装python 和 rosetta 运行环境
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 86400 #One day
+
+- name: install dependencies
+  become: true
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+    - apt-utils 
+    - gcc 
+    - g++ 
+    - clang 
+    - make 
+    - automake 
+    - cmake 
+    - build-essential 
+    - autoconf
+    - pkg-config 
+    - bsdmainutils 
+    - libssl-dev 
+    - libtbb-dev 
+    - libgmpxx4ldbl 
+    - libtool 
+    - libgflags-dev 
+    - libgtest-dev 
+    - libc++-dev
+    - vim 
+    - wget 
+    - unzip 
+    - git 
+    - tree 
+    - dos2unix 
+    - time 
+    - sed 
+    - gawk 
+    - sudo
+    - python3.7 
+    - python3.7-dev 
+    - python3-distutils 
+    - python3-pip
+
+- name: Install python3.7
+  become: yes
+  shell: cd /usr/bin && ln -sf python3.7 python && ln -sf python3.7 python3 && ln -sf pip3 pip && python -m pip install --upgrade pip
+
+- name: Install python dependencies setuptools
+  shell: pip3 install setuptools wheel -i https://mirrors.aliyun.com/pypi/simple/
+
+- name: Install python dependencies tensorflow
+  shell: pip3 --no-cache-dir install numpy==1.16.0 pandas sklearn tensorflow==1.14.0 -i https://mirrors.aliyun.com/pypi/simple/
+
+# copy whl file
+- name: "copy whl file"
+  copy:
+    src: "{{ downloads_dir }}/{{ item }}"
+    dest: "{{ deploy_dir }}/data/whl/{{ item }}"
+    mode: 0600
+    backup: yes
+  with_items:
+    - latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl
+    - channel_sdk-2.0.0-cp36-cp36m-linux_x86_64.whl
+    - metis_dcv-0.9.1-py3-none-any.whl
+
+# install rosetta
+- name: Install rosetta
+  shell: pip3 install {{ deploy_dir }}/data/whl/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl
+
+# install channel sdk
+# - name: Install channel sdk
+#   shell: pip3 install {{ deploy_dir }}/data/whl/channel_sdk-2.0.0-cp36-cp36m-linux_x86_64.whl
+
+# install dce
+- name: Install dce
+  shell: pip3 install {{ deploy_dir }}/data/whl/metis_dcv-0.9.1-py3-none-any.whl
+
+# Obtaining the execution script start_data_svc.sh
+- name: "Obtaining the execution script start_data_svc.sh"
+  copy:
+    src: "{{ downloads_dir }}/start_data_svc.sh"
+    dest: "{{ deploy_dir }}/data/start_data_svc.sh"
+    mode: 0775
+    backup: yes
+
+- name: Install python3.6
+  become: yes
+  shell: cd /usr/bin && ln -sf python3.6 python && ln -sf python3.6 python3 && ln -sf pip3 pip && python -m pip install --upgrade pip

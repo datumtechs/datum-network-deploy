@@ -46,54 +46,45 @@
     mode: 0775
     backup: yes
 
-- name: "copy admin.tar.gz"
-  copy:
-    src: "{{ downloads_dir }}/admin.tar.gz"
-    dest: "{{ deploy_dir }}/admin/network/admin.tar.gz"
-    mode: 0644
-    backup: yes
-
-- name: Extract admin.tar.gz
+- name: copyt and extract admin.tar.gz
   unarchive:
-    src: "{{ deploy_dir }}/admin/network/admin.tar.gz"
+    src: "{{ downloads_dir }}/admin.tar.gz"
     dest: "{{ deploy_dir }}/admin/network"
 
-- name: delete admin.tar.gz
-  file:
-    path: "{{ deploy_dir }}/admin/network/admin.tar.gz"
-    state: absent
-
 # 安装 mysql
-- name: Update and upgrade apt packages
-  apt:
-    upgrade: yes
-    update_cache: yes
-    cache_valid_time: 86400
+# - name: Update and upgrade apt packages
+#   shell: sudo apt-get update 
 
 - name: Install the MySQL packages
+  become: true
   apt: name={{ item }} state=installed update_cache=yes
   with_items:
     - mysql-server
     - mysql-client
     - python-mysqldb
 
-- name: start mysqld
-  shell: systemctl restart mysqld
+- name: Start the MySQL service
+  service: 
+    name: mysql 
+    state: started
+    enabled: true
 
 # 设置用户名密码
-- name: set mysql user
-  mysql_user:
-  user: root
-  password: 123456
-  update_password: always
+# - name: set mysql user
+#   mysql_user:
+#   user: root
+#   password: 123456
+#   update_password: always
 
 # 安装 nginx
-- name: Ansible apt install nginx
+- name: apt install nginx
+  become: true
   apt:
     name: nginx
     state: present
 
 - name: "copy nginx config file"
+  become: true
   copy:
     src: "{{ admin_cert_dir }}/web/metis-admin.platon.network.conf"
     dest: "/etc/nginx/conf.d/metis-admin.platon.network.conf"
@@ -104,3 +95,10 @@
   service:
     name: nginx
     state: started
+
+# java 环境
+- name: apt install openjdk-8-jdk
+  become: true
+  apt:
+    name: openjdk-8-jdk
+    state: present

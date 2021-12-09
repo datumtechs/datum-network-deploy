@@ -1,0 +1,22 @@
+---
+
+- name: create deploy directories
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+  - "{{ deploy_dir }}/consul"
+  - "{{ deploy_dir }}/consul/conf"
+  - "{{ deploy_dir }}/consul/data-dir"
+
+- name: "copy configuration file"
+  copy:
+    src: "{{ playbook_dir }}/conf/consul.yml"
+    dest: "{{ deploy_dir }}/consul/conf/consul.yml"
+    mode: 0600
+    backup: yes
+
+- name: "copy consul binary Executable file"
+  copy:
+    src: "{{ downloads_dir }}/consul"
+    dest: "{{ deploy_dir }}/consul/consul"
+    mode: 0775
+    backup: yes

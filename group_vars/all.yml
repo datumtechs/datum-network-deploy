@@ -10,8 +10,8 @@ carrier_cert_dir:   "{{ playbook_dir }}/conf/carrier_cert"
 admin_cert_dir:   "{{ playbook_dir }}/conf/admin_cert"
 scan_cert_dir:   "{{ playbook_dir }}/conf/scan_cert"
 storage_cert_dir:   "{{ playbook_dir }}/conf/storage_cert"
-computer_cert_dir:   "{{ playbook_dir }}/conf/computer_cert"
-data_cert_dir:   "{{ playbook_dir }}/conf/data_cert"
+compute_cert_dir:   "{{ playbook_dir }}/conf/computer_cert"
+data_cert_dir:   "{{ playbook_dir }}/conf/data_cert" 
 
 # 服务静态文件下载 url
 download_url: "http://192.168.9.150/metis/"

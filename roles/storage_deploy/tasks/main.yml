@@ -1,0 +1,70 @@
+---
+
+- name: create deploy directories
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+  - "{{ deploy_dir }}/storage"
+  - "{{ deploy_dir }}/storage/conf"
+  - "{{ deploy_dir }}/storage/cert"
+  - "{{ deploy_dir }}/storage/log"
+
+- name: "Deploy certificates"
+  copy:
+    src: "{{ storage_cert_dir }}/{{ item }}"
+    dest: "{{ deploy_dir }}/storage/cert/{{ item }}"
+    mode: 0600
+    backup: yes
+  with_items:
+    - server.pem 
+    - server.key
+  when: sync_certs|default(false)
+
+- name: "copy configuration file"
+  copy:
+    src: "{{ playbook_dir }}/conf/storage.yml"
+    dest: "{{ deploy_dir }}/storage/conf/storage.yml"
+    mode: 0600
+    backup: yes
+
+- name: "copy storage jar package"
+  copy:
+    src: "{{ downloads_dir }}/storage.jar"
+    dest: "{{ deploy_dir }}/storage/storage.jar"
+    mode: 0775
+    backup: yes
+
+# 安装 mysql
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 86400 #One day
+
+- name: Install the MySQL packages
+  become: true
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+    - mysql-server
+    - mysql-client
+    - python-mysqldb
+
+- name: Start the MySQL service
+  service: 
+    name: mysql 
+    state: started
+    enabled: true
+
+# 设置用户名密码
+# - name: set mysql user
+#   mysql_user:
+#   user: root
+#   password: 123456
+#   update_password: always
+
+# java 环境
+- name: Ansible apt install openjdk-8-jdk
+  become: true
+  apt:
+    name: openjdk-8-jdk
+    state: present
