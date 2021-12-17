@@ -51,31 +51,6 @@
     src: "{{ downloads_dir }}/scan.tar.gz"
     dest: "{{ deploy_dir }}/scan/network"
 
-# 安装 mysql
-# - name: Update and upgrade apt packages
-#   shell: sudo apt-get update 
-
-- name: Install the MySQL packages
-  become: true
-  apt: name={{ item }} state=installed update_cache=yes
-  with_items:
-    - mysql-server
-    - mysql-client
-    - python-mysqldb
-
-- name: Start the MySQL service
-  service: 
-    name: mysql 
-    state: started
-    enabled: true
-
-# 设置用户名密码
-# - name: set mysql user
-#   mysql_user:
-#   user: root
-#   password: 123456
-#   update_password: always
-
 # 安装 nginx
 - name: Ansible apt install nginx
   become: true

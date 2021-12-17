@@ -4,6 +4,7 @@
   file: path={{ item }} state=directory mode=0755
   with_items:
   - "{{ deploy_dir }}/storage"
+  - "{{ deploy_dir }}/storage/sql"
   - "{{ deploy_dir }}/storage/conf"
   - "{{ deploy_dir }}/storage/cert"
   - "{{ deploy_dir }}/storage/log"
@@ -26,6 +27,13 @@
     mode: 0600
     backup: yes
 
+- name: "Copy database initialization script"
+  copy:
+    src: "{{ playbook_dir }}/conf/storage.sql"
+    dest: "{{ deploy_dir }}/storage/sql/storage.sql"
+    mode: 0600
+    backup: yes
+
 - name: "copy storage jar package"
   copy:
     src: "{{ downloads_dir }}/storage.jar"
@@ -39,6 +47,7 @@
   apt:
     upgrade: yes
     update_cache: yes
+    force_apt_get: yes
     cache_valid_time: 86400 #One day
 
 - name: Install the MySQL packages

@@ -4,6 +4,7 @@
   file: path={{ item }} state=directory mode=0755
   with_items:
   - "{{ deploy_dir }}/admin"
+  - "{{ deploy_dir }}/admin/sql"
   - "{{ deploy_dir }}/admin/conf"
   - "{{ deploy_dir }}/admin/cert"
   - "{{ deploy_dir }}/admin/cert/web"
@@ -39,6 +40,13 @@
     mode: 0600
     backup: yes
 
+- name: "Copy database initialization script"
+  copy:
+    src: "{{ playbook_dir }}/conf/admin.sql"
+    dest: "{{ deploy_dir }}/admin/sql/admin.sql"
+    mode: 0600
+    backup: yes
+
 - name: "copy admin jar package"
   copy:
     src: "{{ downloads_dir }}/admin.jar"
@@ -52,8 +60,13 @@
     dest: "{{ deploy_dir }}/admin/network"
 
 # 安装 mysql
-# - name: Update and upgrade apt packages
-#   shell: sudo apt-get update 
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+    force_apt_get: yes
+    cache_valid_time: 86400 #One day
 
 - name: Install the MySQL packages
   become: true
@@ -62,6 +75,22 @@
     - mysql-server
     - mysql-client
     - python-mysqldb
+    - libmysqlclient-dev
+    - python-mysqldb
+
+- name: copy .my.cnf file with root password credentials
+  template: 
+    src: "{{ playbook_dir }}/conf/.my.cnf"
+    dest: ~/.my.cnf
+    mode: 0600
+
+- name: "Installing mysql pip dependencies"
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - pymysql
+    - mysqlclient
 
 - name: Start the MySQL service
   service: 
@@ -69,12 +98,19 @@
     state: started
     enabled: true
 
-# 设置用户名密码
-# - name: set mysql user
-#   mysql_user:
-#   user: root
-#   password: 123456
-#   update_password: always
+- name: MySQL | Set the root password.
+  mysql_user: 
+    name: root 
+    host: "{{ ansible_host }}"
+    password: "{{ mysql_root_password }}"
+    priv: "*.*:ALL,GRANT"
+
+- name: Create database user
+  mysql_user:
+    name: "{{ amin_user }}"
+    password: "{{ admin_password }}"
+    priv: '*.*:ALL'
+    state: present
 
 # 安装 nginx
 - name: apt install nginx

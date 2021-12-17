@@ -17,3 +17,11 @@ data_cert_dir:   "{{ playbook_dir }}/conf/data_cert"
 download_url: "http://192.168.9.150/metis/"
 consul_download_url: "https://releases.hashicorp.com/consul/1.10.4/consul_1.10.4_linux_amd64.zip"
 consul_zip_name: consul_1.10.4_linux_amd64.zip
+
+
+# mysql 相关用户名密码
+mysql_root_password: 123456
+amin_user: metis_admin
+admin_password: admin_123456
+storage_user: metis_storage
+storage_password: storage_123456

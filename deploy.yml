@@ -17,44 +17,44 @@
 #   roles:
 #     - carrier_deploy
 
-# - name: deploying admin
-#   hosts: admin
+- name: deploying admin
+  hosts: admin
+  tags:
+    - admin
+  roles:
+    - admin_deploy
+
+# - name: deploying data
+#   hosts: data
 #   tags:
-#     - admin
+#     - data
 #   roles:
-#     - admin_deploy
+#     - data_deploy
 
-- name: deploying data
-  hosts: data
-  tags:
-    - data
-  roles:
-    - data_deploy
+# - name: deploying compute
+#   hosts: compute
+#   tags:
+#     - compute
+#   roles:
+#     - compute_deploy
 
-- name: deploying compute
-  hosts: compute
-  tags:
-    - compute
-  roles:
-    - compute_deploy
+# - name: deploying consul
+#   hosts: consul
+#   tags:
+#     - consul
+#   roles:
+#     - consul_deploy
 
-- name: deploying consul
-  hosts: consul
-  tags:
-    - consul
-  roles:
-    - consul_deploy
+# - name: deploying storage
+#   hosts: storage
+#   tags:
+#     - storage
+#   roles:
+#     - storage_deploy
 
-- name: deploying storage
-  hosts: storage
-  tags:
-    - storage
-  roles:
-    - storage_deploy
-
-- name: deploying scan
-  hosts: scan
-  tags:
-    - scan
-  roles:
-    - scan_deploy
+# - name: deploying scan
+#   hosts: scan
+#   tags:
+#     - scan
+#   roles:
+#     - scan_deploy

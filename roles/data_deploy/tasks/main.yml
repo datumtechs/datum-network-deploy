@@ -29,16 +29,13 @@
     mode: 0600
     backup: yes
 
-- name: Install python3.6
-  become: yes
-  shell: cd /usr/bin && ln -sf python3.6 python && ln -sf python3.6 python3 && ln -sf pip3 pip && python -m pip install --upgrade pip
-
 # 安装python 和 rosetta 运行环境
 - name: Update and upgrade apt packages
   become: true
   apt:
     upgrade: yes
     update_cache: yes
+    force_apt_get: yes
     cache_valid_time: 86400 #One day
 
 - name: install dependencies
@@ -81,6 +78,13 @@
 - name: Install python3.7
   become: yes
   shell: cd /usr/bin && ln -sf python3.7 python && ln -sf python3.7 python3 && ln -sf pip3 pip && python -m pip install --upgrade pip
+
+- name: Change the python interpreter of the /usr/lib/cnf-update-db file
+  become: yes
+  lineinfile:
+    path: /usr/lib/cnf-update-db
+    regexp: "#!/usr/bin/python3"
+    line: "#!/usr/bin/python3.6"
 
 - name: Install python dependencies setuptools
   shell: pip3 install setuptools wheel -i https://mirrors.aliyun.com/pypi/simple/
