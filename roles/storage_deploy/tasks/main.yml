@@ -57,6 +57,16 @@
     - mysql-server
     - mysql-client
     - python-mysqldb
+    - libmysqlclient-dev
+    - python-mysqldb
+
+- name: "Installing mysql pip dependencies"
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - pymysql
+    - mysqlclient
 
 - name: Start the MySQL service
   service: 
@@ -64,12 +74,72 @@
     state: started
     enabled: true
 
-# 设置用户名密码
-# - name: set mysql user
-#   mysql_user:
-#   user: root
-#   password: 123456
-#   update_password: always
+# 修改mysql绑定地址
+- name: Modify mysql bind address
+  become: yes
+  lineinfile:
+    path: /etc/mysql/mysql.conf.d/mysqld.cnf
+    regexp: "^bind-address"
+    line: "bind-address   = 0.0.0.0"
+
+- name: restart the MySQL service
+  become: true
+  shell: service mysql restart
+
+# 获取系统默认给我们分配的用户名和密码
+- name: Get the system default mysql username
+  become: true
+  shell: awk -v FS="=" '{print $1,$2}' /etc/mysql/debian.cnf | awk -F" *" '$1=="user" {print $2}' | head -n +1
+  register: default_name_str
+  failed_when: false
+  changed_when: false
+
+- name: set default_name facts
+  set_fact:
+    default_name: "{{ default_name_str.stdout | trim }}"
+
+- name: Show default_name info 
+  debug: 
+    msg: default_name {{ default_name }}
+
+- name: Get the system default mysql user password
+  become: true
+  shell: awk -v FS="=" '{print $1,$2}' /etc/mysql/debian.cnf | awk -F" *" '$1=="password" {print $2}' | head -n +1
+  register: default_password_str
+  failed_when: false
+  changed_when: false
+
+- name: set default_password facts
+  set_fact:
+    default_password: "{{ default_password_str.stdout | trim }}"
+
+- name: Show default_password info 
+  debug:
+    msg: default_password {{default_password }}
+
+# 更改 root 密码
+- name: setting default root password
+  mysql_user:
+    login_user: "{{ default_name }}"
+    login_password: "{{ default_password }}"
+    name: root
+    password: "{{ mysql_root_password }}"
+    priv: "*.*:ALL,GRANT"
+
+# 创建用户
+- name: Create database user
+  mysql_user:
+    login_user: "{{ default_name }}"
+    login_password: "{{ default_password }}"
+    name: "{{ storage_user }}"
+    password: "{{ storage_password }}"
+    priv: '*.*:ALL'
+    host: "%"
+    state: present
+
+# 初始化数据库
+- name: Initialize database, create database and table
+  shell: mysql -u{{ storage_user }} -p{{ storage_password }} < {{ deploy_dir }}/storage/sql/storage.sql
 
 # java 环境
 - name: Ansible apt install openjdk-8-jdk

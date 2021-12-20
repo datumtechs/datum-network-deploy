@@ -54,7 +54,7 @@
     mode: 0775
     backup: yes
 
-- name: copyt and extract admin.tar.gz
+- name: copy and extract admin.tar.gz
   unarchive:
     src: "{{ downloads_dir }}/admin.tar.gz"
     dest: "{{ deploy_dir }}/admin/network"
@@ -78,12 +78,6 @@
     - libmysqlclient-dev
     - python-mysqldb
 
-- name: copy .my.cnf file with root password credentials
-  template: 
-    src: "{{ playbook_dir }}/conf/.my.cnf"
-    dest: ~/.my.cnf
-    mode: 0600
-
 - name: "Installing mysql pip dependencies"
   pip:
     name: "{{ item }}"
@@ -98,19 +92,72 @@
     state: started
     enabled: true
 
-- name: MySQL | Set the root password.
-  mysql_user: 
-    name: root 
-    host: "{{ ansible_host }}"
+# 修改mysql绑定地址
+- name: Modify mysql bind address
+  become: yes
+  lineinfile:
+    path: /etc/mysql/mysql.conf.d/mysqld.cnf
+    regexp: "^bind-address"
+    line: "bind-address   = 0.0.0.0"
+
+- name: restart the MySQL service
+  become: true
+  shell: service mysql restart
+
+# 获取系统默认给我们分配的用户名和密码
+- name: Get the system default mysql username
+  become: true
+  shell: awk -v FS="=" '{print $1,$2}' /etc/mysql/debian.cnf | awk -F" *" '$1=="user" {print $2}' | head -n +1
+  register: default_name_str
+  failed_when: false
+  changed_when: false
+
+- name: set default_name facts
+  set_fact:
+    default_name: "{{ default_name_str.stdout | trim }}"
+
+- name: Show default_name info 
+  debug: 
+    msg: default_name {{ default_name }}
+
+- name: Get the system default mysql user password
+  become: true
+  shell: awk -v FS="=" '{print $1,$2}' /etc/mysql/debian.cnf | awk -F" *" '$1=="password" {print $2}' | head -n +1
+  register: default_password_str
+  failed_when: false
+  changed_when: false
+
+- name: set default_password facts
+  set_fact:
+    default_password: "{{ default_password_str.stdout | trim }}"
+
+- name: Show default_password info 
+  debug:
+    msg: default_password {{default_password }}
+
+# 更改 root 密码
+- name: setting default root password
+  mysql_user:
+    login_user: "{{ default_name }}"
+    login_password: "{{ default_password }}"
+    name: root
     password: "{{ mysql_root_password }}"
     priv: "*.*:ALL,GRANT"
 
+# 创建用户
 - name: Create database user
   mysql_user:
+    login_user: "{{ default_name }}"
+    login_password: "{{ default_password }}"
     name: "{{ amin_user }}"
     password: "{{ admin_password }}"
     priv: '*.*:ALL'
+    host: "%"
     state: present
+
+# 初始化数据库
+- name: Initialize database, create database and table
+  shell: mysql -u{{ amin_user }} -p{{ admin_password }} < {{ deploy_dir }}/admin/sql/admin.sql
 
 # 安装 nginx
 - name: apt install nginx

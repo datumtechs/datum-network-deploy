@@ -17,12 +17,12 @@
 #   roles:
 #     - carrier_deploy
 
-- name: deploying admin
-  hosts: admin
-  tags:
-    - admin
-  roles:
-    - admin_deploy
+# - name: deploying admin
+#   hosts: admin
+#   tags:
+#     - admin
+#   roles:
+#     - admin_deploy
 
 # - name: deploying data
 #   hosts: data
@@ -45,12 +45,12 @@
 #   roles:
 #     - consul_deploy
 
-# - name: deploying storage
-#   hosts: storage
-#   tags:
-#     - storage
-#   roles:
-#     - storage_deploy
+- name: deploying storage
+  hosts: storage
+  tags:
+    - storage
+  roles:
+    - storage_deploy
 
 # - name: deploying scan
 #   hosts: scan

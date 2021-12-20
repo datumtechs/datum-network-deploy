@@ -20,7 +20,7 @@ consul_zip_name: consul_1.10.4_linux_amd64.zip
 
 
 # mysql 相关用户名密码
-mysql_root_password: 123456
+mysql_root_password: jatel
 amin_user: metis_admin
 admin_password: admin_123456
 storage_user: metis_storage
