@@ -13,11 +13,21 @@ storage_cert_dir:   "{{ playbook_dir }}/conf/storage_cert"
 compute_cert_dir:   "{{ playbook_dir }}/conf/computer_cert"
 data_cert_dir:   "{{ playbook_dir }}/conf/data_cert" 
 
+# admin web 服务相关配置信息
+admin_server_name: metis-admin.platon.network
+admin_ssl_protocols: "TLSv1 TLSv1.1 TLSv1.2"
+admin_ssl_ciphers: ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
+
+# scan web 服务相关配置信息
+scan_server_name: metis-scan.platon.network
+scan_ssl_protocols: "TLSv1 TLSv1.1 TLSv1.2"
+scan_ssl_ciphers: ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
+
+
 # 服务静态文件下载 url
 download_url: "http://192.168.9.150/metis/"
 consul_download_url: "https://releases.hashicorp.com/consul/1.10.4/consul_1.10.4_linux_amd64.zip"
 consul_zip_name: consul_1.10.4_linux_amd64.zip
-
 
 # mysql 相关用户名密码
 mysql_root_password: jatel
@@ -25,3 +35,22 @@ amin_user: metis_admin
 admin_password: admin_123456
 storage_user: metis_storage
 storage_password: storage_123456
+
+# 服务端口号
+via_port: 10031
+consul_host: 10.1.1.10
+storage_host: 192.168.112.153
+consul_port: 8500
+carrier_pprof_port: 10032
+carrier_rpc_port: 10033
+carrier_grpc_gateway_port: 10034
+bootstrap_node: 10.1.1.10
+carrier_p2p_udp_port: 10035
+carrier_p2p_tcp_port: 10036
+admin_web_port: 9090
+data_port: 10037
+compute_port: 10038
+storage_port: 10039
+scan_port: 10040
+scan_web_port: 9001
+

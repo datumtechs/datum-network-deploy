@@ -1,16 +1,16 @@
 # 数据节点的配置模板
 file_system: local
-bind_ip: 192.168.16.151
-port: 50011
+bind_ip: {{inventory_hostname}}
+port: {{data_port}}
 chunk_size: 1024
 pass_via: true
 thread_pool_size: 12
-data_root: ../data
-code_root_dir: ../contract_work_dir
-results_root_dir: results_root
+data_root: {{data_root}}
+code_root_dir: {{code_root_dir}}
+results_root_dir: {{results_root_dir}}
 total_bandwidth: 20000000
 certs: 
-  base_path: ../certs
+  base_path: {{base_path}}
   root_cert: CA.crt
   server_sign_key: SS.key
   server_sign_cert: SS.crt

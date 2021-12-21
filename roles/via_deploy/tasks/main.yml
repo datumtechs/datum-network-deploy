@@ -6,6 +6,11 @@
   - "{{ deploy_dir }}/via"
   - "{{ deploy_dir }}/via/conf"
   - "{{ deploy_dir }}/via/cert"
+  - "{{ deploy_dir }}/via/log"
+
+- name: set via_log_file facts
+  set_fact:
+    via_log_file: "{{ deploy_dir }}/via/log/via.log"
 
 - name: "Deploy certificates"
   copy:
@@ -21,12 +26,19 @@
     - client.key
   when: sync_certs|default(false)
 
+- name: Set certificate-related facts
+  set_fact:
+    via_cert_file: "{{ deploy_dir }}/via/cert/server.crt"
+    via_key_file: "{{ deploy_dir }}/via/cert/server.key"
+    io_cert_file: "{{ deploy_dir }}/via/cert/client.crt"
+    io_key_file: "{{ deploy_dir }}/via/cert/client.key"
+    ca_cert_file: "{{ deploy_dir }}/via/cert/ca.crt"
+
 - name: "copy configuration file"
-  copy:
-    src: "{{ playbook_dir }}/conf/via.yml"
+  template:
+    src: "via.yml.j2"
     dest: "{{ deploy_dir }}/via/conf/via.yml"
     mode: 0600
-    backup: yes
 
 - name: "copy via binary Executable file"
   copy:

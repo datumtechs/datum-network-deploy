@@ -21,8 +21,8 @@
   when: sync_certs|default(false)
 
 - name: "copy configuration file"
-  copy:
-    src: "{{ playbook_dir }}/conf/storage.yml"
+  template:
+    src: "storage.yml.j2"
     dest: "{{ deploy_dir }}/storage/conf/storage.yml"
     mode: 0600
     backup: yes

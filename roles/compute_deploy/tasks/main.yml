@@ -10,6 +10,11 @@
   - "{{ deploy_dir }}/compute/contract_work_dir"
   - "{{ deploy_dir }}/compute/result_root"
 
+- name: set directory facts
+  set_fact:
+    code_root_dir: "{{ deploy_dir }}/compute/contract_work_dir"
+    results_root_dir: "{{ deploy_dir }}/compute/result_root"
+
 - name: "Deploy certificates"
   copy:
     src: "{{ compute_cert_dir }}/{{ item }}"
@@ -21,9 +26,13 @@
     - server.key
   when: sync_certs|default(false)
 
+- name: Set certificate-related facts
+  set_fact:
+    base_path: "{{ deploy_dir }}/compute/cert/"
+
 - name: "copy configuration file"
-  copy:
-    src: "{{ playbook_dir }}/conf/compute.yml"
+  template:
+    src: "compute.yml.j2"
     dest: "{{ deploy_dir }}/compute/conf/compute.yml"
     mode: 0600
     backup: yes

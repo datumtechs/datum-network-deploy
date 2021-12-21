@@ -45,16 +45,16 @@
 #   roles:
 #     - consul_deploy
 
-- name: deploying storage
-  hosts: storage
-  tags:
-    - storage
-  roles:
-    - storage_deploy
-
-# - name: deploying scan
-#   hosts: scan
+# - name: deploying storage
+#   hosts: storage
 #   tags:
-#     - scan
+#     - storage
 #   roles:
-#     - scan_deploy
+#     - storage_deploy
+
+- name: deploying scan
+  hosts: scan
+  tags:
+    - scan
+  roles:
+    - scan_deploy

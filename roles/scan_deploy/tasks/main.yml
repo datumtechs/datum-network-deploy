@@ -32,9 +32,14 @@
     - server.key
   when: sync_certs|default(false)
 
+- name: Set web certificate-related facts
+  set_fact:
+    scan_ssl_cetificate: "{{ deploy_dir }}/scan/cert/web/server.pem"
+    scan_ssl_cetificate_key: "{{ deploy_dir }}/scan/cert/web/server.key"
+
 - name: "copy configuration file"
-  copy:
-    src: "{{ playbook_dir }}/conf/scan.yml"
+  template:
+    src: "scan.yml.j2"
     dest: "{{ deploy_dir }}/scan/conf/scan.yml"
     mode: 0600
     backup: yes
@@ -46,10 +51,15 @@
     mode: 0775
     backup: yes
 
+# 拷贝 web 静态文件
 - name: copy and extract scan.tar.gz
   unarchive:
     src: "{{ downloads_dir }}/scan.tar.gz"
     dest: "{{ deploy_dir }}/scan/network"
+
+- name: set scan_web_static_dir facts
+  set_fact:
+    scan_web_static_dir: "{{ deploy_dir }}/scan/network"
 
 # 安装 nginx
 - name: Ansible apt install nginx
@@ -60,8 +70,8 @@
 
 - name: "copy nginx config file"
   become: true
-  copy:
-    src: "{{ scan_cert_dir }}/web/metis-scan.platon.network.conf"
+  template:
+    src: "metis-scan.platon.network.conf.j2"
     dest: "/etc/nginx/conf.d/metis-scan.platon.network.conf"
     mode: 0600
     backup: yes

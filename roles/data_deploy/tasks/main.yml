@@ -11,6 +11,12 @@
   - "{{ deploy_dir }}/data/contract_work_dir"
   - "{{ deploy_dir }}/data/result_root"
 
+- name: set directory facts
+  set_fact:
+    data_root: "{{ deploy_dir }}/data/data_root"
+    code_root_dir: "{{ deploy_dir }}/data/contract_work_dir"
+    results_root_dir: "{{ deploy_dir }}/data/result_root"
+
 - name: "Deploy certificates"
   copy:
     src: "{{ data_cert_dir }}/{{ item }}"
@@ -22,9 +28,13 @@
     - server.key
   when: sync_certs|default(false)
 
+- name: Set certificate-related facts
+  set_fact:
+    base_path: "{{ deploy_dir }}/data/cert/"
+
 - name: "copy configuration file"
-  copy:
-    src: "{{ playbook_dir }}/conf/data.yml"
+  template:
+    src: "data.yml.j2"
     dest: "{{ deploy_dir }}/data/conf/data.yml"
     mode: 0600
     backup: yes

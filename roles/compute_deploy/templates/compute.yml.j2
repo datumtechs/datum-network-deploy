@@ -1,13 +1,13 @@
 # 计算节点的配置模板
-bind_ip: 192.168.16.151
-port: 50021
+bind_ip: {{inventory_hostname}}
+port: {{compute_port}}
 thread_pool_size: 12
 pass_via: true
-code_root_dir: contract_work_dir
-results_root_dir: results_root
+code_root_dir: {{code_root_dir}}
+results_root_dir: {{results_root_dir}}
 total_bandwidth: 20000000
 certs: 
-  base_path: ../certs
+  base_path: {{base_path}}
   root_cert: CA.crt
   server_sign_key: SS.key
   server_sign_cert: SS.crt

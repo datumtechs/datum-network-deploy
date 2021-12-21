@@ -33,9 +33,14 @@
     - server.key
   when: sync_certs|default(false)
 
+- name: Set web certificate-related facts
+  set_fact:
+    admin_ssl_cetificate: "{{ deploy_dir }}/admin/cert/web/server.pem"
+    admin_ssl_cetificate_key: "{{ deploy_dir }}/admin/cert/web/server.key"
+
 - name: "copy configuration file"
-  copy:
-    src: "{{ playbook_dir }}/conf/admin.yml"
+  template:
+    src: "admin.yml.j2"
     dest: "{{ deploy_dir }}/admin/conf/admin.yml"
     mode: 0600
     backup: yes
@@ -54,10 +59,15 @@
     mode: 0775
     backup: yes
 
+# 拷贝 web 静态文件
 - name: copy and extract admin.tar.gz
   unarchive:
     src: "{{ downloads_dir }}/admin.tar.gz"
     dest: "{{ deploy_dir }}/admin/network"
+
+- name: set admin_web_static_dir facts
+  set_fact:
+    admin_web_static_dir: "{{ deploy_dir }}/admin/network"
 
 # 安装 mysql
 - name: Update and upgrade apt packages
@@ -168,8 +178,8 @@
 
 - name: "copy nginx config file"
   become: true
-  copy:
-    src: "{{ admin_cert_dir }}/web/metis-admin.platon.network.conf"
+  template:
+    src: "metis-admin.platon.network.conf.j2"
     dest: "/etc/nginx/conf.d/metis-admin.platon.network.conf"
     mode: 0600
     backup: yes
