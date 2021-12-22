@@ -7,8 +7,3 @@
   roles:
     - check_system_static
 
-# # 安装 python 
-# - name: install python
-#   hosts: all
-#   tasks:
-#    - shell: sudo apt-get -y install python

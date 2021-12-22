@@ -4,7 +4,7 @@
   file: path={{ item }} state=directory mode=0755
   with_items:
   - "{{ deploy_dir }}/scan"
-  - "{{ deploy_dir }}/scan/conf"
+  - "{{ deploy_dir }}/scan/config"
   - "{{ deploy_dir }}/scan/cert"
   - "{{ deploy_dir }}/scan/cert/web"
   - "{{ deploy_dir }}/scan/log"
@@ -19,7 +19,6 @@
   with_items:
     - server.pem 
     - server.key
-  when: sync_certs|default(false)
 
 - name: "Deploy web certificates"
   copy:
@@ -30,7 +29,6 @@
   with_items:
     - server.pem 
     - server.key
-  when: sync_certs|default(false)
 
 - name: Set web certificate-related facts
   set_fact:
@@ -40,7 +38,7 @@
 - name: "copy configuration file"
   template:
     src: "scan.yml.j2"
-    dest: "{{ deploy_dir }}/scan/conf/scan.yml"
+    dest: "{{ deploy_dir }}/scan/config/scan.yml"
     mode: 0600
     backup: yes
 

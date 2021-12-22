@@ -5,13 +5,13 @@ downloads_dir: "{{ playbook_dir }}/downloads"
 resources_dir: "{{ playbook_dir }}/resources"
 
 # 证书文件
-via_cert_dir:   "{{ playbook_dir }}/conf/via_cert"
-carrier_cert_dir:   "{{ playbook_dir }}/conf/carrier_cert"
-admin_cert_dir:   "{{ playbook_dir }}/conf/admin_cert"
-scan_cert_dir:   "{{ playbook_dir }}/conf/scan_cert"
-storage_cert_dir:   "{{ playbook_dir }}/conf/storage_cert"
-compute_cert_dir:   "{{ playbook_dir }}/conf/computer_cert"
-data_cert_dir:   "{{ playbook_dir }}/conf/data_cert" 
+via_cert_dir:   "{{ playbook_dir }}/config/via_cert"
+carrier_cert_dir:   "{{ playbook_dir }}/config/carrier_cert"
+admin_cert_dir:   "{{ playbook_dir }}/config/admin_cert"
+scan_cert_dir:   "{{ playbook_dir }}/config/scan_cert"
+storage_cert_dir:   "{{ playbook_dir }}/config/storage_cert"
+compute_cert_dir:   "{{ playbook_dir }}/config/computer_cert"
+data_cert_dir:   "{{ playbook_dir }}/config/data_cert" 
 
 # admin web 服务相关配置信息
 admin_server_name: metis-admin.platon.network
@@ -39,8 +39,8 @@ storage_password: storage_123456
 # 服务端口号
 via_port: 10031
 consul_host: 10.1.1.10
-storage_host: 192.168.112.153
 consul_port: 8500
+storage_host: 192.168.112.153
 carrier_pprof_port: 10032
 carrier_rpc_port: 10033
 carrier_grpc_gateway_port: 10034
@@ -51,6 +51,5 @@ admin_web_port: 9090
 data_port: 10037
 compute_port: 10038
 storage_port: 10039
-scan_port: 10040
 scan_web_port: 9001
 

@@ -4,7 +4,7 @@
   file: path={{ item }} state=directory mode=0755
   with_items:
   - "{{ deploy_dir }}/compute"
-  - "{{ deploy_dir }}/compute/conf"
+  - "{{ deploy_dir }}/compute/config"
   - "{{ deploy_dir }}/compute/cert"
   - "{{ deploy_dir }}/compute/whl"
   - "{{ deploy_dir }}/compute/contract_work_dir"
@@ -24,7 +24,6 @@
   with_items:
     - server.pem 
     - server.key
-  when: sync_certs|default(false)
 
 - name: Set certificate-related facts
   set_fact:
@@ -33,7 +32,7 @@
 - name: "copy configuration file"
   template:
     src: "compute.yml.j2"
-    dest: "{{ deploy_dir }}/compute/conf/compute.yml"
+    dest: "{{ deploy_dir }}/compute/config/compute.yml"
     mode: 0600
     backup: yes
 

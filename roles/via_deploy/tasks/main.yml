@@ -4,7 +4,7 @@
   file: path={{ item }} state=directory mode=0755
   with_items:
   - "{{ deploy_dir }}/via"
-  - "{{ deploy_dir }}/via/conf"
+  - "{{ deploy_dir }}/via/config"
   - "{{ deploy_dir }}/via/cert"
   - "{{ deploy_dir }}/via/log"
 
@@ -12,32 +12,31 @@
   set_fact:
     via_log_file: "{{ deploy_dir }}/via/log/via.log"
 
-- name: "Deploy certificates"
+- name: "Copy certificate"
   copy:
     src: "{{ via_cert_dir }}/{{ item }}"
     dest: "{{ deploy_dir }}/via/cert/{{ item }}"
     mode: 0600
     backup: yes
   with_items:
-    - ca.crt
-    - server.crt
+    - ca.pem
+    - server.pem
     - server.key
-    - client.crt
+    - client.pem
     - client.key
-  when: sync_certs|default(false)
 
 - name: Set certificate-related facts
   set_fact:
-    via_cert_file: "{{ deploy_dir }}/via/cert/server.crt"
+    via_cert_file: "{{ deploy_dir }}/via/cert/server.pem"
     via_key_file: "{{ deploy_dir }}/via/cert/server.key"
-    io_cert_file: "{{ deploy_dir }}/via/cert/client.crt"
+    io_cert_file: "{{ deploy_dir }}/via/cert/client.pem"
     io_key_file: "{{ deploy_dir }}/via/cert/client.key"
-    ca_cert_file: "{{ deploy_dir }}/via/cert/ca.crt"
+    ca_cert_file: "{{ deploy_dir }}/via/cert/ca.pem"
 
 - name: "copy configuration file"
   template:
     src: "via.yml.j2"
-    dest: "{{ deploy_dir }}/via/conf/via.yml"
+    dest: "{{ deploy_dir }}/via/config/via.yml"
     mode: 0600
 
 - name: "copy via binary Executable file"

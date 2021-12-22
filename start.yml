@@ -1,353 +1,109 @@
 ---
-
 # 启动所有服务
 
-- hosts: via
-  tags:
-    - via
-  tasks:
-    - name: start via by systemd
-      systemd: name=via-{{ via_client_port }}.service state=started enabled=no
-      become: true
-      when: process_supervision == 'systemd'
 
-    - name: wait until the via port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ via_client_port }}"
-        state: started
-        msg: "the via port {{ via_client_port }} is not up"
-
-    - name: wait until the via health page is available
-      uri:
-        url: "http://{{ ansible_host }}:{{ via_client_port }}/health"
-        return_content: yes
-      register: via_http_result
-      until: via_http_result.status == 200 and 'true' in via_http_result.content
-      retries: 12
-      delay: 5
-      when: not enable_tls|default(false)
-
-    - name: wait until the via health page is available when enable_tls
-      uri:
-        url: "https://{{ ansible_host }}:{{ via_client_port }}/health"
-        validate_certs: no
-        client_cert: "{{ via_cert_dir }}/via-server-{{ ansible_host }}.pem"
-        client_key: "{{ via_cert_dir }}/via-server-{{ ansible_host }}-key.pem"
-        return_content: yes
-      register: via_https_result
-      until: via_https_result.status == 200 and 'true' in via_https_result.content
-      retries: 12
-      delay: 5
-      when: enable_tls|default(false)
+# - hosts: via
+#   tags:
+#     - via
+#   tasks:
+#     - name: start via
+#       shell: "nohup {{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/conf/via.yml &"
+      
+#     - name: wait until the via_port port is up
+#       wait_for:
+#         host: "{{ ansible_host }}"
+#         port: "{{ via_port }}"
+#         state: started
+#         msg: "the node_exporter port {{ via_port }} is not up"
 
 
-- hosts: carrier
-  tags:
-    - carrier
-  tasks:
-    - name: start carrier by systemd
-      systemd: name=carrier-{{ carrier_client_port }}.service state=started enabled=no
-      become: true
-      when: process_supervision == 'systemd'
+# - hosts: carrier
+#   tags:
+#     - carrier
+#   tasks:
+#     - name: start carrier
+#       shell: "nohup {{ deploy_dir }}/carrier/carrier --config-file {{ deploy_dir }}/carrier/conf/carrier.yml &"
 
-    - name: wait until the carrier port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ carrier_client_port }}"
-        state: started
-        msg: "the carrier port {{ carrier_client_port }} is not up"
+#     - name: wait until the carrier_rpc_port port is up
+#       wait_for:
+#         host: "{{ ansible_host }}"
+#         port: "{{ carrier_rpc_port }}"
+#         state: started
+#         msg: "the node_exporter port {{ carrier_rpc_port }} is not up"
 
-    - name: wait until the carrier health page is available
-      uri:
-        url: "http://{{ ansible_host }}:{{ carrier_client_port }}/health"
-        return_content: yes
-      register: carrier_http_result
-      until: carrier_http_result.status == 200 and 'true' in carrier_http_result.content
-      retries: 12
-      delay: 5
-      when: not enable_tls|default(false)
-
-    - name: wait until the carrier health page is available when enable_tls
-      uri:
-        url: "https://{{ ansible_host }}:{{ carrier_client_port }}/health"
-        validate_certs: no
-        client_cert: "{{ carrier_cert_dir }}/carrier-server-{{ ansible_host }}.pem"
-        client_key: "{{ carrier_cert_dir }}/carrier-server-{{ ansible_host }}-key.pem"
-        return_content: yes
-      register: carrier_https_result
-      until: carrier_https_result.status == 200 and 'true' in carrier_https_result.content
-      retries: 12
-      delay: 5
-      when: enable_tls|default(false)
-
-- hosts: admin_servers
+- hosts: admin
   tags:
     - admin
   tasks:
-    - name: start admin by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - admin
-
-    - name: start admin by systemd
-      systemd: name=admin-{{ admin_client_port }}.service state=started enabled=no
-      become: true
-      when: process_supervision == 'systemd'
-
-    - name: wait until the admin port is up
+    - name: start admin
+      shell: "nohup java -jar {{ deploy_dir }}/admin/admin.jar --spring.profiles.active=dev &"
+    
+    - name: wait until the admin_web_port port is up
       wait_for:
         host: "{{ ansible_host }}"
-        port: "{{ admin_client_port }}"
+        port: "{{ admin_web_port }}"
         state: started
-        msg: "the admin port {{ admin_client_port }} is not up"
+        msg: "the node_exporter port {{ admin_web_port }} is not up"
 
-    - name: wait until the admin health page is available
-      uri:
-        url: "http://{{ ansible_host }}:{{ admin_client_port }}/health"
-        return_content: yes
-      register: admin_http_result
-      until: admin_http_result.status == 200 and 'true' in admin_http_result.content
-      retries: 12
-      delay: 5
-      when: not enable_tls|default(false)
+# - hosts: data
+#   tags:
+#     - data
+#   tasks:
+#     - name: start data
+#       shell: "nohup {{ deploy_dir }}/data/start_data_svc.sh {{ deploy_dir }}/data/conf/data.yml &"
+    
+#     - name: wait until the data_port port is up
+#       wait_for:
+#         host: "{{ ansible_host }}"
+#         port: "{{ data_port }}"
+#         state: started
+#         msg: "the node_exporter port {{ data_port }} is not up"
 
-    - name: wait until the admin health page is available when enable_tls
-      uri:
-        url: "https://{{ ansible_host }}:{{ admin_client_port }}/health"
-        validate_certs: no
-        client_cert: "{{ admin_cert_dir }}/admin-server-{{ ansible_host }}.pem"
-        client_key: "{{ admin_cert_dir }}/admin-server-{{ ansible_host }}-key.pem"
-        return_content: yes
-      register: admin_https_result
-      until: admin_https_result.status == 200 and 'true' in admin_https_result.content
-      retries: 12
-      delay: 5
-      when: enable_tls|default(false)
+# - hosts: compute
+#   tags:
+#     - compute
+#   tasks:
+#     - name: start compute
+#       shell: "nohup {{ deploy_dir }}/compute/start_compute_svc.sh {{ deploy_dir }}/compute/conf/compute.yml &"
 
+#     - name: wait until the compute_port port is up
+#       wait_for:
+#         host: "{{ ansible_host }}"
+#         port: "{{ compute_port }}"
+#         state: started
+#         msg: "the node_exporter port {{ compute_port }} is not up"
 
-  - hosts: data_servers
-  tags:
-    - data
-  tasks:
-    - name: start data by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - data
+# # - name: start consul
+# #   hosts: consul
+# #   tags:
+# #     - consul
+# #   tasks:
+# #     shell: "nohup {{ deploy_dir }}/compute/start_compute_svc.sh {{ deploy_dir }}/compute/conf/compute.yml &"
 
-    - name: start data by systemd
-      systemd: name=data-{{ data_client_port }}.service state=started enabled=no
-      become: true
-      when: process_supervision == 'systemd'
+# - hosts: storage
+#   tags:
+#     - storage
+#   tasks:
+#     - name: start storage
+#       shell: "nohup java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active={{ deploy_dir }}/storage/conf/storage.yml &"
 
-    - name: wait until the data port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ data_client_port }}"
-        state: started
-        msg: "the data port {{ data_client_port }} is not up"
+#     - name: wait until the storage_port port is up
+#       wait_for:
+#         host: "{{ ansible_host }}"
+#         port: "{{ storage_port }}"
+#         state: started
+#         msg: "the node_exporter port {{ storage_port }} is not up"
 
-    - name: wait until the data health page is available
-      uri:
-        url: "http://{{ ansible_host }}:{{ data_client_port }}/health"
-        return_content: yes
-      register: data_http_result
-      until: data_http_result.status == 200 and 'true' in data_http_result.content
-      retries: 12
-      delay: 5
-      when: not enable_tls|default(false)
+# - hosts: scan
+#   tags:
+#     - scan
+#   tasks:
+#     - name: start scan
+#       shell: "nohup java -jar {{ deploy_dir }}/scan/scan.jar --spring.profiles.active={{ deploy_dir }}/scan/conf/scan.yml &"
 
-    - name: wait until the data health page is available when enable_tls
-      uri:
-        url: "https://{{ ansible_host }}:{{ data_client_port }}/health"
-        validate_certs: no
-        client_cert: "{{ data_cert_dir }}/data-server-{{ ansible_host }}.pem"
-        client_key: "{{ data_cert_dir }}/data-server-{{ ansible_host }}-key.pem"
-        return_content: yes
-      register: data_https_result
-      until: data_https_result.status == 200 and 'true' in data_https_result.content
-      retries: 12
-      delay: 5
-      when: enable_tls|default(false)
-
-- hosts: compute_servers
-  tags:
-    - compute
-  tasks:
-    - name: start compute by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - compute
-
-    - name: start compute by systemd
-      systemd: name=compute-{{ compute_client_port }}.service state=started enabled=no
-      become: true
-      when: process_supervision == 'systemd'
-
-    - name: wait until the compute port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ compute_client_port }}"
-        state: started
-        msg: "the compute port {{ compute_client_port }} is not up"
-
-    - name: wait until the compute health page is available
-      uri:
-        url: "http://{{ ansible_host }}:{{ compute_client_port }}/health"
-        return_content: yes
-      register: compute_http_result
-      until: compute_http_result.status == 200 and 'true' in compute_http_result.content
-      retries: 12
-      delay: 5
-      when: not enable_tls|default(false)
-
-    - name: wait until the compute health page is available when enable_tls
-      uri:
-        url: "https://{{ ansible_host }}:{{ compute_client_port }}/health"
-        validate_certs: no
-        client_cert: "{{ compute_cert_dir }}/compute-server-{{ ansible_host }}.pem"
-        client_key: "{{ compute_cert_dir }}/compute-server-{{ ansible_host }}-key.pem"
-        return_content: yes
-      register: compute_https_result
-      until: compute_https_result.status == 200 and 'true' in compute_https_result.content
-      retries: 12
-      delay: 5
-      when: enable_tls|default(false)
-
-- hosts: registration_servers
-  tags:
-    - registration
-  tasks:
-    - name: start registration by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - registration
-
-    - name: start registration by systemd
-      systemd: name=registration-{{ registration_client_port }}.service state=started enabled=no
-      become: true
-      when: process_supervision == 'systemd'
-
-    - name: wait until the registration port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ registration_client_port }}"
-        state: started
-        msg: "the registration port {{ registration_client_port }} is not up"
-
-    - name: wait until the registration health page is available
-      uri:
-        url: "http://{{ ansible_host }}:{{ registration_client_port }}/health"
-        return_content: yes
-      register: registration_http_result
-      until: registration_http_result.status == 200 and 'true' in registration_http_result.content
-      retries: 12
-      delay: 5
-      when: not enable_tls|default(false)
-
-    - name: wait until the registration health page is available when enable_tls
-      uri:
-        url: "https://{{ ansible_host }}:{{ registration_client_port }}/health"
-        validate_certs: no
-        client_cert: "{{ registration_cert_dir }}/registration-server-{{ ansible_host }}.pem"
-        client_key: "{{ registration_cert_dir }}/registration-server-{{ ansible_host }}-key.pem"
-        return_content: yes
-      register: registration_https_result
-      until: registration_https_result.status == 200 and 'true' in registration_https_result.content
-      retries: 12
-      delay: 5
-      when: enable_tls|default(false)
-
-- hosts: storage_servers
-  tags:
-    - storage
-  tasks:
-    - name: start storage by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - storage
-
-    - name: start storage by systemd
-      systemd: name=storage-{{ storage_client_port }}.service state=started enabled=no
-      become: true
-      when: process_supervision == 'systemd'
-
-    - name: wait until the storage port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ storage_client_port }}"
-        state: started
-        msg: "the storage port {{ storage_client_port }} is not up"
-
-    - name: wait until the storage health page is available
-      uri:
-        url: "http://{{ ansible_host }}:{{ storage_client_port }}/health"
-        return_content: yes
-      register: storage_http_result
-      until: storage_http_result.status == 200 and 'true' in storage_http_result.content
-      retries: 12
-      delay: 5
-      when: not enable_tls|default(false)
-
-    - name: wait until the storage health page is available when enable_tls
-      uri:
-        url: "https://{{ ansible_host }}:{{ storage_client_port }}/health"
-        validate_certs: no
-        client_cert: "{{ storage_cert_dir }}/storage-server-{{ ansible_host }}.pem"
-        client_key: "{{ storage_cert_dir }}/storage-server-{{ ansible_host }}-key.pem"
-        return_content: yes
-      register: storage_https_result
-      until: storage_https_result.status == 200 and 'true' in storage_https_result.content
-      retries: 12
-      delay: 5
-      when: enable_tls|default(false)
-
-- hosts: scan_servers
-  tags:
-    - scan
-  tasks:
-    - name: start scan by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./start_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - scan
-
-    - name: start scan by systemd
-      systemd: name=scan-{{ scan_client_port }}.service state=started enabled=no
-      become: true
-      when: process_supervision == 'systemd'
-
-    - name: wait until the scan port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ scan_client_port }}"
-        state: started
-        msg: "the scan port {{ scan_client_port }} is not up"
-
-    - name: wait until the scan health page is available
-      uri:
-        url: "http://{{ ansible_host }}:{{ scan_client_port }}/health"
-        return_content: yes
-      register: scan_http_result
-      until: scan_http_result.status == 200 and 'true' in scan_http_result.content
-      retries: 12
-      delay: 5
-      when: not enable_tls|default(false)
-
-    - name: wait until the scan health page is available when enable_tls
-      uri:
-        url: "https://{{ ansible_host }}:{{ scan_client_port }}/health"
-        validate_certs: no
-        client_cert: "{{ scan_cert_dir }}/scan-server-{{ ansible_host }}.pem"
-        client_key: "{{ scan_cert_dir }}/scan-server-{{ ansible_host }}-key.pem"
-        return_content: yes
-      register: scan_https_result
-      until: scan_https_result.status == 200 and 'true' in scan_https_result.content
-      retries: 12
-      delay: 5
-      when: enable_tls|default(false)
+#     - name: wait until the scan_web_port port is up
+#       wait_for:
+#         host: "{{ ansible_host }}"
+#         port: "{{ scan_web_port }}"
+#         state: started
+#         msg: "the node_exporter port {{ scan_web_port }} is not up"

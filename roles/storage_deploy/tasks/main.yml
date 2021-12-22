@@ -5,7 +5,7 @@
   with_items:
   - "{{ deploy_dir }}/storage"
   - "{{ deploy_dir }}/storage/sql"
-  - "{{ deploy_dir }}/storage/conf"
+  - "{{ deploy_dir }}/storage/config"
   - "{{ deploy_dir }}/storage/cert"
   - "{{ deploy_dir }}/storage/log"
 
@@ -18,18 +18,17 @@
   with_items:
     - server.pem 
     - server.key
-  when: sync_certs|default(false)
 
 - name: "copy configuration file"
   template:
     src: "storage.yml.j2"
-    dest: "{{ deploy_dir }}/storage/conf/storage.yml"
+    dest: "{{ deploy_dir }}/storage/config/storage.yml"
     mode: 0600
     backup: yes
 
 - name: "Copy database initialization script"
   copy:
-    src: "{{ playbook_dir }}/conf/storage.sql"
+    src: "{{ playbook_dir }}/config/storage.sql"
     dest: "{{ deploy_dir }}/storage/sql/storage.sql"
     mode: 0600
     backup: yes

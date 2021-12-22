@@ -2,179 +2,108 @@
 
 # 停止所有服务
 
-- hosts: via_servers
+- hosts: via
   tags:
     - via
   tasks:
-    - name: stop via by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - via
+    - name: stop via
+      shell: ps -ef | grep "{{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/conf/via.yml" | grep -v "grep" | awk -v FS=" " '{print $2}' | xargs kill -s TERM
 
-    - name: stop via by systemd
-      systemd: name=via-{{ via_port }}.service state=stopped
-      become: true
-      when: process_supervision == 'systemd'
-
-    - name: wait until the via port is down
+    - name: wait until the via_port is down
       wait_for:
         host: "{{ ansible_host }}"
         port: "{{ via_port }}"
         state: stopped
-        msg: "the via port {{ via_port }} is not down"
-
-- hosts: carrier_servers
-  tags:
-    - carrier
-  tasks:
-    - name: stop carrier by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - carrier
-
-    - name: stop carrier by systemd
-      systemd: name=carrier-{{ carrier_port }}.service state=stopped
-      become: true
-      when: process_supervision == 'systemd'
-
-    - name: wait until the carrier port is down
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ carrier_port }}"
-        state: stopped
-        msg: "the carrier port {{ carrier_port }} is not down"
-
-- hosts: admin_servers
-  tags:
-    - admin
-  tasks:
-    - name: stop admin by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - admin
-
-    - name: stop admin by systemd
-      systemd: name=admin-{{ admin_port }}.service state=stopped
-      become: true
-      when: process_supervision == 'systemd'
-
-    - name: wait until the admin port is down
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ admin_port }}"
-        state: stopped
-        msg: "the admin port {{ admin_port }} is not down"
-
-- hosts: data_servers
-  tags:
-    - data
-  tasks:
-    - name: stop data by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - data
-
-    - name: stop data by systemd
-      systemd: name=data-{{ data_port }}.service state=stopped
-      become: true
-      when: process_supervision == 'systemd'
-
-    - name: wait until the data port is down
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ data_port }}"
-        state: stopped
-        msg: "the data port {{ data_port }} is not down"
-
-- hosts: compute_servers
-  tags:
-    - compute
-  tasks:
-    - name: stop compute by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - compute
-
-    - name: stop compute by systemd
-      systemd: name=compute-{{ compute_port }}.service state=stopped
-      become: true
-      when: process_supervision == 'systemd'
-
-    - name: wait until the compute port is down
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ compute_port }}"
-        state: stopped
-        msg: "the compute port {{ compute_port }} is not down"
-
-- hosts: registration_servers
-  tags:
-    - registration
-  tasks:
-    - name: stop registration by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - registration
-
-    - name: stop registration by systemd
-      systemd: name=registration-{{ registration_port }}.service state=stopped
-      become: true
-      when: process_supervision == 'systemd'
-
-    - name: wait until the registration port is down
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ registration_port }}"
-        state: stopped
-        msg: "the registration port {{ registration_port }} is not down"
-
-- hosts: storage_servers
-  tags:
-    - storage
-  tasks:
-    - name: stop storage by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - storage
-
-    - name: stop storage by systemd
-      systemd: name=storage-{{ storage_port }}.service state=stopped
-      become: true
-      when: process_supervision == 'systemd'
-
-    - name: wait until the storage port is down
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ storage_port }}"
-        state: stopped
-        msg: "the storage port {{ storage_port }} is not down"
+        msg: "the pump port {{ via_port }} is not down"
 
 
-- hosts: scan_servers
-  tags:
-    - scan
-  tasks:
-    - name: stop scan by supervise
-      shell: cd {{ deploy_dir }}/scripts && ./stop_{{ item }}.sh
-      when: process_supervision == 'supervise'
-      with_items:
-        - scan
+# - hosts: carrier
+#   tags:
+#     - carrier
+#   tasks:
+#     - name: stop carrier
+#       shell: ps -ef | grep {{ deploy_dir }}/carrier/carrier | awk -v FS=" " '{print $1,$2}' | kill -2
 
-    - name: stop scan by systemd
-      systemd: name=scan-{{ scan_port }}.service state=stopped
-      become: true
-      when: process_supervision == 'systemd'
+#     - name: wait until the carrier_rpc_port is down
+#       wait_for:
+#         host: "{{ ansible_host }}"
+#         port: "{{ carrier_rpc_port }}"
+#         state: stopped
+#         msg: "the pump port {{ carrier_rpc_port }} is not down"
 
-    - name: wait until the scan port is down
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ scan_port }}"
-        state: stopped
-        msg: "the scan port {{ scan_port }} is not down"
+# - hosts: admin
+#   tags:
+#     - admin
+#   tasks:
+#     - name: stop admin
+#       shell: ps -ef | grep "java -jar {{ deploy_dir }}/admin/admin.jar" | awk -v FS=" " '{print $1,$2}' | kill -9
+
+#     - name: wait until the admin_web_port is down
+#       wait_for:
+#         host: "{{ ansible_host }}"
+#         port: "{{ admin_web_port }}"
+#         state: stopped
+#         msg: "the pump port {{ admin_web_port }} is not down"
+
+# - hosts: data
+#   tags:
+#     - data
+#   tasks:
+#     - name: stop data
+#       shell: "nohup {{ deploy_dir }}/data/start_data_svc.sh {{ deploy_dir }}/data/conf/data.yml &"
+
+#     - name: wait until the data_port is down
+#       wait_for:
+#         host: "{{ ansible_host }}"
+#         port: "{{ data_port }}"
+#         state: stopped
+#         msg: "the pump port {{ data_port }} is not down"
+
+# - hosts: compute
+#   tags:
+#     - compute
+#   tasks:
+#     - name: stop compute
+#       shell: "nohup {{ deploy_dir }}/compute/start_compute_svc.sh {{ deploy_dir }}/compute/conf/compute.yml &"
+
+#     - name: wait until the compute_port is down
+#       wait_for:
+#         host: "{{ ansible_host }}"
+#         port: "{{ compute_port }}"
+#         state: stopped
+#         msg: "the pump port {{ compute_port }} is not down"
+
+# # - name: stop consul
+# #   hosts: consul
+# #   tags:
+# #     - consul
+# #   tasks:
+# #     shell: "nohup {{ deploy_dir }}/compute/start_compute_svc.sh {{ deploy_dir }}/compute/conf/compute.yml &"
+
+# - hosts: storage
+#   tags:
+#     - storage
+#   tasks:
+#     - name: stop storage
+#       shell: ps -ef | grep "java -jar {{ deploy_dir }}/storage/storage.jar" | awk -v FS=" " '{print $1,$2}' | kill -9
+
+#     - name: wait until the storage_port is down
+#       wait_for:
+#         host: "{{ ansible_host }}"
+#         port: "{{ storage_port }}"
+#         state: stopped
+#         msg: "the pump port {{ storage_port }} is not down"
+
+# - hosts: scan
+#   tags:
+#     - scan
+#   tasks:
+#     - name: start scan
+#       shell: ps -ef | grep "java -jar {{ deploy_dir }}/scan/scan.jar" | awk -v FS=" " '{print $1,$2}' | kill -9
+
+#     - name: wait until the scan_web_port is down
+#       wait_for:
+#         host: "{{ ansible_host }}"
+#         port: "{{ scan_web_port }}"
+#         state: stopped
+#         msg: "the pump port {{ scan_web_port }} is not down"

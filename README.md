@@ -12,3 +12,27 @@ stop.yml: 停止所有服务
 editConfig.yml: 变更配置
 update.yml： 升级组件版本
 cleanup.yml: 销毁集群
+
+## 下载相关安装包
+
+```shell
+ansible-playbook -i inventory.ini local_prepare.yml -k --ask-sudo-pass
+```
+
+## 初始化集群各个节点
+
+```shell
+ansible-playbook -i inventory.ini bootstrap.yml -k --ask-sudo-pass
+```
+
+## 各个节点安装服务
+
+```shell
+ansible-playbook -i inventory.ini deploy.yml -k --ask-sudo-pass
+```
+
+## 启动服务
+
+```shell
+ansible-playbook -i inventory.ini start.yml -k --ask-sudo-pass
+```

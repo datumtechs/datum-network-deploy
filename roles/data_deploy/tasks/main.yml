@@ -4,7 +4,7 @@
   file: path={{ item }} state=directory mode=0755
   with_items:
   - "{{ deploy_dir }}/data"
-  - "{{ deploy_dir }}/data/conf"
+  - "{{ deploy_dir }}/data/config"
   - "{{ deploy_dir }}/data/cert"
   - "{{ deploy_dir }}/data/whl"
   - "{{ deploy_dir }}/data/data_root"
@@ -26,7 +26,6 @@
   with_items:
     - server.pem 
     - server.key
-  when: sync_certs|default(false)
 
 - name: Set certificate-related facts
   set_fact:
@@ -35,7 +34,7 @@
 - name: "copy configuration file"
   template:
     src: "data.yml.j2"
-    dest: "{{ deploy_dir }}/data/conf/data.yml"
+    dest: "{{ deploy_dir }}/data/config/data.yml"
     mode: 0600
     backup: yes
 

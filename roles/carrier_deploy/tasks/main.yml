@@ -4,7 +4,7 @@
   file: path={{ item }} state=directory mode=0755
   with_items:
   - "{{ deploy_dir }}/carrier"
-  - "{{ deploy_dir }}/carrier/conf"
+  - "{{ deploy_dir }}/carrier/config"
   - "{{ deploy_dir }}/carrier/cert"
   - "{{ deploy_dir }}/carrier/p2p_priv_key"
   - "{{ deploy_dir }}/carrier/datadir"
@@ -22,7 +22,6 @@
   with_items:
     - server.pem 
     - server.key
-  when: sync_certs|default(false)
 
 - name: Set certificate-related facts
   set_fact:
@@ -31,7 +30,7 @@
 
 - name: "copy p2p private key file"
   copy:
-    src: "{{ playbook_dir }}/conf/p2p_priv_key"
+    src: "{{ playbook_dir }}/config/p2p_priv_key"
     dest: "{{ deploy_dir }}/carrier/p2p_priv_key/p2p_priv_key"
     mode: 0600
     backup: yes
@@ -43,7 +42,7 @@
 - name: "copy configuration file"
   template:
     src: "carrier.yml.j2"
-    dest: "{{ deploy_dir }}/carrier/conf/carrier.yml"
+    dest: "{{ deploy_dir }}/carrier/config/carrier.yml"
     mode: 0600
     backup: yes
 

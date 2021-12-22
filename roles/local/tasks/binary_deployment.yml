@@ -55,7 +55,7 @@
 
 - name: download admin Web static files
   get_url:
-    url: "{{ download_url }}/admin.tar.gz"
+    url: "{{ download_url }}/admin.tar"
     dest: "{{ downloads_dir }}"
     mode: 0644
     force: yes

@@ -5,7 +5,7 @@
   with_items:
   - "{{ deploy_dir }}/admin"
   - "{{ deploy_dir }}/admin/sql"
-  - "{{ deploy_dir }}/admin/conf"
+  - "{{ deploy_dir }}/admin/config"
   - "{{ deploy_dir }}/admin/cert"
   - "{{ deploy_dir }}/admin/cert/web"
   - "{{ deploy_dir }}/admin/log"
@@ -20,7 +20,6 @@
   with_items:
     - server.pem 
     - server.key
-  when: sync_certs|default(false)
 
 - name: "Deploy web certificates"
   copy:
@@ -31,7 +30,6 @@
   with_items:
     - server.pem 
     - server.key
-  when: sync_certs|default(false)
 
 - name: Set web certificate-related facts
   set_fact:
@@ -40,14 +38,14 @@
 
 - name: "copy configuration file"
   template:
-    src: "admin.yml.j2"
-    dest: "{{ deploy_dir }}/admin/conf/admin.yml"
+    src: "application-dev.yml.j2"
+    dest: "{{ deploy_dir }}/admin/config/application-dev.yml"
     mode: 0600
     backup: yes
 
 - name: "Copy database initialization script"
   copy:
-    src: "{{ playbook_dir }}/conf/admin.sql"
+    src: "{{ playbook_dir }}/config/admin.sql"
     dest: "{{ deploy_dir }}/admin/sql/admin.sql"
     mode: 0600
     backup: yes
@@ -55,14 +53,14 @@
 - name: "copy admin jar package"
   copy:
     src: "{{ downloads_dir }}/admin.jar"
-    dest: "{{ deploy_dir }}/admin/admin"
+    dest: "{{ deploy_dir }}/admin/admin.jar"
     mode: 0775
     backup: yes
 
 # 拷贝 web 静态文件
-- name: copy and extract admin.tar.gz
+- name: copy and extract admin.tar
   unarchive:
-    src: "{{ downloads_dir }}/admin.tar.gz"
+    src: "{{ downloads_dir }}/admin.tar"
     dest: "{{ deploy_dir }}/admin/network"
 
 - name: set admin_web_static_dir facts
