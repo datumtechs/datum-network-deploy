@@ -17,33 +17,33 @@
 #         msg: "the node_exporter port {{ via_port }} is not up"
 
 
-# - hosts: carrier
-#   tags:
-#     - carrier
-#   tasks:
-#     - name: start carrier
-#       shell: "nohup {{ deploy_dir }}/carrier/carrier --config-file {{ deploy_dir }}/carrier/conf/carrier.yml &"
-
-#     - name: wait until the carrier_rpc_port port is up
-#       wait_for:
-#         host: "{{ ansible_host }}"
-#         port: "{{ carrier_rpc_port }}"
-#         state: started
-#         msg: "the node_exporter port {{ carrier_rpc_port }} is not up"
-
-- hosts: admin
+- hosts: carrier
   tags:
-    - admin
+    - carrier
   tasks:
-    - name: start admin
-      shell: "nohup java -jar {{ deploy_dir }}/admin/admin.jar --spring.profiles.active=dev &"
-    
-    - name: wait until the admin_web_port port is up
+    - name: start carrier
+      shell: "nohup {{ deploy_dir }}/carrier/carrier --config-file {{ deploy_dir }}/carrier/conf/carrier.yml &"
+
+    - name: wait until the carrier_rpc_port port is up
       wait_for:
         host: "{{ ansible_host }}"
-        port: "{{ admin_web_port }}"
+        port: "{{ carrier_rpc_port }}"
         state: started
-        msg: "the node_exporter port {{ admin_web_port }} is not up"
+        msg: "the node_exporter port {{ carrier_rpc_port }} is not up"
+
+# - hosts: admin
+#   tags:
+#     - admin
+#   tasks:
+#     - name: start admin
+#       shell: "cd {{ deploy_dir }}/admin && nohup java -jar {{ deploy_dir }}/admin/admin.jar --spring.profiles.active=admin &"
+    
+#     - name: wait until the admin_web_port port is up
+#       wait_for:
+#         host: "{{ ansible_host }}"
+#         port: "{{ admin_web_port }}"
+#         state: started
+#         msg: "the node_exporter port {{ admin_web_port }} is not up"
 
 # - hosts: data
 #   tags:

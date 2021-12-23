@@ -44,7 +44,7 @@ storage_host: 192.168.112.153
 carrier_pprof_port: 10032
 carrier_rpc_port: 10033
 carrier_grpc_gateway_port: 10034
-bootstrap_node: 10.1.1.10
+bootstrap_node: []
 carrier_p2p_udp_port: 10035
 carrier_p2p_tcp_port: 10036
 admin_web_port: 9090

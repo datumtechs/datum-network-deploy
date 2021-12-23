@@ -10,19 +10,19 @@
 #   roles:
 #     - via_deploy
 
-# - name: deploying carrier
-#   hosts: carrier
-#   tags:
-#     - carrier
-#   roles:
-#     - carrier_deploy
-
-- name: deploying admin
-  hosts: admin
+- name: deploying carrier
+  hosts: carrier
   tags:
-    - admin
+    - carrier
   roles:
-    - admin_deploy
+    - carrier_deploy
+
+# - name: deploying admin
+#   hosts: admin
+#   tags:
+#     - admin
+#   roles:
+#     - admin_deploy
 
 # - name: deploying data
 #   hosts: data

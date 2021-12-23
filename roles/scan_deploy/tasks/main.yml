@@ -60,11 +60,17 @@
     scan_web_static_dir: "{{ deploy_dir }}/scan/network"
 
 # 安装 nginx
-- name: Ansible apt install nginx
+- name: "install nginx"
   become: true
   apt:
-    name: nginx
-    state: present
+    name: ['nginx']
+    state: latest
+
+- name: delete default nginx site
+  become: true
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
 
 - name: "copy nginx config file"
   become: true
@@ -74,13 +80,14 @@
     mode: 0600
     backup: yes
 
-- name: NGINX | Starting NGINXme  
+- name: restart nginx
+  become: true
   service:
     name: nginx
-    state: started
+    state: restarted
 
 # java 环境
-- name: Ansible apt install openjdk-8-jdk
+- name: apt install openjdk-8-jdk
   become: true
   apt:
     name: openjdk-8-jdk

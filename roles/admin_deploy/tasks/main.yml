@@ -38,8 +38,8 @@
 
 - name: "copy configuration file"
   template:
-    src: "application-dev.yml.j2"
-    dest: "{{ deploy_dir }}/admin/config/application-dev.yml"
+    src: "application-admin.yml.j2"
+    dest: "{{ deploy_dir }}/admin/config/application-admin.yml"
     mode: 0600
     backup: yes
 
@@ -110,7 +110,9 @@
 
 - name: restart the MySQL service
   become: true
-  shell: service mysql restart
+  service:
+    name: mysql
+    state: restarted
 
 # 获取系统默认给我们分配的用户名和密码
 - name: Get the system default mysql username
@@ -168,11 +170,17 @@
   shell: mysql -u{{ amin_user }} -p{{ admin_password }} < {{ deploy_dir }}/admin/sql/admin.sql
 
 # 安装 nginx
-- name: apt install nginx
+- name: "install nginx"
   become: true
   apt:
-    name: nginx
-    state: present
+    name: ['nginx']
+    state: latest
+
+- name: delete default nginx site
+  become: true
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
 
 - name: "copy nginx config file"
   become: true
@@ -182,10 +190,11 @@
     mode: 0600
     backup: yes
 
-- name: NGINX | Starting NGINX
+- name: restart nginx
+  become: true
   service:
     name: nginx
-    state: started
+    state: restarted
 
 # java 环境
 - name: apt install openjdk-8-jdk

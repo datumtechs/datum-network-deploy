@@ -83,7 +83,9 @@
 
 - name: restart the MySQL service
   become: true
-  shell: service mysql restart
+  service:
+    name: mysql
+    state: restarted
 
 # 获取系统默认给我们分配的用户名和密码
 - name: Get the system default mysql username
