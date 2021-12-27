@@ -5,7 +5,7 @@
   get_url:
     url: "{{ download_url }}/via"
     dest: "{{ downloads_dir }}"
-    mode: 0644
+    mode: 0744
     force: yes
     validate_certs: no
 
@@ -13,7 +13,7 @@
   get_url:
     url: "{{ download_url }}/carrier"
     dest: "{{ downloads_dir }}"
-    mode: 0644
+    mode: 0744
     force: yes
     validate_certs: no
 
@@ -21,7 +21,7 @@
   get_url:
     url: "{{ download_url }}/keytool"
     dest: "{{ downloads_dir }}"
-    mode: 0644
+    mode: 0744
     force: yes
     validate_certs: no
 
@@ -47,7 +47,7 @@
   get_url:
     url: "{{ download_url }}/consul"
     dest: "{{ downloads_dir }}"
-    mode: 0644
+    mode: 0744
     force: yes
     validate_certs: no
 
@@ -123,7 +123,7 @@
   get_url:
     url: "{{ download_url }}/start_data_svc.sh"
     dest: "{{ downloads_dir }}"
-    mode: 0644
+    mode: 0744
     force: yes
     validate_certs: no
 
@@ -131,6 +131,6 @@
   get_url:
     url: "{{ download_url }}/start_compute_svc.sh"
     dest: "{{ downloads_dir }}"
-    mode: 0644
+    mode: 0744
     force: yes
     validate_certs: no
