@@ -16,7 +16,7 @@ cleanup.yml: 销毁集群
 ## 下载相关安装包
 
 ```shell
-ansible-playbook -i inventory.ini local_prepare.yml -k --ask-sudo-pass
+ansible-playbook -i inventory.ini local_prepare.yml
 ```
 
 ## 初始化集群各个节点

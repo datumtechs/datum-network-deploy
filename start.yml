@@ -7,7 +7,7 @@
 #     - via
 #   tasks:
 #     - name: start via
-#       shell: "nohup {{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/conf/via.yml &"
+#       shell: "nohup {{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/config/via.yml &"
       
 #     - name: wait until the via_port port is up
 #       wait_for:
@@ -22,7 +22,7 @@
     - carrier
   tasks:
     - name: start carrier
-      shell: "nohup {{ deploy_dir }}/carrier/carrier --config-file {{ deploy_dir }}/carrier/conf/carrier.yml &"
+      shell: "nohup {{ deploy_dir }}/carrier/carrier --config-file {{ deploy_dir }}/carrier/config/carrier.yml &"
 
     - name: wait until the carrier_rpc_port port is up
       wait_for:
@@ -50,7 +50,7 @@
 #     - data
 #   tasks:
 #     - name: start data
-#       shell: "nohup {{ deploy_dir }}/data/start_data_svc.sh {{ deploy_dir }}/data/conf/data.yml &"
+#       shell: "nohup {{ deploy_dir }}/data/start_data_svc.sh {{ deploy_dir }}/data/config/data.yml &"
     
 #     - name: wait until the data_port port is up
 #       wait_for:
@@ -64,7 +64,7 @@
 #     - compute
 #   tasks:
 #     - name: start compute
-#       shell: "nohup {{ deploy_dir }}/compute/start_compute_svc.sh {{ deploy_dir }}/compute/conf/compute.yml &"
+#       shell: "nohup {{ deploy_dir }}/compute/start_compute_svc.sh {{ deploy_dir }}/compute/config/compute.yml &"
 
 #     - name: wait until the compute_port port is up
 #       wait_for:
@@ -78,14 +78,14 @@
 # #   tags:
 # #     - consul
 # #   tasks:
-# #     shell: "nohup {{ deploy_dir }}/compute/start_compute_svc.sh {{ deploy_dir }}/compute/conf/compute.yml &"
+# #     shell: "nohup {{ deploy_dir }}/compute/start_compute_svc.sh {{ deploy_dir }}/compute/config/compute.yml &"
 
 # - hosts: storage
 #   tags:
 #     - storage
 #   tasks:
 #     - name: start storage
-#       shell: "nohup java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active={{ deploy_dir }}/storage/conf/storage.yml &"
+#       shell: "nohup java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active={{ deploy_dir }}/storage/config/storage.yml &"
 
 #     - name: wait until the storage_port port is up
 #       wait_for:
@@ -99,7 +99,7 @@
 #     - scan
 #   tasks:
 #     - name: start scan
-#       shell: "nohup java -jar {{ deploy_dir }}/scan/scan.jar --spring.profiles.active={{ deploy_dir }}/scan/conf/scan.yml &"
+#       shell: "nohup java -jar {{ deploy_dir }}/scan/scan.jar --spring.profiles.active={{ deploy_dir }}/scan/config/scan.yml &"
 
 #     - name: wait until the scan_web_port port is up
 #       wait_for:

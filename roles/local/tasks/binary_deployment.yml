@@ -17,6 +17,14 @@
     force: yes
     validate_certs: no
 
+- name: download keytool binary
+  get_url:
+    url: "{{ download_url }}/keytool"
+    dest: "{{ downloads_dir }}"
+    mode: 0644
+    force: yes
+    validate_certs: no
+
 # - name: download consul zip
 #   get_url:
 #     url: "{{ consul_download_url }}"

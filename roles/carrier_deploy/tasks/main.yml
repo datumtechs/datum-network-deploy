@@ -28,6 +28,9 @@
     carrier_tls_cert: "{{ deploy_dir }}/carrier/cert/server.pem"
     carrier_tls_key: "{{ deploy_dir }}/carrier/cert/server.key"
 
+- name: "Generate p2p private key file"
+  shell: "{{ downloads_dir }}/keytool genkeypair | head -n 1 | awk -v FS=' ' '{print $2}' > {{ playbook_dir }}/config/p2p_priv_key"
+
 - name: "copy p2p private key file"
   copy:
     src: "{{ playbook_dir }}/config/p2p_priv_key"
