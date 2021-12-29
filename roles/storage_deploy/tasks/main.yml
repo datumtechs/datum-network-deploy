@@ -17,12 +17,12 @@
     backup: yes
   with_items:
     - server.pem 
-    - server.key
+    - server.key 
 
 - name: "copy configuration file"
   template:
-    src: "storage.yml.j2"
-    dest: "{{ deploy_dir }}/storage/config/storage.yml"
+    src: "application-storage.yml.j2"
+    dest: "{{ deploy_dir }}/storage/config/application-storage.yml"
     mode: 0600
     backup: yes
 

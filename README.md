@@ -36,3 +36,9 @@ ansible-playbook -i inventory.ini deploy.yml -k --ask-sudo-pass
 ```shell
 ansible-playbook -i inventory.ini start.yml -k --ask-sudo-pass
 ```
+
+## 关闭服务
+
+```shell
+ansible-playbook -i inventory.ini stop.yml -k --ask-sudo-pass
+```

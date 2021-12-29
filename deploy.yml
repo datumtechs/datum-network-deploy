@@ -10,12 +10,12 @@
 #   roles:
 #     - via_deploy
 
-- name: deploying carrier
-  hosts: carrier
-  tags:
-    - carrier
-  roles:
-    - carrier_deploy
+# - name: deploying carrier
+#   hosts: carrier
+#   tags:
+#     - carrier
+#   roles:
+#     - carrier_deploy
 
 # - name: deploying admin
 #   hosts: admin
@@ -38,12 +38,12 @@
 #   roles:
 #     - compute_deploy
 
-# - name: deploying consul
-#   hosts: consul
-#   tags:
-#     - consul
-#   roles:
-#     - consul_deploy
+- name: deploying consul
+  hosts: consul
+  tags:
+    - consul
+  roles:
+    - consul_deploy
 
 # - name: deploying storage
 #   hosts: storage

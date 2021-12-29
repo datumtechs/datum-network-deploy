@@ -1,0 +1,19 @@
+{
+    "datacenter": "consul_cluster",
+    "node_name": "consul_{{inventory_hostname}}",
+    "client_addr": "{{inventory_hostname}}",
+    "bind_addr": "{{inventory_hostname}}",
+    "data_dir": "{{data_dir}}",
+    "log_file": "{{log_file}}",
+    "log_level": "INFO",
+    "server": true,
+    "bootstrap_expect": {{consul_number}},
+    "ui": true,
+    "ports": {
+        "server": {{consul_server_port}},  
+        "serf_lan": {{consul_serf_lan_port}}, 
+        "serf_wan": {{consul_serf_wan_port}}, 
+        "http": {{consul_http_port}},  
+        "dns": {{consul_dns_port}}   
+    }
+}

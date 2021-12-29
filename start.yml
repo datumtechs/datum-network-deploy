@@ -1,6 +1,28 @@
 ---
 # 启动所有服务
 
+- name: start consul
+  hosts: consul
+  tags:
+    - consul
+  tasks:
+    - name: start consul
+      shell: "nohup {{ deploy_dir }}/consul/consul agent -config-file {{ deploy_dir }}/consul/config/consul.json &"
+
+    - name: wait until the consul http port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ consul_http_port }}"
+        state: started
+        msg: "the node_exporter port {{ consul_http_port }} is not up"
+
+    - name: Register via Internet address
+      shell: curl --request PUT  --data "{{via_ip}}_{{via_port}}" http://{{consul_host}}:{{consul_port}}/v1/kv/metis/via_ip_port
+
+    - name: Registered data center address
+      shell: curl --request PUT  --data "{{storage_ip}}_{{storage_port}}" http://{{consul_host}}:{{consul_port}}/v1/kv/metis/dataCenter_ip_port
+      
+
 
 # - hosts: via
 #   tags:
@@ -17,19 +39,19 @@
 #         msg: "the node_exporter port {{ via_port }} is not up"
 
 
-- hosts: carrier
-  tags:
-    - carrier
-  tasks:
-    - name: start carrier
-      shell: "nohup {{ deploy_dir }}/carrier/carrier --config-file {{ deploy_dir }}/carrier/config/carrier.yml &"
+# - hosts: carrier
+#   tags:
+#     - carrier
+#   tasks:
+#     - name: start carrier
+#       shell: "nohup {{ deploy_dir }}/carrier/carrier --config-file {{ deploy_dir }}/carrier/config/carrier.yml &"
 
-    - name: wait until the carrier_rpc_port port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ carrier_rpc_port }}"
-        state: started
-        msg: "the node_exporter port {{ carrier_rpc_port }} is not up"
+#     - name: wait until the carrier_rpc_port port is up
+#       wait_for:
+#         host: "{{ ansible_host }}"
+#         port: "{{ carrier_rpc_port }}"
+#         state: started
+#         msg: "the node_exporter port {{ carrier_rpc_port }} is not up"
 
 # - hosts: admin
 #   tags:
@@ -73,19 +95,13 @@
 #         state: started
 #         msg: "the node_exporter port {{ compute_port }} is not up"
 
-# # - name: start consul
-# #   hosts: consul
-# #   tags:
-# #     - consul
-# #   tasks:
-# #     shell: "nohup {{ deploy_dir }}/compute/start_compute_svc.sh {{ deploy_dir }}/compute/config/compute.yml &"
 
 # - hosts: storage
 #   tags:
 #     - storage
 #   tasks:
 #     - name: start storage
-#       shell: "nohup java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active={{ deploy_dir }}/storage/config/storage.yml &"
+#       shell: "cd {{ deploy_dir }}/storage && nohup java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active=storage &"
 
 #     - name: wait until the storage_port port is up
 #       wait_for:
