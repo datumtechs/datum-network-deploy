@@ -154,3 +154,23 @@
 2021-12-30 07:46:05,209 p=22479 u=juzix |  task path: /home/juzix/jatel/metis/metis-deploy/roles/local/tasks/binary_deployment.yml:32
 2021-12-30 07:46:56,623 p=22479 u=juzix |   [ERROR]: User interrupted execution
 
+2021-12-30 07:53:18,531 p=23086 u=juzix |  PLAY [do local preparation] ********************************************************************************************************************************************
+2021-12-30 07:53:18,541 p=23086 u=juzix |  TASK [local : Stop if ansible version is too low, make sure that the Ansible version is Ansible 2.4.2 or later, otherwise a compatibility issue occurs.] ***************
+2021-12-30 07:53:18,569 p=23086 u=juzix |  ok: [localhost] => changed=false 
+  msg: All assertions passed
+2021-12-30 07:53:18,573 p=23086 u=juzix |  TASK [local : create downloads and resources directories] **************************************************************************************************************
+2021-12-30 07:53:18,790 p=23086 u=juzix |  changed: [localhost] => (item=/home/juzix/jatel/metis/metis-deploy/downloads)
+2021-12-30 07:53:18,794 p=23086 u=juzix |  TASK [local : create cert directory] ***********************************************************************************************************************************
+2021-12-30 07:53:18,809 p=23086 u=juzix |  skipping: [localhost]
+2021-12-30 07:53:18,812 p=23086 u=juzix |  TASK [local : detect outbound network[1]] ******************************************************************************************************************************
+2021-12-30 07:53:19,100 p=23086 u=juzix |  ok: [localhost]
+2021-12-30 07:53:19,111 p=23086 u=juzix |  TASK [local : set outbound network fact[1]] ****************************************************************************************************************************
+2021-12-30 07:53:19,162 p=23086 u=juzix |  ok: [localhost]
+2021-12-30 07:53:19,166 p=23086 u=juzix |  TASK [local : Debug has_outbound_network information] ******************************************************************************************************************
+2021-12-30 07:53:19,189 p=23086 u=juzix |  ok: [localhost] => 
+  has_outbound_network: true
+2021-12-30 07:53:19,193 p=23086 u=juzix |  TASK [local : fail] ****************************************************************************************************************************************************
+2021-12-30 07:53:19,206 p=23086 u=juzix |  skipping: [localhost]
+2021-12-30 07:53:19,209 p=23086 u=juzix |  TASK [local : detect outbound network[2]] ******************************************************************************************************************************
+2021-12-30 07:53:24,657 p=23086 u=juzix |   [ERROR]: User interrupted execution
+
