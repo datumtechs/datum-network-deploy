@@ -9,11 +9,16 @@
     "server": true,
     "bootstrap_expect": {{consul_number}},
     "ui": true,
+{% set consul_number_int = consul_number|int %}
+{% for i in range(consul_number_int) %}
+{% if groups['consul'][i] == inventory_hostname %}
     "ports": {
-        "server": {{consul_server_port}},  
-        "serf_lan": {{consul_serf_lan_port}}, 
-        "serf_wan": {{consul_serf_wan_port}}, 
-        "http": {{consul_http_port}},  
-        "dns": {{consul_dns_port}}   
+        "server": {{consul_server_port[i]}},  
+        "serf_lan": {{consul_serf_lan_port[i]}}, 
+        "serf_wan": {{consul_serf_wan_port[i]}}, 
+        "http": {{consul_http_port[i]}},  
+        "dns": {{consul_dns_port[i]}}   
     }
+{% endif %}
+{% endfor %}
 }

@@ -24,12 +24,12 @@
 #   roles:
 #     - admin_deploy
 
-# - name: deploying data
-#   hosts: data
-#   tags:
-#     - data
-#   roles:
-#     - data_deploy
+- name: deploying data
+  hosts: data
+  tags:
+    - data
+  roles:
+    - data_deploy
 
 # - name: deploying compute
 #   hosts: compute
@@ -38,12 +38,15 @@
 #   roles:
 #     - compute_deploy
 
-- name: deploying consul
-  hosts: consul
-  tags:
-    - consul
-  roles:
-    - consul_deploy
+# - name: deploying consul
+#   hosts: consul
+#   tags:
+#     - consul
+#   roles:
+#     - consul_deploy
+#   vars:
+#     consul_zip_name: "{{ consul_download_url.split('/')[-1] | trim }}"
+#     consul_number: "{{ groups['consul'] | length }}"
 
 # - name: deploying storage
 #   hosts: storage
@@ -58,3 +61,5 @@
 #     - scan
 #   roles:
 #     - scan_deploy
+#   vars:
+#     storage_host: "{{ groups['storage'][0] }}"

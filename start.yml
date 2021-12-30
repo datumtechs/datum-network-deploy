@@ -3,6 +3,18 @@
 
 - name: start consul
   hosts: consul
+  vars:
+    consul_leader: "{{ groups['consul'][0] }}"
+    consul_leader_port: "{{ consul_http_port[0] }}"
+    consul_leader_serf_lan_port: "{{ consul_serf_lan_port[0] }}"
+    via_ip: "{{ groups['via'][0] }}"
+    storage_ip: "{{ groups['storage'][0] }}"
+    consul_http_port_self:   "{% set consul_number_int = groups['consul'] | length |int %} 
+                              {% for i in range(consul_number_int) %}
+                                  {% if groups['consul'][i] == inventory_hostname %}
+                                    {{consul_http_port[i]}}  
+                                  {% endif %}
+                              {% endfor %}"
   gather_facts: True
   tags:
     - consul
@@ -10,74 +22,78 @@
     - name: start consul
       shell: "nohup {{ deploy_dir }}/consul/consul agent -config-file {{ deploy_dir }}/consul/config/consul.json &"
 
+    - name: Debug consul_http_port_self information
+      debug:
+        var: consul_http_port_self | trim
+
     - name: wait until the consul http port is up
       wait_for:
         host: "{{ ansible_host }}"
-        port: "{{ consul_http_port }}"
+        port:  "{{consul_http_port_self | trim}}"
         state: started
-        msg: "the node_exporter port {{ consul_http_port }} is not up"
+        msg: "the node_exporter port {{ consul_http_port_self | trim }} is not up"
 
     - name: Other nodes join the cluster
-      shell: "{{ deploy_dir }}/consul/consul join --http-addr {{ansible_host}}:{{consul_http_port}} {{consul_leader}}"
+      shell: "{{ deploy_dir }}/consul/consul join --http-addr {{ansible_host}}:{{consul_http_port_self | trim}} {{consul_leader}}:{{consul_leader_serf_lan_port}}"
       when: "ansible_host != consul_leader"
 
     - name: Set via external network address
       uri: 
-        url: http://{{consul_leader}}:{{consul_http_port}}/v1/kv/metis/via_ip_port
+        url: http://{{consul_leader}}:{{consul_leader_port}}/v1/kv/metis/via_ip_port
         method: PUT
         body: "{{via_ip}}_{{via_port}}" 
         when: "ansible_host == consul_leader"
 
     - name: Set data center address
       uri: 
-        url: http://{{consul_leader}}:{{consul_http_port}}/v1/kv/metis/dataCenter_ip_port
+        url: http://{{consul_leader}}:{{consul_leader_port}}/v1/kv/metis/dataCenter_ip_port
         method: PUT
         body: "{{storage_ip}}_{{storage_port}}" 
         when: "ansible_host == consul_leader"
 
 
-- hosts: via
-  tags:
-    - via
-  tasks:
-    - name: start via
-      shell: "nohup {{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/config/via.yml &"
+# - hosts: via
+#   tags:
+#     - via
+#   tasks:
+#     - name: start via
+#       shell: "nohup {{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/config/via.yml &"
       
-    - name: wait until the via_port port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ via_port }}"
-        state: started
-        msg: "the node_exporter port {{ via_port }} is not up"
+#     - name: wait until the via_port port is up
+#       wait_for:
+#         host: "{{ ansible_host }}"
+#         port: "{{ via_port }}"
+#         state: started
+#         msg: "the node_exporter port {{ via_port }} is not up"
 
 
-- hosts: carrier
-  tags:
-    - carrier
-  tasks:
-    - name: start carrier
-      shell: "nohup {{ deploy_dir }}/carrier/carrier --config-file {{ deploy_dir }}/carrier/config/carrier.yml &"
+# - hosts: carrier
+#   tags:
+#     - carrier
+#   tasks:
+#     - name: start carrier
+#       shell: "nohup {{ deploy_dir }}/carrier/carrier --config-file {{ deploy_dir }}/carrier/config/carrier.yml &"
 
-    - name: wait until the carrier_rpc_port port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ carrier_rpc_port }}"
-        state: started
-        msg: "the node_exporter port {{ carrier_rpc_port }} is not up"
+#     - name: wait until the carrier_rpc_port port is up
+#       wait_for:
+#         host: "{{ ansible_host }}"
+#         port: "{{ carrier_rpc_port }}"
+#         state: started
+#         msg: "the node_exporter port {{ carrier_rpc_port }} is not up"
 
-- hosts: admin
-  tags:
-    - admin
-  tasks:
-    - name: start admin
-      shell: "cd {{ deploy_dir }}/admin && nohup java -jar {{ deploy_dir }}/admin/admin.jar --spring.profiles.active=admin &"
+# - hosts: admin
+#   tags:
+#     - admin
+#   tasks:
+#     - name: start admin
+#       shell: "cd {{ deploy_dir }}/admin && nohup java -jar {{ deploy_dir }}/admin/admin.jar --spring.profiles.active=admin &"
     
-    - name: wait until the admin_web_port port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ admin_web_port }}"
-        state: started
-        msg: "the node_exporter port {{ admin_web_port }} is not up"
+#     - name: wait until the admin_web_port port is up
+#       wait_for:
+#         host: "{{ ansible_host }}"
+#         port: "{{ admin_web_port }}"
+#         state: started
+#         msg: "the node_exporter port {{ admin_web_port }} is not up"
 
 # - hosts: data
 #   tags:
@@ -108,19 +124,19 @@
 #         msg: "the node_exporter port {{ compute_port }} is not up"
 
 
-- hosts: storage
-  tags:
-    - storage
-  tasks:
-    - name: start storage
-      shell: "cd {{ deploy_dir }}/storage && nohup java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active=storage &"
+# - hosts: storage
+#   tags:
+#     - storage
+#   tasks:
+#     - name: start storage
+#       shell: "cd {{ deploy_dir }}/storage && nohup java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active=storage &"
 
-    - name: wait until the storage_port port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ storage_port }}"
-        state: started
-        msg: "the node_exporter port {{ storage_port }} is not up"
+#     - name: wait until the storage_port port is up
+#       wait_for:
+#         host: "{{ ansible_host }}"
+#         port: "{{ storage_port }}"
+#         state: started
+#         msg: "the node_exporter port {{ storage_port }} is not up"
 
 # - hosts: scan
 #   tags:
