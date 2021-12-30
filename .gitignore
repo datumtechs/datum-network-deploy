@@ -2,4 +2,4 @@ downloads
 retry_files
 fact_files
 
-log/ansible.log
+log
