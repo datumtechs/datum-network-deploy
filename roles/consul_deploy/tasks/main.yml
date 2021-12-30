@@ -19,9 +19,16 @@
     dest: "{{ deploy_dir }}/consul/config/consul.json"
     mode: 0600
 
-- name: "copy consul binary Executable file"
-  copy:
-    src: "{{ downloads_dir }}/consul"
-    dest: "{{ deploy_dir }}/consul/consul"
-    mode: 0775
-    backup: yes
+# - name: "copy consul binary Executable file"
+#   copy:
+#     src: "{{ downloads_dir }}/consul"
+#     dest: "{{ deploy_dir }}/consul/consul"
+#     mode: 0775
+#     backup: yes
+
+- name: Extract consul zip 
+  unarchive:
+    src: "{{ downloads_dir }}/ {{ consul_zip_name }}"
+    dest: "{{ downloads_dir }}"
+    copy: yes
+    mode: 0755

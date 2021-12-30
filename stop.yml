@@ -2,48 +2,48 @@
 
 # 停止所有服务
 
-# - hosts: via
-#   tags:
-#     - via
-#   tasks:
-#     - name: stop via
-#       shell: ps -ef | grep "{{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/config/via.yml" | grep -v "grep" | awk -v FS=" " '{print $2}' | xargs kill -s TERM
+- hosts: via
+  tags:
+    - via
+  tasks:
+    - name: stop via
+      shell: ps -ef | grep "{{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/config/via.yml" | grep -v "grep" | awk -v FS=" " '{print $2}' | xargs kill -s TERM
 
-#     - name: wait until the via_port is down
-#       wait_for:
-#         host: "{{ ansible_host }}"
-#         port: "{{ via_port }}"
-#         state: stopped
-#         msg: "the pump port {{ via_port }} is not down"
+    - name: wait until the via_port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ via_port }}"
+        state: stopped
+        msg: "the pump port {{ via_port }} is not down"
 
 
-# - hosts: carrier
-#   tags:
-#     - carrier
-#   tasks:
-#     - name: stop carrier
-#       shell: ps -ef | grep "{{ deploy_dir }}/carrier/carrier -cnf {{ deploy_dir }}/carrier/config/carrier.yml" | grep -v "grep" | awk -v FS=" " '{print $2}' | xargs kill -s TERM
+- hosts: carrier
+  tags:
+    - carrier
+  tasks:
+    - name: stop carrier
+      shell: ps -ef | grep "{{ deploy_dir }}/carrier/carrier -cnf {{ deploy_dir }}/carrier/config/carrier.yml" | grep -v "grep" | awk -v FS=" " '{print $2}' | xargs kill -s TERM
 
-#     - name: wait until the carrier_rpc_port is down
-#       wait_for:
-#         host: "{{ ansible_host }}"
-#         port: "{{ carrier_rpc_port }}"
-#         state: stopped
-#         msg: "the pump port {{ carrier_rpc_port }} is not down"
+    - name: wait until the carrier_rpc_port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ carrier_rpc_port }}"
+        state: stopped
+        msg: "the pump port {{ carrier_rpc_port }} is not down"
 
-# - hosts: admin
-#   tags:
-#     - admin
-#   tasks:
-#     - name: stop admin
-#       shell: ps -ef | grep "java -jar {{ deploy_dir }}/admin/admin.jar --spring.profiles.active=admin" | grep -v "grep" | awk -v FS=" " '{print $2}' | xargs kill -s TERM
+- hosts: admin
+  tags:
+    - admin
+  tasks:
+    - name: stop admin
+      shell: ps -ef | grep "java -jar {{ deploy_dir }}/admin/admin.jar --spring.profiles.active=admin" | grep -v "grep" | awk -v FS=" " '{print $2}' | xargs kill -s TERM
 
-#     - name: wait until the admin_web_port is down
-#       wait_for:
-#         host: "{{ ansible_host }}"
-#         port: "{{ admin_web_port }}"
-#         state: stopped
-#         msg: "the pump port {{ admin_web_port }} is not down"
+    - name: wait until the admin_web_port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ admin_web_port }}"
+        state: stopped
+        msg: "the pump port {{ admin_web_port }} is not down"
 
 # - hosts: data
 #   tags:
@@ -88,19 +88,19 @@
         state: stopped
         msg: "the pump port {{ consul_http_port }} is not down"
 
-# - hosts: storage
-#   tags:
-#     - storage
-#   tasks:
-#     - name: stop storage
-#       shell: ps -ef | grep "java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active=storage" | grep -v "grep" | awk -v FS=" " '{print $2}' | xargs kill -s TERM
+- hosts: storage
+  tags:
+    - storage
+  tasks:
+    - name: stop storage
+      shell: ps -ef | grep "java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active=storage" | grep -v "grep" | awk -v FS=" " '{print $2}' | xargs kill -s TERM
 
-#     - name: wait until the storage_port is down
-#       wait_for:
-#         host: "{{ ansible_host }}"
-#         port: "{{ storage_port }}"
-#         state: stopped
-#         msg: "the pump port {{ storage_port }} is not down"
+    - name: wait until the storage_port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ storage_port }}"
+        state: stopped
+        msg: "the pump port {{ storage_port }} is not down"
 
 # - hosts: scan
 #   tags:

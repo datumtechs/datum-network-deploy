@@ -1,6 +1,7 @@
 ---
 
 # go Binary executable file 
+# 网关服务
 - name: download via binary
   get_url:
     url: "{{ download_url }}/via"
@@ -9,6 +10,7 @@
     force: yes
     validate_certs: no
 
+# 调度服务
 - name: download carrier binary
   get_url:
     url: "{{ download_url }}/carrier"
@@ -17,6 +19,7 @@
     force: yes
     validate_certs: no
 
+# keytool，生成 p2p 私钥
 - name: download keytool binary
   get_url:
     url: "{{ download_url }}/keytool"
@@ -25,32 +28,15 @@
     force: yes
     validate_certs: no
 
-# - name: download consul zip
-#   get_url:
-#     url: "{{ consul_download_url }}"
-#     dest: "{{ downloads_dir }}"
-#     mode: 0644
-#     force: yes
-#     validate_certs: no
-
-# - name: Extract consul zip 
-#   unarchive:
-#     src: "{{ downloads_dir }}/ {{ consul_zip_name }}"
-#     dest: "{{ downloads_dir }}"
-
-# - name: delete consul zip file
-#   file:
-#     path: "{{ downloads_dir }}/ {{ consul_zip_name }}"
-#     state: absent
-
-- name: download consul binary
+# consul 官网下载程序包
+- name: download consul zip
   get_url:
-    url: "{{ download_url }}/consul"
+    url: "{{ consul_download_url }}"
     dest: "{{ downloads_dir }}"
-    mode: 0744
+    mode: 0644
     force: yes
-    validate_certs: no
-
+    validate_certs: yes
+    timeout: 300 # 下载时间比较长
 
 # Java JAR packages and Web static files
 - name: download admin jar package
@@ -77,21 +63,21 @@
     force: yes
     validate_certs: no
 
-- name: download scan jar package
-  get_url:
-    url: "{{ download_url }}/scan.jar"
-    dest: "{{ downloads_dir }}"
-    mode: 0644
-    force: yes
-    validate_certs: no
+# - name: download scan jar package
+#   get_url:
+#     url: "{{ download_url }}/scan.jar"
+#     dest: "{{ downloads_dir }}"
+#     mode: 0644
+#     force: yes
+#     validate_certs: no
 
-- name: download scan Web static files
-  get_url:
-    url: "{{ download_url }}/scan.tar.gz"
-    dest: "{{ downloads_dir }}"
-    mode: 0644
-    force: yes
-    validate_certs: no
+# - name: download scan Web static files
+#   get_url:
+#     url: "{{ download_url }}/scan.tar.gz"
+#     dest: "{{ downloads_dir }}"
+#     mode: 0644
+#     force: yes
+#     validate_certs: no
 
 # Python WHL file
 - name: download latticex rosetta whl package

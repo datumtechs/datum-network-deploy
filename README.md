@@ -13,13 +13,23 @@ editConfig.yml: 变更配置
 update.yml： 升级组件版本
 cleanup.yml: 销毁集群
 
-## 下载相关安装包
+## 注意事项
+
+目前只支持在Ubuntu 18.04 上面部署服务
+
+## 主控节点做的准备工作
+
+1. 检查 ansible 版本大于 2.4.2
+2. 创建下载相关目录，检查网络连接
+3. 下载安装包
 
 ```shell
 ansible-playbook -i inventory.ini local_prepare.yml
 ```
 
 ## 初始化集群各个节点
+
+1. 检查配置的集群操作系统是否是 Ubuntu 18.04
 
 ```shell
 ansible-playbook -i inventory.ini bootstrap.yml -k --ask-sudo-pass

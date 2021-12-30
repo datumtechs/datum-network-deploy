@@ -1,8 +1,7 @@
 ---
 
-# Local
+# 文件下载目录，非必改变量
 downloads_dir: "{{ playbook_dir }}/downloads"
-resources_dir: "{{ playbook_dir }}/resources"
 
 # 证书文件
 via_cert_dir:   "{{ playbook_dir }}/config/via_cert"
@@ -17,12 +16,6 @@ data_cert_dir:   "{{ playbook_dir }}/config/data_cert"
 admin_server_name: metis-admin.platon.network
 admin_ssl_protocols: "TLSv1 TLSv1.1 TLSv1.2"
 admin_ssl_ciphers: ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
-
-# scan web 服务相关配置信息
-scan_server_name: metis-scan.platon.network
-scan_ssl_protocols: "TLSv1 TLSv1.1 TLSv1.2"
-scan_ssl_ciphers: ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
-
 
 # 服务静态文件下载 url
 download_url: "http://192.168.9.150/metis/"
@@ -43,7 +36,7 @@ consul_serf_lan_port: 8301
 consul_serf_wan_port: 8302
 consul_http_port: 8500
 consul_dns_port: 8600
-consul_retry_join: '["192.168.112.150:8301", "192.168.112.152:8301", "192.168.112.154:8301"]'
+consul_leader: 192.168.112.150
 
 # 服务端口号
 via_ip: 192.168.112.150

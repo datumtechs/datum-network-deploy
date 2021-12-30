@@ -10,8 +10,6 @@
   file: path="{{ item }}" state=directory mode=0755
   with_items:
   - "{{ downloads_dir }}"
-  - "{{ resources_dir }}"
-  - "{{ resources_dir }}/bin"
 
 - name: create cert directory
   file: path="{{ cert_dir }}" state=directory mode=0755
@@ -28,8 +26,12 @@
 - name: set outbound network fact[1]
   set_fact: has_outbound_network={{ outbound_network_st.stdout.strip() == '0' }}
 
+- name: "Debug has_outbound_network information"
+  debug:
+    var: has_outbound_network
+
 - fail:
-    msg: "The Control Machine must have access to the Internet in order to download TiDB and related packages."
+    msg: "The Control Machine must have access to the Internet in order to download Metisnetwork related packages."
   when: not has_outbound_network
 
 - name: detect outbound network[2]
@@ -38,6 +40,10 @@
     curl -s --connect-timeout 10 google.com 2>/dev/null >/dev/null; echo $?
   changed_when: false
   register: outbound_st
+
+- name: "Debug outbound_st information"
+  debug:
+    var: outbound_st
 
 - name: set outbound network fact[2]
   set_fact: under_outbound={{ outbound_st.stdout.strip() != '0' }}
