@@ -2,3 +2,4 @@ downloads
 retry_files
 fact_files
 log
+.idea
