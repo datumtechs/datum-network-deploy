@@ -6,17 +6,21 @@
   - "{{ deploy_dir }}/consul"
   - "{{ deploy_dir }}/consul/config"
   - "{{ deploy_dir }}/consul/data-dir"
+  - "{{ deploy_dir }}/consul/log"
+
+- name: Set facts
+  set_fact:
+    data_dir: "{{ deploy_dir }}/consul/data-dir"
+    log_file: "{{ deploy_dir }}/consul/log"
 
 - name: "copy configuration file"
-  copy:
-    src: "{{ playbook_dir }}/config/consul.yml"
-    dest: "{{ deploy_dir }}/consul/config/consul.yml"
+  template:
+    src: "consul.json.j2"
+    dest: "{{ deploy_dir }}/consul/config/consul.json"
     mode: 0600
-    backup: yes
 
-- name: "copy consul binary Executable file"
-  copy:
-    src: "{{ downloads_dir }}/consul"
-    dest: "{{ deploy_dir }}/consul/consul"
-    mode: 0775
-    backup: yes
+- name: Extract consul zip 
+  unarchive:
+    src: "{{ downloads_dir }}/{{ consul_zip_name }}"
+    dest: "{{ deploy_dir }}/consul"
+    mode: 0755

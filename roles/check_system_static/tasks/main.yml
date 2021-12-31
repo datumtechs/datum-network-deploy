@@ -2,22 +2,26 @@
 
 # 判断操作系统
 - name: Get distro name from /etc/os-release
-  shell: "([ -f /etc/os-release ] && grep '^NAME=' /etc/os-release | sed s'/NAME=//' | tr -d \\\") "
-  register: distro
-  failed_when: false
-  changed_when: false
+  shell: "([ -f /etc/os-release ] && grep '^NAME=' /etc/os-release | sed s'/NAME=//' | tr -d \\\")"
+  register: distro_result
+
+- name: Debug distro_result information
+  debug:
+    var: distro_result.stdout
 
 - name: Check operating system
   fail: msg="Currently, only Ubuntu is supported"
-  when: "'Ubuntu' in distro"
+  when: "'Ubuntu' != distro_result.stdout"
 
 # 判断操作系统版本
 - name: Get distro_version from /etc/issue
-  shell: "(version=`cat /etc/issue` && ${version: 7: 5})"
-  register: distro_version
-  failed_when: false
-  changed_when: false
+  shell: "cat /etc/issue | head -n 1 | awk '{print $2}' | cut -b 1-5"
+  register: distro_version_result
+
+- name: Debug distro_version information
+  debug:
+    var: distro_version_result.stdout
 
 - name: Check operating system version
   fail: msg="Currently, only Ubuntu 18.04 is supported"
-  when: distro_version == '18.04'
+  when: "'18.04' != distro_version_result.stdout"

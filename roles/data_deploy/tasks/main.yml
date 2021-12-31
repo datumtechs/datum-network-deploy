@@ -118,8 +118,8 @@
   shell: pip3 install {{ deploy_dir }}/data/whl/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl
 
 # install channel sdk
-# - name: Install channel sdk
-#   shell: pip3 install {{ deploy_dir }}/data/whl/channel_sdk-2.0.0-cp36-cp36m-linux_x86_64.whl
+- name: Install channel sdk
+  shell: pip3 install {{ deploy_dir }}/data/whl/channel_sdk-2.0.0-cp36-cp36m-linux_x86_64.whl
 
 # install dce
 - name: Install dce

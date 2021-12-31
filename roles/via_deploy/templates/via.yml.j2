@@ -9,8 +9,8 @@ via:
   timeout: 20                   # timeout in seconds, for Via call back task server.
 
 consul:
-  host: {{consul_host}}       # if empty, will not register VIA to Consul
-  port: {{consul_port}}                                                                        # if empty, will not register VIA to Consul
+  host: {{consul_leader}}       # if empty, will not register VIA to Consul
+  port: {{consul_leader_port}}                                                                        # if empty, will not register VIA to Consul
 
 tls:
   #tls mode options: none, one_way, two_way
