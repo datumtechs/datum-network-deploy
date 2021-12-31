@@ -28,19 +28,19 @@ consul_http_port: [8500, 8501, 8502]
 consul_dns_port: [8600, 8601, 8602]
 
 # data 端口号
-data_port: [8700, 8701, 8702]
+data_port: [30001, 30002, 30003]
 
 # compute 端口号
 compute_port: [8801, 8802, 8803]
 
 # 下面的服务只能部署一个，只能设置一个端口号
 # via 服务端口号
-via_port: 10031
+via_port: 20000
 
 # carrier 端口号
-carrier_pprof_port: 10032
-carrier_rpc_port: 10033
-carrier_grpc_gateway_port: 10034
+carrier_pprof_port: 9096
+carrier_rpc_port: 8801
+carrier_grpc_gateway_port: 3500
 bootstrap_node: []
 carrier_p2p_udp_port: 10035
 carrier_p2p_tcp_port: 10036
@@ -49,7 +49,7 @@ carrier_p2p_tcp_port: 10036
 admin_web_port: 9090
 
 # storage 端口号
-storage_port: 10039
+storage_port: 9098
 
 # scan 端口号
 scan_web_port: 9001
@@ -79,7 +79,6 @@ consul_number_int: "{{ groups['consul'] | length | int}}"
 consul_leader: "{{ groups['consul'][0] }}"
 consul_leader_port: "{{ consul_http_port[0] }}"
 consul_leader_serf_lan_port: "{{ consul_serf_lan_port[0] }}"
-consul_number_int: "{{groups['consul'] | length |int}}"
 consul_http_port_self:   "{% for i in range(consul_number_int) %}
                               {% if groups['consul'][i] == inventory_hostname %}
                                 {{consul_http_port[i] |int}}  
