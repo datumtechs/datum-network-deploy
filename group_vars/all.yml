@@ -1,17 +1,6 @@
 ---
 
-# 文件下载目录，非必改变量
-downloads_dir: "{{ playbook_dir }}/downloads"
-
-# 证书文件，非必改目录
-via_cert_dir:   "{{ playbook_dir }}/config/via_cert"
-carrier_cert_dir:   "{{ playbook_dir }}/config/carrier_cert"
-admin_cert_dir:   "{{ playbook_dir }}/config/admin_cert"
-scan_cert_dir:   "{{ playbook_dir }}/config/scan_cert"
-storage_cert_dir:   "{{ playbook_dir }}/config/storage_cert"
-compute_cert_dir:   "{{ playbook_dir }}/config/computer_cert"
-data_cert_dir:   "{{ playbook_dir }}/config/data_cert" 
-
+# 下面的这些变量需要用户根据实际情况进行配置
 # 服务静态文件下载 url
 download_url: "http://192.168.9.150/metis/"
 consul_download_url: "https://releases.hashicorp.com/consul/1.10.4/consul_1.10.4_linux_amd64.zip"
@@ -29,7 +18,8 @@ storage_user: metis_storage
 storage_password: storage_123456
 
 ###############################################
-# 端口号根据自己的部署情况进行设置
+# 端口号根据自己的部署情况进行设置，数量要和库存文件里面一致。
+
 # consul 端口号
 consul_server_port: [8200, 8201, 8202]
 consul_serf_lan_port: [8300, 8301, 8302]
@@ -38,11 +28,12 @@ consul_http_port: [8500, 8501, 8502]
 consul_dns_port: [8600, 8601, 8602]
 
 # data 端口号
-data_port: 10037
+data_port: [8700, 8701, 8702]
 
 # compute 端口号
-compute_port: 10038
+compute_port: [8801, 8802, 8803]
 
+# 下面的服务只能部署一个，只能设置一个端口号
 # via 服务端口号
 via_port: 10031
 
@@ -64,7 +55,56 @@ storage_port: 10039
 scan_web_port: 9001
 ###############################################
 
+# 下面的变量不建议用户修改
+# 文件下载目录，非必改变量
+downloads_dir: "{{ playbook_dir }}/downloads"
+
+# 证书文件，非必改目录
+via_cert_dir:   "{{ playbook_dir }}/config/via_cert"
+carrier_cert_dir:   "{{ playbook_dir }}/config/carrier_cert"
+admin_cert_dir:   "{{ playbook_dir }}/config/admin_cert"
+scan_cert_dir:   "{{ playbook_dir }}/config/scan_cert"
+storage_cert_dir:   "{{ playbook_dir }}/config/storage_cert"
+compute_cert_dir:   "{{ playbook_dir }}/config/computer_cert"
+data_cert_dir:   "{{ playbook_dir }}/config/data_cert" 
+
+# 下面的变量不能进行更改
+
+# 目标主机文件安装目录
+deploy_dir: "/home/{{ansible_user}}"
+
 # consul agent 信息
-consul_host: "{{ groups['consul'][0] }}"
-consul_port: "{{ consul_http_port[0] }}"
+consul_zip_name: "{{ consul_download_url.split('/')[-1] | trim }}"
+consul_number_int: "{{ groups['consul'] | length | int}}"
+consul_leader: "{{ groups['consul'][0] }}"
+consul_leader_port: "{{ consul_http_port[0] }}"
+consul_leader_serf_lan_port: "{{ consul_serf_lan_port[0] }}"
+consul_number_int: "{{groups['consul'] | length |int}}"
+consul_http_port_self:   "{% for i in range(consul_number_int) %}
+                              {% if groups['consul'][i] == inventory_hostname %}
+                                {{consul_http_port[i] |int}}  
+                              {% endif %}
+                          {% endfor %}"
+# via 相关信息
+via_ip: "{{ groups['via'][0] }}"
+
+# storage 相关信息
+storage_host: "{{ groups['storage'][0] }}"
+storage_ip: "{{ groups['storage'][0] }}"
+
+# data 相关信息
+data_port_self: "{% set data_number_int = groups['data'] | length |int %} 
+                  {% for i in range(data_number_int) %}
+                    {% if groups['data'][i] == inventory_hostname %}
+                      {{data_port[i] |int}}  
+                    {% endif %}
+                  {% endfor %}"
+
+# compute 相关信息
+compute_port_self: "{% set compute_number_int = groups['compute'] | length |int %} 
+                    {% for i in range(compute_number_int) %}
+                      {% if groups['compute'][i] == inventory_hostname %}
+                        {{compute_port[i] |int}}  
+                      {% endif %}
+                    {% endfor %}"
 

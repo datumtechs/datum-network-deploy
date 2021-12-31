@@ -15,7 +15,60 @@ cleanup.yml: 销毁集群
 
 ## 注意事项
 
-目前只支持在Ubuntu 18.04 上面部署服务
+目前主控机和目标机只支持在Ubuntu 18.04
+
+## 安装依赖
+
+**主控机上安装 ansible：**
+
+```shell
+sudo apt update
+sudo apt install software-properties-common
+
+# 添加 ansible ppa
+sudo apt-add-repository ppa:ansible/ansible
+
+# 安装 ansible
+sudo apt update
+sudo apt install ansible
+```
+
+**目标机上面安装 python3**
+
+```shell
+# 安装 python3
+sudo apt-get install python3
+
+# 安装 pip3
+sudo apt install -y python3-pip
+```
+
+**下载脚本：**
+
+```shell
+git clone http://192.168.9.66/Metisnetwork/metis-deploy.git
+cd metis-deploy
+git checkout ansible
+
+# 创建日志目录
+mkdir log
+```
+
+## 修改配置
+
+**inventory.ini 文件修改**
+
+inventory.ini 库存文件根据自己的实际情况配置各个服务的 ip 地址
+
+目前只支持 ssh 用户名登录，ansible_user 设置为目标主机的用户名
+
+**group_vars/all.yml 文件修改**
+
+必改选项为：
+1. 静态文件下载 url
+2. admin web 服务相关配置信息
+3. mysql 相关用户名密码
+4. 各个服务端口号
 
 ## 主控节点做的准备工作
 

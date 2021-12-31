@@ -3,26 +3,26 @@
 
 # deploy metis cluster
 
-# - name: deploying via 
-#   hosts: via
-#   tags:
-#     - via
-#   roles:
-#     - via_deploy
+- name: deploying via 
+  hosts: via
+  tags:
+    - via
+  roles:
+    - via_deploy
 
-# - name: deploying carrier
-#   hosts: carrier
-#   tags:
-#     - carrier
-#   roles:
-#     - carrier_deploy
+- name: deploying carrier
+  hosts: carrier
+  tags:
+    - carrier
+  roles:
+    - carrier_deploy
 
-# - name: deploying admin
-#   hosts: admin
-#   tags:
-#     - admin
-#   roles:
-#     - admin_deploy
+- name: deploying admin
+  hosts: admin
+  tags:
+    - admin
+  roles:
+    - admin_deploy
 
 - name: deploying data
   hosts: data
@@ -31,29 +31,26 @@
   roles:
     - data_deploy
 
-# - name: deploying compute
-#   hosts: compute
-#   tags:
-#     - compute
-#   roles:
-#     - compute_deploy
+- name: deploying compute
+  hosts: compute
+  tags:
+    - compute
+  roles:
+    - compute_deploy
 
-# - name: deploying consul
-#   hosts: consul
-#   tags:
-#     - consul
-#   roles:
-#     - consul_deploy
-#   vars:
-#     consul_zip_name: "{{ consul_download_url.split('/')[-1] | trim }}"
-#     consul_number: "{{ groups['consul'] | length }}"
+- name: deploying consul
+  hosts: consul
+  tags:
+    - consul
+  roles:
+    - consul_deploy
 
-# - name: deploying storage
-#   hosts: storage
-#   tags:
-#     - storage
-#   roles:
-#     - storage_deploy
+- name: deploying storage
+  hosts: storage
+  tags:
+    - storage
+  roles:
+    - storage_deploy
 
 # - name: deploying scan
 #   hosts: scan
@@ -61,5 +58,3 @@
 #     - scan
 #   roles:
 #     - scan_deploy
-#   vars:
-#     storage_host: "{{ groups['storage'][0] }}"

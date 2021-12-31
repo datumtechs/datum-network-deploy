@@ -35,8 +35,8 @@ spring:
   # =============================== consul ===============================
   cloud:
     consul:
-      host: {{consul_host}} 
-      port: {{consul_port}}
+      host: {{consul_leader}} 
+      port: {{consul_leader_port}}
       carrierServiceName: carrier
       discovery:
         prefer-ip-address: true # 这个必须配

@@ -7,9 +7,8 @@
     "log_file": "{{log_file}}/consul.log",
     "log_level": "INFO",
     "server": true,
-    "bootstrap_expect": {{consul_number}},
+    "bootstrap_expect": {{consul_number_int}},
     "ui": true,
-{% set consul_number_int = consul_number|int %}
 {% for i in range(consul_number_int) %}
 {% if groups['consul'][i] == inventory_hostname %}
     "ports": {
