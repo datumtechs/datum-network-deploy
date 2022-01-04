@@ -9,6 +9,7 @@
     "server": true,
     "bootstrap_expect": {{consul_number_int}},
     "ui": true,
+{% set consul_number_int = consul_number_int | int %}
 {% for i in range(consul_number_int) %}
 {% if groups['consul'][i] == inventory_hostname %}
     "ports": {

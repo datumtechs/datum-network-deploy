@@ -1,12 +1,15 @@
 # 计算节点的配置模板
+file_system: local
 bind_ip: {{inventory_hostname}}
 port: {{compute_port_self}}
+task_port_range: [41000, 41100]
 thread_pool_size: 12
 pass_via: true
 code_root_dir: {{code_root_dir}}
 results_root_dir: {{results_root_dir}}
 total_bandwidth: 20000000
-certs: 
+channel_log_level: 2
+certs:
   base_path: {{base_path}}
   root_cert: CA.crt
   server_sign_key: SS.key
@@ -17,3 +20,10 @@ certs:
   client_sign_cert: CS.crt
   client_enc_key: CE.key
   client_enc_cert: CE.crt
+consul:
+  service_ip: {{consul_leader}}
+  service_port: {{consul_leader_port}}
+  name: jobService
+  tag: job
+  interval: 3s
+  deregister: 3s
