@@ -79,7 +79,6 @@ consul_number_int: "{{ groups['consul'] | length | int}}"
 consul_leader: "{{ groups['consul'][0] }}"
 consul_leader_port: "{{ consul_http_port[0] }}"
 consul_leader_serf_lan_port: "{{ consul_serf_lan_port[0] }}"
-consul_number_int: "{{groups['consul'] | length |int}}"
 consul_http_port_self:   "{% for i in range(consul_number_int) %}
                               {% if groups['consul'][i] == inventory_hostname %}
                                 {{consul_http_port[i] |int}}  
