@@ -99,12 +99,18 @@ ansible-playbook -i inventory.ini deploy.yml -k --ask-sudo-pass
 
 ## 启动服务
 
+1. 在后台运行服务
+
 ```shell
-ansible-playbook -i inventory.ini start.yml -k --ask-sudo-pass
+# 在目标主机上执行，需要 ssh 密码
+ansible-playbook -i inventory.ini start.yml -k
 ```
 
 ## 关闭服务
 
+1. kill 掉运行的服务
+
 ```shell
+# 在目标主机上执行，需要 ssh 密码
 ansible-playbook -i inventory.ini stop.yml -k --ask-sudo-pass
 ```
