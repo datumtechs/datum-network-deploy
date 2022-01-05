@@ -6,21 +6,21 @@
 - name: deploying via 
   hosts: via
   tags:
-    - via
+    - via_servers
   roles:
     - via_deploy
 
 - name: deploying carrier
   hosts: carrier
   tags:
-    - carrier
+    - carrier_servers
   roles:
     - carrier_deploy
 
 - name: deploying admin
   hosts: admin
   tags:
-    - admin
+    - admin_servers
   roles:
     - admin_deploy
 

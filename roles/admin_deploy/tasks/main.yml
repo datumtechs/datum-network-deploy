@@ -36,7 +36,7 @@
     admin_ssl_cetificate: "{{ deploy_dir }}/admin/cert/web/server.pem"
     admin_ssl_cetificate_key: "{{ deploy_dir }}/admin/cert/web/server.key"
 
-- name: "copy configuration file"
+- name: "Generate application-admin.yml configuration file based on application-admin.yml.j2 template file"
   template:
     src: "application-admin.yml.j2"
     dest: "{{ deploy_dir }}/admin/config/application-admin.yml"
@@ -54,7 +54,7 @@
   copy:
     src: "{{ downloads_dir }}/admin.jar"
     dest: "{{ deploy_dir }}/admin/admin.jar"
-    mode: 0775
+    mode: 0755
     backup: yes
 
 # 拷贝 web 静态文件
@@ -95,6 +95,7 @@
     - mysqlclient
 
 - name: Start the MySQL service
+  become: true
   service: 
     name: mysql 
     state: started
@@ -102,7 +103,7 @@
 
 # 修改mysql绑定地址
 - name: Modify mysql bind address
-  become: yes
+  become: true
   lineinfile:
     path: /etc/mysql/mysql.conf.d/mysqld.cnf
     regexp: "^bind-address"
@@ -119,7 +120,7 @@
   become: true
   shell: awk -v FS="=" '{print $1,$2}' /etc/mysql/debian.cnf | awk -F" *" '$1=="user" {print $2}' | head -n +1
   register: default_name_str
-  failed_when: false
+  failed_when: default_name_str.rc != 0
   changed_when: false
 
 - name: set default_name facts
@@ -134,7 +135,7 @@
   become: true
   shell: awk -v FS="=" '{print $1,$2}' /etc/mysql/debian.cnf | awk -F" *" '$1=="password" {print $2}' | head -n +1
   register: default_password_str
-  failed_when: false
+  failed_when: default_password_str.rc != 0
   changed_when: false
 
 - name: set default_password facts
@@ -168,6 +169,9 @@
 # 初始化数据库
 - name: Initialize database, create database and table
   shell: mysql -u{{ amin_user }} -p{{ admin_password }} < {{ deploy_dir }}/admin/sql/admin.sql
+  register: result
+  changed_when: false
+  failed_when: result.rc != 0
 
 # 安装 nginx
 - name: "install nginx"

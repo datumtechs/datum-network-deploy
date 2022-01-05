@@ -37,7 +37,7 @@
   copy:
     src: "{{ downloads_dir }}/storage.jar"
     dest: "{{ deploy_dir }}/storage/storage.jar"
-    mode: 0775
+    mode: 0755
     backup: yes
 
 # 安装 mysql

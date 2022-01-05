@@ -4,15 +4,15 @@ ansible.cfg: ansible 配置文件
 
 inventory.ini: 组和主机的相关配置
 
-conf: 相关配置模版
+config: 相关配置模版
+
+roles: ansible tasks 的集合
 
 local_prepare.yml: 用来下载相关安装包
 
 bootstrap.yml: 初始化集群各个节点
 
 deploy.yml: 在各个节点安装相应服务
-
-roles: ansible tasks 的集合
 
 start.yml: 启动所有服务
 
@@ -30,7 +30,7 @@ cleanup.yml: 销毁集群
 
 ## 安装依赖
 
-**主控机上安装 ansible 和 其他依赖模块：**
+**主控机上安装 ansible 和 依赖模块：**
 
 ```shell
 cd metis-deploy
@@ -78,7 +78,7 @@ ansible-playbook -i inventory.ini local_prepare.yml
 
 ## 初始化集群各个节点
 
-1. 检查配置的集群操作系统是否是 Ubuntu 18.04
+1. 检查配置的集群操作系统是否是 Ubuntu 18.04。
 2. 检查 python 和 python3 是否安装，没有安装会进行安装。
 
 ```shell
@@ -87,6 +87,10 @@ ansible-playbook -i inventory.ini bootstrap.yml -k --ask-sudo-pass
 ```
 
 ## 各个节点安装服务
+
+1. 创建安装需要的目录。
+2. 根据 Jinja2 配置文件模板生成配置文件（有变更会把旧的配置文件备份）。
+3. 拷贝可执行文件到目标机器。
 
 ```shell
 ansible-playbook -i inventory.ini deploy.yml -k --ask-sudo-pass

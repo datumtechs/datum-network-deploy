@@ -33,15 +33,15 @@
     io_key_file: "{{ deploy_dir }}/via/cert/client.key"
     ca_cert_file: "{{ deploy_dir }}/via/cert/ca.pem"
 
-- name: "copy configuration file"
+- name: "Generate via.yml configuration file based on via.yml.j2 template file"
   template:
     src: "via.yml.j2"
     dest: "{{ deploy_dir }}/via/config/via.yml"
     mode: 0600
+    backup: yes
 
 - name: "copy via binary Executable file"
   copy:
     src: "{{ downloads_dir }}/via"
     dest: "{{ deploy_dir }}/via/via"
-    mode: 0775
-    backup: yes
+    mode: 0755

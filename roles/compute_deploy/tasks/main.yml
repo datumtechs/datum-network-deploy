@@ -41,7 +41,7 @@
   copy:
     src: "{{ downloads_dir }}/Miniconda3-latest-Linux-x86_64.sh"
     dest: "{{ deploy_dir }}/miniconda.sh"
-    mode: 0775
+    mode: 0755
     backup: yes
 
 # install conda
@@ -88,5 +88,5 @@
   copy:
     src: "{{ downloads_dir }}/start_v3_service.sh"
     dest: "{{ deploy_dir }}/compute/start_v3_service.sh"
-    mode: 0775
+    mode: 0755
     backup: yes
