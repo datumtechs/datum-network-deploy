@@ -3,7 +3,7 @@
 # 下面的这些变量需要用户根据实际情况进行配置
 # 服务静态文件下载 url
 download_url: "http://192.168.9.150/metis/"
-consul_download_url: "https://releases.hashicorp.com/consul/1.10.4/consul_1.10.4_linux_amd64.zip"
+consul_download_url: "http://192.168.9.150/metis/consul_1.10.4_linux_amd64.zip"
 
 # admin web 服务相关配置信息
 admin_server_name: metis-admin.platon.network
@@ -65,7 +65,7 @@ carrier_cert_dir:   "{{ playbook_dir }}/config/carrier_cert"
 admin_cert_dir:   "{{ playbook_dir }}/config/admin_cert"
 scan_cert_dir:   "{{ playbook_dir }}/config/scan_cert"
 storage_cert_dir:   "{{ playbook_dir }}/config/storage_cert"
-compute_cert_dir:   "{{ playbook_dir }}/config/computer_cert"
+compute_cert_dir:   "{{ playbook_dir }}/config/compute_cert"
 data_cert_dir:   "{{ playbook_dir }}/config/data_cert" 
 
 # 下面的变量不能进行更改
@@ -79,7 +79,8 @@ consul_number_int: "{{ groups['consul'] | length | int}}"
 consul_leader: "{{ groups['consul'][0] }}"
 consul_leader_port: "{{ consul_http_port[0] }}"
 consul_leader_serf_lan_port: "{{ consul_serf_lan_port[0] }}"
-consul_http_port_self:   "{% for i in range(consul_number_int) %}
+consul_http_port_self:   "{% set consul_number_int = consul_number_int | int %}
+                          {% for i in range(consul_number_int) %}
                               {% if groups['consul'][i] == inventory_hostname %}
                                 {{consul_http_port[i] |int}}  
                               {% endif %}

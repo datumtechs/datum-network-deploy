@@ -2,6 +2,7 @@
 file_system: local
 bind_ip: {{inventory_hostname}}
 port: {{data_port_self}}
+task_port_range: [31000, 31100]
 chunk_size: 1024
 pass_via: true
 thread_pool_size: 12
@@ -9,7 +10,7 @@ data_root: {{data_root}}
 code_root_dir: {{code_root_dir}}
 results_root_dir: {{results_root_dir}}
 total_bandwidth: 20000000
-certs: 
+certs:
   base_path: {{base_path}}
   root_cert: CA.crt
   server_sign_key: SS.key
@@ -20,3 +21,10 @@ certs:
   client_sign_cert: CS.crt
   client_enc_key: CE.key
   client_enc_cert: CE.crt
+consul:
+  service_ip: {{consul_leader}}
+  service_port: {{consul_leader_port}}
+  name: dataService
+  tag: data
+  interval: 3s
+  deregister: 3s
