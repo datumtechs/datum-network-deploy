@@ -23,7 +23,7 @@
 
     - name: Other nodes join the cluster
       shell: "{{ deploy_dir }}/consul/consul join --http-addr {{ansible_host}}:{{consul_http_port_self | trim}} {{consul_leader}}:{{consul_leader_serf_lan_port}}"
-      when: "ansible_host != consul_leader && consul_number_int > 1"
+      when: "ansible_host != consul_leader && groups['consul'] | length > 1"
 
     - name: Set via external network address
       uri: 
@@ -73,7 +73,9 @@
     - admin
   tasks:
     - name: start admin
-      shell: "cd {{ deploy_dir }}/admin && nohup java -jar {{ deploy_dir }}/admin/admin.jar --spring.profiles.active=admin &"
+      shell: " nohup java -jar {{ deploy_dir }}/admin/admin.jar --spring.profiles.active=admin &"
+      args:
+        chdir: "{{ deploy_dir }}/admin"
     
     - name: wait until the admin_web_port port is up
       wait_for:
@@ -118,7 +120,9 @@
     - storage
   tasks:
     - name: start storage
-      shell: "cd {{ deploy_dir }}/storage && nohup java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active=storage &"
+      shell: "nohup java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active=storage &"
+      args:
+        chdir: "{{ deploy_dir }}/storage"
 
     - name: wait until the storage_port port is up
       wait_for:
