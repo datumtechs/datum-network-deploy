@@ -123,7 +123,7 @@
 
 - name: download mincoda sh file
   get_url:
-    url: "https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh"
+    url: "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
     dest: "{{ downloads_dir }}"
     mode:  0744
     force: yes
