@@ -30,18 +30,11 @@ cleanup.yml: 销毁集群
 
 ## 安装依赖
 
-**主控机上安装 ansible：**
+**主控机上安装 ansible 和 其他依赖模块：**
 
 ```shell
-sudo apt update
-sudo apt install software-properties-common
-
-# 添加 ansible ppa
-sudo apt-add-repository ppa:ansible/ansible
-
-# 安装 ansible
-sudo apt update
-sudo apt install ansible
+cd metis-deploy
+pip install -r ./requirements.txt
 ```
 
 **目标机上面安装 python3**

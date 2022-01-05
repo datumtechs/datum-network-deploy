@@ -88,8 +88,8 @@
     - data
   tasks:
     - name: start data
-      shell: "nohup {{ deploy_dir }}/data/start_data_svc.sh {{ deploy_dir }}/data/config/data.yml &"
-    
+      shell: "nohup {{ deploy_dir }}/data/start_v3_service.sh {{ deploy_dir }}/data/config/data.yml data {{deploy_dir}}/miniconda/envs/python375/bin/python &"
+
     - name: wait until the data port port is up
       wait_for:
         host: "{{ ansible_host }}"
@@ -103,7 +103,7 @@
     - compute
   tasks:
     - name: start compute
-      shell: "nohup {{ deploy_dir }}/compute/start_compute_svc.sh {{ deploy_dir }}/compute/config/compute.yml &"
+      shell: "nohup {{ deploy_dir }}/compute/start_v3_service.sh {{ deploy_dir }}/compute/config/compute.yml compute {{deploy_dir}}/miniconda/envs/python375/bin/python &"
 
     - name: wait until the compute port port is up
       wait_for:

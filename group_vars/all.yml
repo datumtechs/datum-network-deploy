@@ -3,7 +3,7 @@
 # 下面的这些变量需要用户根据实际情况进行配置
 # 服务静态文件下载 url
 download_url: "http://192.168.9.150/metis/"
-consul_download_url: "https://releases.hashicorp.com/consul/1.10.4/consul_1.10.4_linux_amd64.zip"
+consul_download_url: "http://192.168.9.150/metis/consul_1.10.4_linux_amd64.zip"
 
 # admin web 服务相关配置信息
 admin_server_name: metis-admin.platon.network
@@ -28,19 +28,19 @@ consul_http_port: [8500, 8501, 8502]
 consul_dns_port: [8600, 8601, 8602]
 
 # data 端口号
-data_port: [30001, 30002, 30003]
+data_port: [8700, 8701, 8702]
 
 # compute 端口号
 compute_port: [8801, 8802, 8803]
 
 # 下面的服务只能部署一个，只能设置一个端口号
 # via 服务端口号
-via_port: 20000
+via_port: 10031
 
 # carrier 端口号
-carrier_pprof_port: 9096
-carrier_rpc_port: 8801
-carrier_grpc_gateway_port: 3500
+carrier_pprof_port: 10032
+carrier_rpc_port: 10033
+carrier_grpc_gateway_port: 10034
 bootstrap_node: []
 carrier_p2p_udp_port: 10035
 carrier_p2p_tcp_port: 10036
@@ -49,7 +49,7 @@ carrier_p2p_tcp_port: 10036
 admin_web_port: 9090
 
 # storage 端口号
-storage_port: 9098
+storage_port: 10039
 
 # scan 端口号
 scan_web_port: 9001
@@ -65,7 +65,7 @@ carrier_cert_dir:   "{{ playbook_dir }}/config/carrier_cert"
 admin_cert_dir:   "{{ playbook_dir }}/config/admin_cert"
 scan_cert_dir:   "{{ playbook_dir }}/config/scan_cert"
 storage_cert_dir:   "{{ playbook_dir }}/config/storage_cert"
-compute_cert_dir:   "{{ playbook_dir }}/config/computer_cert"
+compute_cert_dir:   "{{ playbook_dir }}/config/compute_cert"
 data_cert_dir:   "{{ playbook_dir }}/config/data_cert" 
 
 # 下面的变量不能进行更改
@@ -79,7 +79,8 @@ consul_number_int: "{{ groups['consul'] | length | int}}"
 consul_leader: "{{ groups['consul'][0] }}"
 consul_leader_port: "{{ consul_http_port[0] }}"
 consul_leader_serf_lan_port: "{{ consul_serf_lan_port[0] }}"
-consul_http_port_self:   "{% for i in range(consul_number_int) %}
+consul_http_port_self:   "{% set consul_number_int = consul_number_int | int %}
+                          {% for i in range(consul_number_int) %}
                               {% if groups['consul'][i] == inventory_hostname %}
                                 {{consul_http_port[i] |int}}  
                               {% endif %}

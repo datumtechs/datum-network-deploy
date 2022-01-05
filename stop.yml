@@ -50,7 +50,7 @@
     - data
   tasks:
     - name: stop data
-      shell: ps -ef | grep "{{ deploy_dir }}/data/start_data_svc.sh {{ deploy_dir }}/data/config/data.yml" | grep -v "grep" | awk -v FS=" " '{print $2}' | xargs kill -s TERM
+      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.data_svc.main {{ deploy_dir }}/data/config/data.yml" | grep -v "grep" | awk -v FS=" " '{print $2}' | xargs kill -s TERM
 
     - name: wait until the data port is down
       wait_for:
@@ -64,7 +64,7 @@
     - compute
   tasks:
     - name: stop compute
-      shell: ps -ef | grep "{{ deploy_dir }}/compute/start_compute_svc.sh {{ deploy_dir }}/compute/config/compute.yml" | grep -v "grep" | awk -v FS=" " '{print $2}' | xargs kill -s TERM
+      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.compute_svc.main {{ deploy_dir }}/compute/config/compute.yml" | grep -v "grep" | awk -v FS=" " '{print $2}' | xargs kill -s TERM
 
     - name: wait until the compute port is down
       wait_for:
