@@ -25,28 +25,28 @@
     - admin_deploy
 
 - name: deploying data
-  hosts: data
+  hosts: data_servers
   tags:
     - data
   roles:
     - data_deploy
 
 - name: deploying compute
-  hosts: compute
+  hosts: compute_servers
   tags:
     - compute
   roles:
     - compute_deploy
 
 - name: deploying consul
-  hosts: consul
+  hosts: consul_servers
   tags:
     - consul
   roles:
     - consul_deploy
 
 - name: deploying storage
-  hosts: storage
+  hosts: storage_servers
   tags:
     - storage
   roles:

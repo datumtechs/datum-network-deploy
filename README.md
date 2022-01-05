@@ -93,6 +93,7 @@ ansible-playbook -i inventory.ini bootstrap.yml -k --ask-sudo-pass
 3. 拷贝可执行文件到目标机器。
 
 ```shell
+# 在目标主机上执行，需要 ssh 密码，安装操作需要 root 权限，需要提权。
 ansible-playbook -i inventory.ini deploy.yml -k --ask-sudo-pass
 ```
 
