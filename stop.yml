@@ -11,6 +11,7 @@
       register: result
       changed_when: false
       failed_when: result.rc != 0
+      when: enable_deploy_via|default(false)
 
     - name: wait until the via_port is down
       wait_for:
@@ -18,6 +19,7 @@
         port: "{{ via_port }}"
         state: stopped
         msg: "the pump port {{ via_port }} is not down"
+      when: enable_deploy_via|default(false)
 
 
 - hosts: carrier
@@ -29,6 +31,7 @@
       register: result
       changed_when: false
       failed_when: result.rc != 0
+      when: enable_deploy_carrier|default(false)
 
     - name: wait until the carrier_rpc_port is down
       wait_for:
@@ -36,6 +39,7 @@
         port: "{{ carrier_rpc_port }}"
         state: stopped
         msg: "the pump port {{ carrier_rpc_port }} is not down"
+      when: enable_deploy_carrier|default(false)
 
 - hosts: admin
   tags:
@@ -46,6 +50,7 @@
       register: result
       changed_when: false
       failed_when: result.rc != 0
+      when: enable_deploy_admin|default(false)
 
     - name: wait until the admin_web_port is down
       wait_for:
@@ -53,6 +58,7 @@
         port: "{{ admin_web_port }}"
         state: stopped
         msg: "the pump port {{ admin_web_port }} is not down"
+      when: enable_deploy_admin|default(false)
 
 - hosts: data
   tags:
@@ -63,6 +69,7 @@
       register: result
       changed_when: false
       failed_when: result.rc != 0
+      when: enable_deploy_data|default(false)
 
     - name: wait until the data port is down
       wait_for:
@@ -70,6 +77,7 @@
         port: "{{ data_port_self }}"
         state: stopped
         msg: "the pump port {{ data_port_self }} is not down"
+      when: enable_deploy_data|default(false)
 
 - hosts: compute
   tags:
@@ -80,6 +88,7 @@
       register: result
       changed_when: false
       failed_when: result.rc != 0
+      when: enable_deploy_compute|default(false)
 
     - name: wait until the compute port is down
       wait_for:
@@ -87,6 +96,7 @@
         port: "{{ compute_port_self }}"
         state: stopped
         msg: "the pump port {{ compute_port_self }} is not down"
+      when: enable_deploy_compute|default(false)
 
 - name: stop consul
   hosts: consul
@@ -98,6 +108,7 @@
       register: result
       changed_when: false
       failed_when: result.rc != 0
+      when: enable_deploy_consul|default(false)
 
     - name: wait until the consul http port is down
       wait_for:
@@ -105,6 +116,7 @@
         port: "{{ consul_http_port_self | trim }}"
         state: stopped
         msg: "the pump port {{ consul_http_port_self | trim }} is not down"
+      when: enable_deploy_consul|default(false)
 
 #- hosts: storage
 #  tags:
