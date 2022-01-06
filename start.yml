@@ -70,7 +70,7 @@
     - carrier_servers
   tasks:
     - name: start carrier
-      shell: "nohup {{ deploy_dir }}/carrier/carrier --config-file {{ deploy_dir }}/carrier/config/carrier.yml &"
+      shell: "nohup {{ deploy_dir }}/carrier/carrier --config-file {{ deploy_dir }}/carrier/config/carrier.yml > {{ deploy_dir }}/carrier/carrier.log 2>&1 &"
       register: result
       changed_when: false
       failed_when: result.rc != 0

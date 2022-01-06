@@ -58,7 +58,7 @@ carrier_p2p_tcp_port: 10036
 admin_web_port: 9090
 
 # storage 端口号
-storage_port: 10039
+storage_port: 9098
 
 # scan 端口号
 scan_web_port: 9001
