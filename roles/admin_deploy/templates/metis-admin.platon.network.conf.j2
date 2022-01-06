@@ -1,3 +1,4 @@
+{% if enable_tls %}
 server {
         listen 443 ssl;
         server_name {{admin_server_name}};
@@ -25,7 +26,7 @@ server {
                 try_files $uri $uri/ /index.html;
         }
 }
-
+{% endif %}
 
 
 server {
