@@ -36,7 +36,7 @@
     admin_ssl_cetificate: "{{ deploy_dir }}/admin/cert/web/server.pem"
     admin_ssl_cetificate_key: "{{ deploy_dir }}/admin/cert/web/server.key"
 
-- name: "copy configuration file"
+- name: "Generate application-admin.yml configuration file based on application-admin.yml.j2 template file"
   template:
     src: "application-admin.yml.j2"
     dest: "{{ deploy_dir }}/admin/config/application-admin.yml"
@@ -54,7 +54,7 @@
   copy:
     src: "{{ downloads_dir }}/admin.jar"
     dest: "{{ deploy_dir }}/admin/admin.jar"
-    mode: 0775
+    mode: 0600
     backup: yes
 
 # 拷贝 web 静态文件
@@ -95,14 +95,15 @@
     - mysqlclient
 
 - name: Start the MySQL service
+  become: true
   service: 
     name: mysql 
     state: started
     enabled: true
 
-# 修改mysql绑定地址
+# 修改 mysql 绑定地址
 - name: Modify mysql bind address
-  become: yes
+  become: true
   lineinfile:
     path: /etc/mysql/mysql.conf.d/mysqld.cnf
     regexp: "^bind-address"
@@ -114,12 +115,12 @@
     name: mysql
     state: restarted
 
-# 获取系统默认给我们分配的用户名和密码
+# 获取 mysql 默认分配的用户名和密码
 - name: Get the system default mysql username
   become: true
   shell: awk -v FS="=" '{print $1,$2}' /etc/mysql/debian.cnf | awk -F" *" '$1=="user" {print $2}' | head -n +1
   register: default_name_str
-  failed_when: false
+  failed_when: default_name_str.rc != 0
   changed_when: false
 
 - name: set default_name facts
@@ -134,7 +135,7 @@
   become: true
   shell: awk -v FS="=" '{print $1,$2}' /etc/mysql/debian.cnf | awk -F" *" '$1=="password" {print $2}' | head -n +1
   register: default_password_str
-  failed_when: false
+  failed_when: default_password_str.rc != 0
   changed_when: false
 
 - name: set default_password facts
@@ -168,6 +169,9 @@
 # 初始化数据库
 - name: Initialize database, create database and table
   shell: mysql -u{{ amin_user }} -p{{ admin_password }} < {{ deploy_dir }}/admin/sql/admin.sql
+  register: result
+  changed_when: false
+  failed_when: result.rc != 0
 
 # 安装 nginx
 - name: "install nginx"
@@ -182,7 +186,7 @@
     path: /etc/nginx/sites-enabled/default
     state: absent
 
-- name: "copy nginx config file"
+- name: "Generate metis-admin.platon.network.conf nginx configuration file based on metis-admin.platon.network.conf.j2 template file"
   become: true
   template:
     src: "metis-admin.platon.network.conf.j2"
@@ -197,7 +201,7 @@
     state: restarted
 
 # java 环境
-- name: apt install openjdk-8-jdk
+- name: Install jdk 8
   become: true
   apt:
     name: openjdk-8-jdk

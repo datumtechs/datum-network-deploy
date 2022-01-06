@@ -9,6 +9,9 @@
   tasks:
     - name: start consul
       shell: "nohup {{ deploy_dir }}/consul/consul agent -config-file {{ deploy_dir }}/consul/config/consul.json &"
+      register: result
+      changed_when: false
+      failed_when: result.rc != 0
 
     - name: Debug consul_http_port_self information
       debug:
@@ -23,7 +26,10 @@
 
     - name: Other nodes join the cluster
       shell: "{{ deploy_dir }}/consul/consul join --http-addr {{ansible_host}}:{{consul_http_port_self | trim}} {{consul_leader}}:{{consul_leader_serf_lan_port}}"
-      when: "ansible_host != consul_leader && consul_number_int > 1"
+      when: "ansible_host != consul_leader && groups['consul'] | length > 1"
+      register: result
+      changed_when: false
+      failed_when: result.rc != 0
 
     - name: Set via external network address
       uri: 
@@ -45,6 +51,9 @@
   tasks:
     - name: start via
       shell: "nohup {{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/config/via.yml &"
+      register: result
+      changed_when: false
+      failed_when: result.rc != 0
       
     - name: wait until the via_port port is up
       wait_for:
@@ -60,6 +69,9 @@
   tasks:
     - name: start carrier
       shell: "nohup {{ deploy_dir }}/carrier/carrier --config-file {{ deploy_dir }}/carrier/config/carrier.yml &"
+      register: result
+      changed_when: false
+      failed_when: result.rc != 0
 
     - name: wait until the carrier_rpc_port port is up
       wait_for:
@@ -73,7 +85,12 @@
     - admin
   tasks:
     - name: start admin
-      shell: "cd {{ deploy_dir }}/admin && nohup java -jar {{ deploy_dir }}/admin/admin.jar --spring.profiles.active=admin &"
+      shell: " nohup java -jar {{ deploy_dir }}/admin/admin.jar --spring.profiles.active=admin &"
+      args:
+        chdir: "{{ deploy_dir }}/admin"
+      register: result
+      changed_when: false
+      failed_when: result.rc != 0
     
     - name: wait until the admin_web_port port is up
       wait_for:
@@ -88,8 +105,11 @@
     - data
   tasks:
     - name: start data
-      shell: "nohup {{ deploy_dir }}/data/start_data_svc.sh {{ deploy_dir }}/data/config/data.yml &"
-    
+      shell: "nohup {{ deploy_dir }}/data/start_v3_service.sh {{ deploy_dir }}/data/config/data.yml data {{deploy_dir}}/miniconda/envs/python375/bin/python &"
+      register: result
+      changed_when: false
+      failed_when: result.rc != 0
+
     - name: wait until the data port port is up
       wait_for:
         host: "{{ ansible_host }}"
@@ -103,7 +123,10 @@
     - compute
   tasks:
     - name: start compute
-      shell: "nohup {{ deploy_dir }}/compute/start_compute_svc.sh {{ deploy_dir }}/compute/config/compute.yml &"
+      shell: "nohup {{ deploy_dir }}/compute/start_v3_service.sh {{ deploy_dir }}/compute/config/compute.yml compute {{deploy_dir}}/miniconda/envs/python375/bin/python &"
+      register: result
+      changed_when: false
+      failed_when: result.rc != 0
 
     - name: wait until the compute port port is up
       wait_for:
@@ -113,19 +136,24 @@
         msg: "the node_exporter port {{ compute_port_self }} is not up"
 
 
-- hosts: storage
-  tags:
-    - storage
-  tasks:
-    - name: start storage
-      shell: "cd {{ deploy_dir }}/storage && nohup java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active=storage &"
-
-    - name: wait until the storage_port port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ storage_port }}"
-        state: started
-        msg: "the node_exporter port {{ storage_port }} is not up"
+#- hosts: storage
+#  tags:
+#    - storage
+#  tasks:
+#    - name: start storage
+#      shell: "nohup java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active=storage &"
+#      args:
+#        chdir: "{{ deploy_dir }}/storage"
+#      register: result
+#      changed_when: false
+#      failed_when: result.rc != 0
+#
+#    - name: wait until the storage_port port is up
+#      wait_for:
+#        host: "{{ ansible_host }}"
+#        port: "{{ storage_port }}"
+#        state: started
+#        msg: "the node_exporter port {{ storage_port }} is not up"
 
 # - hosts: scan
 #   tags:

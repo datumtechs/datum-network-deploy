@@ -9,6 +9,10 @@
     mode: 0744
     force: yes
     validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 3
+  delay: "{{ 10 | random }}"
 
 # 调度服务
 - name: download carrier binary
@@ -18,6 +22,10 @@
     mode: 0744
     force: yes
     validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 3
+  delay: "{{ 10 | random }}"
 
 # keytool，生成 p2p 私钥
 - name: download keytool binary
@@ -27,6 +35,10 @@
     mode: 0744
     force: yes
     validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 3
+  delay: "{{ 10 | random }}"
 
 # consul 官网下载程序包
 - name: download consul zip
@@ -37,6 +49,10 @@
     force: yes
     validate_certs: yes
     timeout: 300 # 下载时间比较长
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 3
+  delay: "{{ 10 | random }}"
 
 # Java JAR packages and Web static files
 - name: download admin jar package
@@ -46,6 +62,10 @@
     mode: 0644
     force: yes
     validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 3
+  delay: "{{ 10 | random }}"
 
 - name: download admin Web static files
   get_url:
@@ -54,6 +74,10 @@
     mode: 0644
     force: yes
     validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 3
+  delay: "{{ 10 | random }}"
 
 - name: download storage jar package
   get_url:
@@ -62,6 +86,10 @@
     mode: 0644
     force: yes
     validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 3
+  delay: "{{ 10 | random }}"
 
 # - name: download scan jar package
 #   get_url:
@@ -87,14 +115,22 @@
     mode: 0644
     force: yes
     validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 3
+  delay: "{{ 10 | random }}"
 
 - name: download channel sdk whl package
   get_url:
-    url: "{{ download_url }}/channel_sdk-2.0.0-cp36-cp36m-linux_x86_64.whl"
+    url: "{{ download_url }}/channel_sdk-2.0.0-cp37-cp37m-linux_x86_64.whl"
     dest: "{{ downloads_dir }}"
     mode: 0644
     force: yes
     validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 3
+  delay: "{{ 10 | random }}"
 
 - name: download metis dcv whl package
   get_url:
@@ -103,20 +139,44 @@
     mode: 0644
     force: yes
     validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 3
+  delay: "{{ 10 | random }}"
 
 # Data and computing services startup scripts
 - name: download start data script
   get_url:
-    url: "{{ download_url }}/start_data_svc.sh"
+    url: "{{ download_url }}/start_v3_service.sh"
     dest: "{{ downloads_dir }}"
     mode: 0744
     force: yes
     validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 3
+  delay: "{{ 10 | random }}"
 
 - name: download start computer script
   get_url:
-    url: "{{ download_url }}/start_compute_svc.sh"
+    url: "{{ download_url }}/start_v3_service.sh"
     dest: "{{ downloads_dir }}"
     mode: 0744
     force: yes
     validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 3
+  delay: "{{ 10 | random }}"
+
+- name: download mincoda sh file
+  get_url:
+    url: "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
+    dest: "{{ downloads_dir }}"
+    mode:  0744
+    force: yes
+    validate_certs: yes
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 3
+  delay: "{{ 10 | random }}"

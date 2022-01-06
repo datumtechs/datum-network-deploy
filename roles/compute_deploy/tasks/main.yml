@@ -36,101 +36,45 @@
     mode: 0600
     backup: yes
 
-# 安装python 和 rosetta 运行环境
-- name: Update and upgrade apt packages
-  become: true
-  apt:
-    upgrade: yes
-    update_cache: yes
-    force_apt_get: yes
-    cache_valid_time: 86400 #One day
+# copy Miniconda3-latest-Linux-x86_64.sh
+- name: "copy Miniconda3 Executable file"
+  copy:
+    src: "{{ downloads_dir }}/Miniconda3-latest-Linux-x86_64.sh"
+    dest: "{{ deploy_dir }}/miniconda.sh"
+    mode: 0755
+    backup: yes
 
-- name: install dependencies 
-  become: true
-  apt: name={{ item }} state=installed update_cache=yes
-  with_items:
-    - apt-utils 
-    - gcc 
-    - g++ 
-    - clang 
-    - make 
-    - automake 
-    - cmake 
-    - build-essential 
-    - autoconf
-    - pkg-config 
-    - bsdmainutils 
-    - libssl-dev 
-    - libtbb-dev 
-    - libgmpxx4ldbl 
-    - libtool 
-    - libgflags-dev 
-    - libgtest-dev 
-    - libc++-dev
-    - vim 
-    - wget 
-    - unzip 
-    - git 
-    - tree 
-    - dos2unix 
-    - time 
-    - sed 
-    - gawk 
-    - sudo
-    - python3.7 
-    - python3.7-dev 
-    - python3-distutils 
-    - python3-pip
+# install conda
+- name: Install conda
+  become: yes
+  shell : "([ ! -e {{deploy_dir}}/miniconda ] && ({{deploy_dir}}/miniconda.sh -b -p {{deploy_dir}}/miniconda && {{deploy_dir}}/miniconda/bin/conda init $(echo $SHELL | awk -F '/' '{print $NF}')))|cat"
 
+# install python3.7.5
 - name: Install python3.7
   become: yes
-  shell: cd /usr/bin && ln -sf python3.7 python && ln -sf python3.7 python3 && ln -sf pip3 pip && python -m pip install --upgrade pip
-
-- name: Change the python interpreter of the /usr/lib/cnf-update-db file
-  become: yes
-  lineinfile:
-    path: /usr/lib/cnf-update-db
-    regexp: "#!/usr/bin/python3"
-    line: "#!/usr/bin/python3.6"
-
-- name: Install python dependencies setuptools
-  shell: pip3 install setuptools wheel -i https://mirrors.aliyun.com/pypi/simple/
-
-- name: Install python dependencies tensorflow
-  shell: pip3 --no-cache-dir install numpy==1.16.0 pandas sklearn tensorflow==1.14.0 -i https://mirrors.aliyun.com/pypi/simple/
+  shell: "([ ! -e {{deploy_dir}}/miniconda/envs/python375 ] && ({{deploy_dir}}/miniconda/bin/conda create --name python375 python=3.7.5 -y))|cat"
 
 # copy whl file
 - name: "copy whl file"
   copy:
     src: "{{ downloads_dir }}/{{ item }}"
-    dest: "{{ deploy_dir }}/compute/whl/{{ item }}"
+    dest: "{{ deploy_dir }}/data/whl/{{ item }}"
     mode: 0600
     backup: yes
   with_items:
     - latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl
-    - channel_sdk-2.0.0-cp36-cp36m-linux_x86_64.whl
+    - channel_sdk-2.0.0-cp37-cp37m-linux_x86_64.whl
     - metis_dcv-0.9.1-py3-none-any.whl
 
-# install rosetta
-- name: Install rosetta
-  shell: pip3 install {{ deploy_dir }}/compute/whl/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl
-
-# install channel sdk
-# - name: Install channel sdk
-#   shell: pip3 install {{ deploy_dir }}/compute/whl/channel_sdk-2.0.0-cp36-cp36m-linux_x86_64.whl
-
-# install dce
-- name: Install dce
-  shell: pip3 install {{ deploy_dir }}/compute/whl/metis_dcv-0.9.1-py3-none-any.whl
-
-# Obtaining the execution script start_compute_svc.sh
-- name: "Obtaining the execution script start_compute_svc.sh"
-  copy:
-    src: "{{ downloads_dir }}/start_compute_svc.sh"
-    dest: "{{ deploy_dir }}/compute/start_compute_svc.sh"
-    mode: 0775
-    backup: yes
-
-- name: Install python3.6
+# install whl file
+- name: "install whl file"
   become: yes
-  shell: cd /usr/bin && ln -sf python3.6 python && ln -sf python3.6 python3 && ln -sf pip3 pip && python -m pip install --upgrade pip
+  shell : "{{deploy_dir}}/miniconda/envs/python375/bin/python -m pip install {{ deploy_dir }}/data/whl/*.whl -i https://pypi.douban.com/simple/"
+
+# copy start.sh file
+- name: "copy start.sh file"
+  copy:
+    src: "{{ downloads_dir }}/start_v3_service.sh"
+    dest: "{{ deploy_dir }}/compute/start_v3_service.sh"
+    mode: 0755
+    backup: yes

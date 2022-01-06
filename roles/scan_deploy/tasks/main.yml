@@ -46,7 +46,7 @@
   copy:
     src: "{{ downloads_dir }}/scan.jar"
     dest: "{{ deploy_dir }}/scan/scan"
-    mode: 0775
+    mode: 0755
     backup: yes
 
 # 拷贝 web 静态文件

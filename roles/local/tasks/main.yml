@@ -1,30 +1,59 @@
 ---
-
+# 检查 ansible 版本和依赖项是否正常安装
 - name: Stop if ansible version is too low, make sure that the Ansible version is Ansible 2.4.2 or later, otherwise a compatibility issue occurs.
   assert:
     that:
       - ansible_version.full|version_compare('2.4.2', '>=')
-      # - ansible_version.full is version('2.5.0', '>=')
 
-- name: create downloads and resources directories
+- name: Check if jinja2 installed
+  shell: pip list | grep -iw jinja2 | wc -l
+  changed_when: false
+  register: jinja2_exist
+
+- name: Preflight check - Fail when jinja2 isn't installed
+  fail:
+    msg: "Jinja2 does not exist, Please run `pip install -r requirements.txt` to install."
+  when: jinja2_exist.stdout | int == 0
+
+- name: Get jinja2 info
+  shell: pip show jinja2 | grep Version |grep -v Metadata-Version
+  changed_when: false
+  register: jinja2
+
+- name: Get jinja2 version
+  set_fact:
+    jinja2_version: "{{ jinja2.stdout_lines[0] | replace('Version: ', '') }}"
+
+- name: Preflight check - Fail when the versions of jinja2 doesn't meet the requirements
+  fail:
+    msg: "jinja2({{ jinja2_version }}) version is too low, Please run `pip install --upgrade -r requirements.txt` to upgrade."
+  when: jinja2_version | version_compare('2.9.6', '<')
+
+# 检查主机清单是否正确
+- name: Ensure consul exists
+  fail: msg="consul should be specified."
+  when: groups['consul'] | length < 1
+
+- name: Check ansible_user variable
+  fail: msg="ansible_user == 'root' is not supported, please ssh via normal user"
+  when: ansible_user == 'root'
+
+# 创建下载文件放置目录
+- name: create downloads directory
   file: path="{{ item }}" state=directory mode=0755
   with_items:
   - "{{ downloads_dir }}"
 
-- name: create cert directory
-  file: path="{{ cert_dir }}" state=directory mode=0755
-  when: enable_tls|default(false)
-
-# preflight checks
+# 检查网络情况
 - name: detect outbound network[1]
-  shell: >
-    warn=no
-    curl -s --connect-timeout 10 www.baidu.com 2>/dev/null >/dev/null; echo $?
+  shell: curl -s --connect-timeout 10 www.baidu.com 2>/dev/null >/dev/null; echo $?
+  args:
+    warn: no
   changed_when: false
-  register: outbound_network_st
+  register: outbound_network_shell_result
 
 - name: set outbound network fact[1]
-  set_fact: has_outbound_network={{ outbound_network_st.stdout.strip() == '0' }}
+  set_fact: has_outbound_network={{ outbound_network_shell_result.stdout.strip() == '0' }}
 
 - name: "Debug has_outbound_network information"
   debug:
@@ -33,20 +62,6 @@
 - fail:
     msg: "The Control Machine must have access to the Internet in order to download Metisnetwork related packages."
   when: not has_outbound_network
-
-- name: detect outbound network[2]
-  shell: >
-    warn=no
-    curl -s --connect-timeout 10 google.com 2>/dev/null >/dev/null; echo $?
-  changed_when: false
-  register: outbound_st
-
-- name: "Debug outbound_st information"
-  debug:
-    var: outbound_st
-
-- name: set outbound network fact[2]
-  set_fact: under_outbound={{ outbound_st.stdout.strip() != '0' }}
 
 # do actual downloading
 - include_tasks: "{{ deployment_method }}_deployment.yml"
