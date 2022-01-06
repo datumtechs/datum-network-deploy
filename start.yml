@@ -149,26 +149,26 @@
       when: enable_deploy_compute|default(false)
 
 
-#- hosts: storage
-#  tags:
-#    - storage_servers
-#  tasks:
-#    - name: start storage
-#      shell: "nohup java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active=storage &"
-#      args:
-#        chdir: "{{ deploy_dir }}/storage"
-#      register: result
-#      changed_when: false
-#      failed_when: result.rc != 0
-#      when: enable_deploy_storage|default(false)
-#
-#    - name: wait until the storage_port port is up
-#      wait_for:
-#        host: "{{ ansible_host }}"
-#        port: "{{ storage_port }}"
-#        state: started
-#        msg: "the node_exporter port {{ storage_port }} is not up"
-#      when: enable_deploy_storage|default(false)
+- hosts: storage
+  tags:
+    - storage_servers
+  tasks:
+    - name: start storage
+      shell: "nohup java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active=storage &"
+      args:
+        chdir: "{{ deploy_dir }}/storage"
+      register: result
+      changed_when: false
+      failed_when: result.rc != 0
+      when: enable_deploy_storage|default(false)
+
+    - name: wait until the storage_port port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ storage_port }}"
+        state: started
+        msg: "the node_exporter port {{ storage_port }} is not up"
+      when: enable_deploy_storage|default(false)
 
 # - hosts: scan
 #   tags:
