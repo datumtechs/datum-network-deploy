@@ -12,10 +12,12 @@
       register: result
       changed_when: false
       failed_when: result.rc != 0
+      when: enable_deploy_consul|default(false)
 
     - name: Debug consul_http_port_self information
       debug:
         var: consul_http_port_self | trim
+      when: enable_deploy_consul|default(false)
 
     - name: wait until the consul http port is up
       wait_for:
@@ -23,6 +25,7 @@
         port:  "{{consul_http_port_self | trim}}"
         state: started
         msg: "the node_exporter port {{ consul_http_port_self | trim }} is not up"
+      when: enable_deploy_consul|default(false)
 
     - name: Other nodes join the cluster
       shell: "{{ deploy_dir }}/consul/consul join --http-addr {{ansible_host}}:{{consul_http_port_self | trim}} {{consul_leader}}:{{consul_leader_serf_lan_port}}"
@@ -70,7 +73,7 @@
     - carrier_servers
   tasks:
     - name: start carrier
-      shell: "nohup {{ deploy_dir }}/carrier/carrier --config-file {{ deploy_dir }}/carrier/config/carrier.yml &"
+      shell: "nohup {{ deploy_dir }}/carrier/carrier --config-file {{ deploy_dir }}/carrier/config/carrier.yml > {{ deploy_dir }}/carrier/carrier.log 2>&1 &"
       register: result
       changed_when: false
       failed_when: result.rc != 0

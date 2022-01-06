@@ -24,7 +24,8 @@ enable_deploy_carrier: True
 enable_deploy_admin: True
 enable_deploy_data: True
 enable_deploy_compute: True
-enable_deploy_storage: false
+enable_deploy_storage: False
+enable_deploy_consul: True
 
 ###############################################
 # 端口号根据自己的部署情况进行设置，数量要和库存文件里面一致。
@@ -58,7 +59,7 @@ carrier_p2p_tcp_port: 10036
 admin_web_port: 9090
 
 # storage 端口号
-storage_port: 10039
+storage_port: 9098
 
 # scan 端口号
 scan_web_port: 9001
