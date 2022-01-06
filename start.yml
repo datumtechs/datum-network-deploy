@@ -5,7 +5,7 @@
   hosts: consul
   gather_facts: True
   tags:
-    - consul
+    - consul_servers
   tasks:
     - name: start consul
       shell: "nohup {{ deploy_dir }}/consul/consul agent -config-file {{ deploy_dir }}/consul/config/consul.json &"
@@ -26,7 +26,7 @@
 
     - name: Other nodes join the cluster
       shell: "{{ deploy_dir }}/consul/consul join --http-addr {{ansible_host}}:{{consul_http_port_self | trim}} {{consul_leader}}:{{consul_leader_serf_lan_port}}"
-      when: "ansible_host != consul_leader && groups['consul'] | length > 1"
+      when: ansible_host != consul_leader and groups['consul'] | length > 1
       register: result
       changed_when: false
       failed_when: result.rc != 0
@@ -47,13 +47,14 @@
 
 - hosts: via
   tags:
-    - via
+    - via_servers
   tasks:
     - name: start via
       shell: "nohup {{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/config/via.yml &"
       register: result
       changed_when: false
       failed_when: result.rc != 0
+      when: enable_deploy_via|default(false)
       
     - name: wait until the via_port port is up
       wait_for:
@@ -61,17 +62,19 @@
         port: "{{ via_port }}"
         state: started
         msg: "the node_exporter port {{ via_port }} is not up"
+      when: enable_deploy_via|default(false)
 
 
 - hosts: carrier
   tags:
-    - carrier
+    - carrier_servers
   tasks:
     - name: start carrier
       shell: "nohup {{ deploy_dir }}/carrier/carrier --config-file {{ deploy_dir }}/carrier/config/carrier.yml &"
       register: result
       changed_when: false
       failed_when: result.rc != 0
+      when: enable_deploy_carrier|default(false)
 
     - name: wait until the carrier_rpc_port port is up
       wait_for:
@@ -79,10 +82,11 @@
         port: "{{ carrier_rpc_port }}"
         state: started
         msg: "the node_exporter port {{ carrier_rpc_port }} is not up"
+      when: enable_deploy_carrier|default(false)
 
 - hosts: admin
   tags:
-    - admin
+    - admin_servers
   tasks:
     - name: start admin
       shell: " nohup java -jar {{ deploy_dir }}/admin/admin.jar --spring.profiles.active=admin &"
@@ -91,6 +95,7 @@
       register: result
       changed_when: false
       failed_when: result.rc != 0
+      when: enable_deploy_admin|default(false)
     
     - name: wait until the admin_web_port port is up
       wait_for:
@@ -98,17 +103,19 @@
         port: "{{ admin_web_port }}"
         state: started
         msg: "the node_exporter port {{ admin_web_port }} is not up"
+      when: enable_deploy_admin|default(false)
 
 - name: start data
   hosts: data
   tags:
-    - data
+    - data_servers
   tasks:
     - name: start data
       shell: "nohup {{ deploy_dir }}/data/start_v3_service.sh {{ deploy_dir }}/data/config/data.yml data {{deploy_dir}}/miniconda/envs/python375/bin/python &"
       register: result
       changed_when: false
       failed_when: result.rc != 0
+      when: enable_deploy_data|default(false)
 
     - name: wait until the data port port is up
       wait_for:
@@ -116,17 +123,19 @@
         port: "{{ data_port_self }}"
         state: started
         msg: "the node_exporter port {{ data_port_self }} is not up"
+      when: enable_deploy_data|default(false)
 
 - name: start compute
   hosts: compute
   tags:
-    - compute
+    - compute_servers
   tasks:
     - name: start compute
       shell: "nohup {{ deploy_dir }}/compute/start_v3_service.sh {{ deploy_dir }}/compute/config/compute.yml compute {{deploy_dir}}/miniconda/envs/python375/bin/python &"
       register: result
       changed_when: false
       failed_when: result.rc != 0
+      when: enable_deploy_compute|default(false)
 
     - name: wait until the compute port port is up
       wait_for:
@@ -134,11 +143,12 @@
         port: "{{ compute_port_self }}"
         state: started
         msg: "the node_exporter port {{ compute_port_self }} is not up"
+      when: enable_deploy_compute|default(false)
 
 
 #- hosts: storage
 #  tags:
-#    - storage
+#    - storage_servers
 #  tasks:
 #    - name: start storage
 #      shell: "nohup java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active=storage &"
@@ -147,6 +157,7 @@
 #      register: result
 #      changed_when: false
 #      failed_when: result.rc != 0
+#      when: enable_deploy_storage|default(false)
 #
 #    - name: wait until the storage_port port is up
 #      wait_for:
@@ -154,6 +165,7 @@
 #        port: "{{ storage_port }}"
 #        state: started
 #        msg: "the node_exporter port {{ storage_port }} is not up"
+#      when: enable_deploy_storage|default(false)
 
 # - hosts: scan
 #   tags:
