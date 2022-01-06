@@ -8,40 +8,40 @@
   tags:
     - via_servers
   roles:
-    - via_deploy
+    - { role: via_deploy, when: enable_deploy_via|default(false) }
 
 - name: deploying carrier
   hosts: carrier
   tags:
     - carrier_servers
   roles:
-    - carrier_deploy
+    - { role: carrier_deploy, when: enable_deploy_carrier|default(false) }
 
 - name: deploying admin
   hosts: admin
   tags:
     - admin_servers
   roles:
-    - admin_deploy
+    - { role: admin_deploy, when: enable_deploy_admin|default(false) }
 
 - name: deploying data
-  hosts: data_servers
+  hosts: data
   tags:
-    - data
+    - data_servers
   roles:
-    - data_deploy
+    - { role: data_deploy, when: enable_deploy_data|default(false) }
 
 - name: deploying compute
-  hosts: compute_servers
+  hosts: compute
   tags:
-    - compute
+    - compute_servers
   roles:
-    - compute_deploy
+    - { role: compute_deploy, when: enable_deploy_compute|default(false) }
 
 - name: deploying consul
-  hosts: consul_servers
+  hosts: consul
   tags:
-    - consul
+    - consul_servers
   roles:
     - consul_deploy
 
