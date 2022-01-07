@@ -59,7 +59,8 @@
   debug:
     var: has_outbound_network
 
-- fail:
+- name: "check has_outbound_network"
+  fail:
     msg: "The Control Machine must have access to the Internet in order to download Metisnetwork related packages."
   when: not has_outbound_network
 

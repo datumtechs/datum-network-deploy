@@ -53,7 +53,7 @@
     - via_servers
   tasks:
     - name: start via
-      shell: "nohup {{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/config/via.yml &"
+      shell: "nohup {{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/config/via.yml >/dev/null  2>&1 &"
       register: result
       changed_when: false
       failed_when: result.rc != 0
@@ -66,7 +66,6 @@
         state: started
         msg: "the node_exporter port {{ via_port }} is not up"
       when: enable_deploy_via|default(false)
-
 
 - hosts: carrier
   tags:
@@ -92,7 +91,7 @@
     - admin_servers
   tasks:
     - name: start admin
-      shell: " nohup java -jar {{ deploy_dir }}/admin/admin.jar --spring.profiles.active=admin &"
+      shell: "nohup java -jar {{ deploy_dir }}/admin/admin.jar --spring.profiles.active=admin &"
       args:
         chdir: "{{ deploy_dir }}/admin"
       register: result

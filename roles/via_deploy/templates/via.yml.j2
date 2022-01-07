@@ -1,25 +1,25 @@
 via:
-  host: {{inventory_hostname}}  # service host(IP), for consul service registration.
+  host: {{inventory_hostname}}   # service host(IP), for consul service registration.
   port: {{ via_port }}          # service port, for consul service registration.
-  # id: viaService                # service id, for consul service registration， if null, the id will be viaService_host_port as default.
-  name: viaService              # service name, for consul service registration
-  tags: VIA                     # service tag, for consul service registration。 separate multiple tags with semicolons.
-  interval: 10                  # health check interval in seconds, for consul service registration.
-  deregister: 20                # deregister service in seconds, for consul service registration.
-  timeout: 20                   # timeout in seconds, for Via call back task server.
+  id: viaService_{{inventory_hostname}}_{{via_port}}       # service id, for consul service registration， if null, the id will be viaService_host_port as default.
+  name: viaService      # service name, for consul service registration
+  tags: via             # service tag, for consul service registration。 separate multiple tags with semicolons.
+  interval: 10          # health check interval in seconds, for consul service registration.
+  deregister: 20        # deregister service in seconds, for consul service registration.
+  timeout: 20           # timeout in seconds, for Via call back task server.
 
 consul:
   host: {{consul_leader}}       # if empty, will not register VIA to Consul
-  port: {{consul_leader_port}}                                                                        # if empty, will not register VIA to Consul
+  port: {{consul_leader_port}}             # if empty, will not register VIA to Consul
 
 tls:
   #tls mode options: none, one_way, two_way
   mode: none
-  viaCertFile: {{via_cert_file}}
-  viaKeyFile: {{via_key_file}}
-  ioCertFile: {{io_cert_file}}
-  ioKeyFile: {{io_key_file}}
-  caCertFile: {{ca_cert_file}}
+  viaCertFile: cert/server.crt
+  viaKeyFile: cert/server.key
+  ioCertFile: cert/client.crt
+  ioKeyFile: cert/client.key
+  caCertFile: cert/ca.crt
 
 log:
   file: {{via_log_file}}

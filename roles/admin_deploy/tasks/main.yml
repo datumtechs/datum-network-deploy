@@ -11,6 +11,10 @@
   - "{{ deploy_dir }}/admin/log"
   - "{{ deploy_dir }}/admin/network"
 
+- name: set admin_log_dir facts
+  set_fact:
+    admin_log_dir: "{{ deploy_dir }}/admin/log"
+
 - name: "Deploy certificates"
   copy:
     src: "{{ admin_cert_dir }}/{{ item }}"
