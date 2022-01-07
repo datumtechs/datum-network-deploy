@@ -58,7 +58,7 @@
 - name: "copy whl file"
   copy:
     src: "{{ downloads_dir }}/{{ item }}"
-    dest: "{{ deploy_dir }}/data/whl/{{ item }}"
+    dest: "{{ deploy_dir }}/compute/whl/{{ item }}"
     mode: 0600
     backup: yes
   with_items:
@@ -69,7 +69,7 @@
 # install whl file
 - name: "install whl file"
   become: yes
-  shell : "{{deploy_dir}}/miniconda/envs/python375/bin/python -m pip install {{ deploy_dir }}/data/whl/*.whl -i https://pypi.douban.com/simple/"
+  shell : "{{deploy_dir}}/miniconda/envs/python375/bin/python -m pip install {{ deploy_dir }}/compute/whl/*.whl -i https://pypi.douban.com/simple/"
 
 # copy start.sh file
 - name: "copy start.sh file"

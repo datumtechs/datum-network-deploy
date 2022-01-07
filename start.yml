@@ -29,7 +29,7 @@
 
     - name: Other nodes join the cluster
       shell: "{{ deploy_dir }}/consul/consul join --http-addr {{ansible_host}}:{{consul_http_port_self | trim}} {{consul_leader}}:{{consul_leader_serf_lan_port}}"
-      when: ansible_host != consul_leader and groups['consul'] | length > 1
+      when: ansible_host != consul_leader and groups['consul'] | length > 1 and  enable_deploy_consul|default(false)
       register: result
       changed_when: false
       failed_when: result.rc != 0
@@ -39,14 +39,14 @@
         url: http://{{consul_leader}}:{{consul_leader_port}}/v1/kv/metis/via_ip_port
         method: PUT
         body: "{{via_ip}}_{{via_port}}" 
-        when: "ansible_host == consul_leader"
+        when: "ansible_host == consul_leader and enable_deploy_consul|default(false)"
 
     - name: Set data center address
       uri: 
         url: http://{{consul_leader}}:{{consul_leader_port}}/v1/kv/metis/dataCenter_ip_port
         method: PUT
         body: "{{storage_ip}}_{{storage_port}}" 
-        when: "ansible_host == consul_leader"
+        when: "ansible_host == consul_leader and enable_deploy_consul|default(false)"
 
 - hosts: via
   tags:

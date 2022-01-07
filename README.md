@@ -73,7 +73,6 @@ inventory.ini 库存文件根据自己的实际情况配置各个服务的 ip �
 4. 下载安装包到下载目录(go 二进制文件， jar 包， web 静态资源文件， whl 文件，shell 脚本)，下载任务最多运行 3 次，每次尝试的延迟是10之内的随机值。
 
 ```shell
-# 只是在主控机上操作，不需要 ssh 密码，没有操作需要 root 权限，不需要提权。
 ansible-playbook -i inventory.ini local_prepare.yml
 ```
 
@@ -83,7 +82,6 @@ ansible-playbook -i inventory.ini local_prepare.yml
 2. 检查 python 和 python3 是否安装，没有安装会进行安装。
 
 ```shell
-# 在目标主机上执行，需要 ssh 密码，安装 python 操作需要 root 权限，需要提权。
 ansible-playbook -i inventory.ini bootstrap.yml -k --ask-sudo-pass
 ```
 
@@ -94,7 +92,6 @@ ansible-playbook -i inventory.ini bootstrap.yml -k --ask-sudo-pass
 3. 拷贝可执行文件到目标机器。
 
 ```shell
-# 在目标主机上执行，需要 ssh 密码，安装操作需要 root 权限，需要提权。
 ansible-playbook -i inventory.ini deploy.yml -k --ask-sudo-pass
 ```
 
@@ -103,7 +100,6 @@ ansible-playbook -i inventory.ini deploy.yml -k --ask-sudo-pass
 1. 在后台运行服务
 
 ```shell
-# 在目标主机上执行，需要 ssh 密码
 ansible-playbook -i inventory.ini start.yml -k
 ```
 
@@ -112,6 +108,5 @@ ansible-playbook -i inventory.ini start.yml -k
 1. kill 掉运行的服务
 
 ```shell
-# 在目标主机上执行，需要 ssh 密码
 ansible-playbook -i inventory.ini stop.yml -k --ask-sudo-pass
 ```
