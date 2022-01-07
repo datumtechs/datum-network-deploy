@@ -3,3 +3,79 @@
 # 销毁集群
 
 
+- hosts: via
+  tags:
+    - via_servers
+  tasks:
+    - name: clean via
+      become: true
+      file:
+        path: "{{ deploy_dir }}/via"
+        state: absent
+      when: enable_deploy_via|default(false)
+
+- hosts: consul
+  tags:
+    - consul_servers
+  tasks:
+    - name: clean consul
+      become: true
+      file:
+        path: "{{ deploy_dir }}/consul"
+        state: absent
+      when: enable_deploy_consul|default(false)
+
+- hosts: carrier
+  tags:
+    - carrier_servers
+  tasks:
+    - name: clean carrier
+      become: true
+      file:
+        path: "{{ deploy_dir }}/carrier"
+        state: absent
+      when: enable_deploy_carrier|default(false)
+
+- hosts: admin
+  tags:
+    - admin_servers
+  tasks:
+    - name: clean admin
+      become: true
+      file:
+        path: "{{ deploy_dir }}/admin"
+        state: absent
+      when: enable_deploy_admin|default(false)
+
+- hosts: data
+  tags:
+    - data_servers
+  tasks:
+    - name: clean data
+      become: true
+      file:
+        path: "{{ deploy_dir }}/data"
+        state: absent
+      when: enable_deploy_data|default(false)
+
+- hosts: compute
+  tags:
+    - compute_servers
+  tasks:
+    - name: clean compute
+      become: true
+      file:
+        path: "{{ deploy_dir }}/compute"
+        state: absent
+      when: enable_deploy_compute|default(false)
+
+- hosts: storage
+  tags:
+    - storage_servers
+  tasks:
+    - name: clean storage
+      become: true
+      file:
+        path: "{{ deploy_dir }}/storage"
+        state: absent
+      when: enable_deploy_storage|default(false)
