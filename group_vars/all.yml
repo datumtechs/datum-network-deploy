@@ -22,8 +22,8 @@ storage_password: storage_123456
 enable_deploy_via: True
 enable_deploy_carrier: True
 enable_deploy_admin: True
-enable_deploy_data: True
-enable_deploy_compute: True
+enable_deploy_data: False
+enable_deploy_compute: False
 enable_deploy_storage: False
 enable_deploy_consul: True
 
