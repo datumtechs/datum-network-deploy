@@ -8,7 +8,6 @@
     - via_servers
   tasks:
     - name: clean via
-      become: true
       file:
         path: "{{ deploy_dir }}/via"
         state: absent
@@ -19,7 +18,6 @@
     - consul_servers
   tasks:
     - name: clean consul
-      become: true
       file:
         path: "{{ deploy_dir }}/consul"
         state: absent
@@ -30,7 +28,6 @@
     - carrier_servers
   tasks:
     - name: clean carrier
-      become: true
       file:
         path: "{{ deploy_dir }}/carrier"
         state: absent
@@ -41,7 +38,6 @@
     - admin_servers
   tasks:
     - name: clean admin
-      become: true
       file:
         path: "{{ deploy_dir }}/admin"
         state: absent
@@ -52,7 +48,6 @@
     - data_servers
   tasks:
     - name: clean data
-      become: true
       file:
         path: "{{ deploy_dir }}/data"
         state: absent
@@ -63,7 +58,6 @@
     - compute_servers
   tasks:
     - name: clean compute
-      become: true
       file:
         path: "{{ deploy_dir }}/compute"
         state: absent
@@ -74,7 +68,6 @@
     - storage_servers
   tasks:
     - name: clean storage
-      become: true
       file:
         path: "{{ deploy_dir }}/storage"
         state: absent

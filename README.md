@@ -65,6 +65,22 @@ inventory.ini 库存文件根据自己的实际情况配置各个服务的 ip �
 4. mysql 相关用户名密码
 5. 各个服务端口号
 
+**如果只想部署、启动、关闭、销毁某一个或几个服务**
+
+我们只需要将all.yml中下面的相关参数置为False，默认情况下是除了storage服务为False，其它均为True
+
+~~~
+enable_deploy_via: True
+enable_deploy_carrier: True
+enable_deploy_admin: True
+enable_deploy_data: True
+enable_deploy_compute: True
+enable_deploy_storage: False
+enable_deploy_consul: True
+~~~
+
+
+
 ## 主控节点做的准备工作
 
 1. 检查 ansible 版本大于 2.4.2，检查 jinja2 安装和版本信息。
@@ -115,3 +131,18 @@ ansible-playbook -i inventory.ini start.yml -k
 # 在目标主机上执行，需要 ssh 密码
 ansible-playbook -i inventory.ini stop.yml -k --ask-sudo-pass
 ```
+
+## 销毁服务
+
+1. 先关闭要销毁服务
+
+~~~
+ansible-playbook -i inventory.ini stop.yml -k --ask-sudo-pass
+~~~
+
+2. 销毁要销毁的服务
+
+~~~
+ansible-playbook -i inventory.ini cleanup.yml -k
+~~~
+
