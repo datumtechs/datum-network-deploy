@@ -7,7 +7,7 @@
     - via
   tasks:
     - name: stop via
-      shell: ps -ef | grep "{{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/config/via.yml" | grep -v "grep" | awk -v FS=" " '{print $2}' | xargs kill -s TERM
+      shell: ps -ef | grep "{{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/config/via.yml" | grep -v "grep" | awk -v FS=" " '{print $2}' | xargs -r kill -s TERM
       register: result
       changed_when: false
       failed_when: result.rc != 0
