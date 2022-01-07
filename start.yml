@@ -53,7 +53,7 @@
     - via_servers
   tasks:
     - name: start via
-      shell: "nohup {{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/config/via.yml >/dev/null  2>&1 &"
+      shell: "nohup {{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/config/via.yml >/dev/null 2>&1 &"
       register: result
       changed_when: false
       failed_when: result.rc != 0
