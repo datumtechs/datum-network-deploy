@@ -46,12 +46,10 @@
 
 # install conda
 - name: Install conda
-  become: yes
   shell : "([ ! -e {{deploy_dir}}/miniconda ] && ({{deploy_dir}}/miniconda.sh -b -p {{deploy_dir}}/miniconda && {{deploy_dir}}/miniconda/bin/conda init $(echo $SHELL | awk -F '/' '{print $NF}')))|cat"
 
 # install python3.7.5
 - name: Install python3.7
-  become: yes
   shell: "([ ! -e {{deploy_dir}}/miniconda/envs/python375 ] && ({{deploy_dir}}/miniconda/bin/conda create --name python375 python=3.7.5 -y))|cat"
 
 # copy whl file
@@ -68,7 +66,6 @@
 
 # install whl file
 - name: "install whl file"
-  become: yes
   shell : "{{deploy_dir}}/miniconda/envs/python375/bin/python -m pip install {{ deploy_dir }}/compute/whl/*.whl -i https://pypi.douban.com/simple/"
 
 # copy start.sh file
