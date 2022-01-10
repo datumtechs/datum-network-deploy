@@ -24,7 +24,7 @@ enable_deploy_carrier: True
 enable_deploy_admin: True
 enable_deploy_data: True
 enable_deploy_compute: True
-enable_deploy_storage: False
+enable_deploy_storage: True
 enable_deploy_consul: True
 
 ###############################################

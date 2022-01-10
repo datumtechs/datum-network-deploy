@@ -7,7 +7,7 @@
     - via
   tasks:
     - name: stop via
-      shell: ps -ef | grep "{{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/config/via.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
+      shell: VIA_PID=$(ps -ef | grep "{{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/config/via.yml" | grep -v "grep" | awk '{print $2}'); if [ "$VIA_PID" != "" ]; then kill -s TERM $VIA_PID; fi
       register: result
       changed_when: false
       failed_when: result.rc != 0
@@ -27,7 +27,7 @@
     - carrier
   tasks:
     - name: stop carrier
-      shell: ps -ef | grep "{{ deploy_dir }}/carrier/carrier --config-file {{ deploy_dir }}/carrier/config/carrier.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
+      shell: CARRIER_PID=$(ps -ef | grep "{{ deploy_dir }}/carrier/carrier --config-file {{ deploy_dir }}/carrier/config/carrier.yml" | grep -v "grep" | awk '{print $2}'); if [ "$CARRIER_PID" != "" ]; then kill -s TERM $CARRIER_PID; fi
       register: result
       changed_when: false
       failed_when: result.rc != 0
@@ -46,7 +46,7 @@
     - admin
   tasks:
     - name: stop admin
-      shell: ps -ef | grep "java -jar {{ deploy_dir }}/admin/admin.jar --spring.profiles.active=admin" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
+      shell: ADMIN_PID=$(ps -ef | grep "java -jar {{ deploy_dir }}/admin/admin.jar --spring.profiles.active=admin" | grep -v "grep" | awk '{print $2}'); if [ "$ADMIN_PID" != "" ]; then kill -s TERM $ADMIN_PID; fi
       register: result
       changed_when: false
       failed_when: result.rc != 0
@@ -65,7 +65,7 @@
     - data
   tasks:
     - name: stop data
-      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.data_svc.main {{ deploy_dir }}/data/config/data.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
+      shell: DATA_PID=$(ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.data_svc.main {{ deploy_dir }}/data/config/data.yml" | grep -v "grep" | awk '{print $2}'); if [ "$ADMIN_PID" != "" ]; then kill -s TERM $ADMIN_PID; fi
       register: result
       changed_when: false
       failed_when: result.rc != 0
@@ -84,7 +84,7 @@
     - compute
   tasks:
     - name: stop compute
-      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.compute_svc.main {{ deploy_dir }}/compute/config/compute.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
+      shell: COMPUTE_PID=$(ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.compute_svc.main {{ deploy_dir }}/compute/config/compute.yml" | grep -v "grep" | awk '{print $2}'); if [ "$COMPUTE_PID" != "" ]; then kill -s TERM $COMPUTE_PID; fi
       register: result
       changed_when: false
       failed_when: result.rc != 0
@@ -104,7 +104,7 @@
     - consul
   tasks:
     - name: stop consul
-      shell: ps -ef | grep "{{ deploy_dir }}/consul/consul agent -config-file {{ deploy_dir }}/consul/config/consul.json" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
+      shell: CONSUL_PID=$(ps -ef | grep "{{ deploy_dir }}/consul/consul agent -config-file {{ deploy_dir }}/consul/config/consul.json" | grep -v "grep" | awk '{print $2}'); if [ "$CONSUL_PID" != "" ]; then kill -s TERM $CONSUL_PID; fi
       register: result
       changed_when: false
       failed_when: result.rc != 0
@@ -123,7 +123,7 @@
     - storage
   tasks:
     - name: stop storage
-      shell: ps -ef | grep "java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active=storage" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
+      shell: STORAGE_PID=$(ps -ef | grep "java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active=storage" | grep -v "grep" | awk '{print $2}'); if [ "$STORAGE_PID" != "" ]; then kill -s TERM $STORAGE_PID; fi
       register: result
       changed_when: false
       failed_when: result.rc != 0

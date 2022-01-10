@@ -139,7 +139,7 @@
       failed_when: result.rc != 0
       when: enable_deploy_compute|default(false)
 
-    - name: wait until the compute port port is up
+    - name: wait until the compute port is up
       wait_for:
         host: "{{ ansible_host }}"
         port: "{{ compute_port_self }}"
