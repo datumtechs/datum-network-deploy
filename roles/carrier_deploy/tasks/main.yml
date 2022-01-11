@@ -5,6 +5,7 @@
   with_items:
   - "{{ deploy_dir }}/carrier"
   - "{{ deploy_dir }}/carrier/config"
+  - "{{ deploy_dir }}/carrier/log"
   - "{{ deploy_dir }}/carrier/cert"
   - "{{ deploy_dir }}/carrier/p2p_priv_key"
   - "{{ deploy_dir }}/carrier/datadir"

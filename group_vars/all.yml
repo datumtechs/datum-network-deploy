@@ -22,8 +22,8 @@ storage_password: storage_123456
 enable_deploy_via: True
 enable_deploy_carrier: True
 enable_deploy_admin: True
-enable_deploy_data: True
-enable_deploy_compute: True
+enable_deploy_data: false
+enable_deploy_compute: false
 enable_deploy_storage: True
 enable_deploy_consul: True
 
@@ -81,7 +81,7 @@ data_cert_dir:   "{{ playbook_dir }}/config/data_cert"
 # 下面的变量不能进行更改
 
 # 目标主机文件安装目录
-deploy_dir: "/home/{{ansible_user}}"
+deploy_dir: "/home/{{ansible_ssh_user}}"
 
 # consul agent 信息
 consul_zip_name: "{{ consul_download_url.split('/')[-1] | trim }}"

@@ -34,9 +34,9 @@
   fail: msg="consul should be specified."
   when: groups['consul'] | length < 1
 
-- name: Check ansible_user variable
-  fail: msg="ansible_user == 'root' is not supported, please ssh via normal user"
-  when: ansible_user == 'root'
+- name: Check ansible_ssh_user variable
+  fail: msg="ansible_ssh_user == 'root' is not supported, please ssh via normal user"
+  when: ansible_ssh_user == 'root'
 
 # 创建下载文件放置目录
 - name: create downloads directory

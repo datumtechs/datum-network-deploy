@@ -18,16 +18,11 @@ start.yml: 启动所有服务
 
 stop.yml: 停止所有服务
 
-editConfig.yml: 变更配置
-
-update.yml： 升级组件版本
-
 cleanup.yml: 销毁集群
 
 ## 注意事项
 
 目前主控机和目标机只支持在Ubuntu 18.04
-
 ## 安装依赖
 
 **主控机上安装 ansible 和 依赖模块：**
@@ -54,7 +49,9 @@ mkdir log
 
 inventory.ini 库存文件根据自己的实际情况配置各个服务的 ip 地址
 
-目前只支持 ssh 普通用户名登录，ansible_user 设置为目标主机的用户名
+目前只支持 ssh 普通用户名登录， 且这个用户要支持 sudo 提权。
+
+ansible_ssh_user 设置为目标主机的用户名（不支持 root）, ansible_ssh_pass 设置为目标主机用户对应的密码，ansible_sudo_pass设置为 sudo 提权密码。
 
 **group_vars/all.yml 文件修改**
 
@@ -96,7 +93,7 @@ ansible-playbook -i inventory.ini local_prepare.yml
 2. 检查 python 和 python3 是否安装，没有安装会进行安装。
 
 ```shell
-ansible-playbook -i inventory.ini bootstrap.yml -k --ask-sudo-pass
+ansible-playbook -i inventory.ini bootstrap.yml
 ```
 
 ## 各个节点安装服务
@@ -106,7 +103,7 @@ ansible-playbook -i inventory.ini bootstrap.yml -k --ask-sudo-pass
 3. 拷贝可执行文件到目标机器。
 
 ```shell
-ansible-playbook -i inventory.ini deploy.yml -k --ask-sudo-pass
+ansible-playbook -i inventory.ini deploy.yml
 ```
 
 ## 启动服务
@@ -114,7 +111,7 @@ ansible-playbook -i inventory.ini deploy.yml -k --ask-sudo-pass
 1. 在后台运行服务
 
 ```shell
-ansible-playbook -i inventory.ini start.yml -k
+ansible-playbook -i inventory.ini start.yml
 ```
 
 ## 关闭服务
@@ -122,7 +119,7 @@ ansible-playbook -i inventory.ini start.yml -k
 1. kill 掉运行的服务
 
 ```shell
-ansible-playbook -i inventory.ini stop.yml -k --ask-sudo-pass
+ansible-playbook -i inventory.ini stop.yml 
 ```
 
 ## 销毁服务
@@ -130,12 +127,12 @@ ansible-playbook -i inventory.ini stop.yml -k --ask-sudo-pass
 1. 先关闭要销毁服务
 
 ```shell
-ansible-playbook -i inventory.ini stop.yml -k --ask-sudo-pass
+ansible-playbook -i inventory.ini stop.yml
 ```
 
 2. 销毁要销毁的服务
 
 ```shell
-ansible-playbook -i inventory.ini cleanup.yml -k
+ansible-playbook -i inventory.ini cleanup.yml
 ```
 
