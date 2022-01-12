@@ -118,3 +118,6 @@ compute_port_self: "{% set compute_number_int = groups['compute'] | length |int 
                       {% endif %}
                     {% endfor %}"
 
+#目标机系统自带Python版本
+self_python_version: 3.6.9
+

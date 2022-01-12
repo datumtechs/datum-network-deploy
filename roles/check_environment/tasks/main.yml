@@ -58,3 +58,40 @@
     - python3
     - python3-pip
   when: "'command not found' in py3_st.stdout"
+
+- name : Get current system self python3 version
+  shell: python3 -c "import sys;print('.'.join([str(i) for i in sys.version_info[:3]]))" | xargs echo -n
+  register: result
+
+- name: Check whether the system comes with pip has been modified
+  become: true
+  get_url:
+    url: "https://bootstrap.pypa.io/get-pip.py"
+    dest: "{{ deploy_dir }}"
+    mode: 0744
+    force: yes
+    validate_certs: no
+  retries: 3
+  delay: "{{ 10 | random }}"
+  when: result.stdout!=self_python_version
+
+- name: Check whether the system comes with python3 has been modified, revert system python3 link
+  become: true
+  file:
+    state: link
+    force: yes
+    mode: 0744
+    src: /usr/bin/python3.6
+    path: /usr/bin/python3
+  when: result.stdout!=self_python_version
+
+- name: Check whether the system comes with python3 has been modified, update python3 pip
+  shell: python3 {{ deploy_dir }}/get-pip.py
+  when: result.stdout!=self_python_version
+
+- name: Check whether update python3-dev
+  become: true
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+    - python3-dev
+  when: result.stdout!=self_python_version
