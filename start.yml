@@ -91,12 +91,15 @@
     - admin_servers
   tasks:
     - name: start admin
-      shell: "nohup java -jar {{ deploy_dir }}/admin/admin.jar --spring.profiles.active=admin &"
-      args:
-        chdir: "{{ deploy_dir }}/admin"
+      shell: "{{ deploy_dir }}/admin/scripts/start_admin.sh admin"
       register: result
       changed_when: false
       failed_when: result.rc != 0
+      when: enable_deploy_admin|default(false)
+
+    - name: Debug start admin information
+      debug:
+        var: result.stdout
       when: enable_deploy_admin|default(false)
     
     - name: wait until the admin_web_port port is up

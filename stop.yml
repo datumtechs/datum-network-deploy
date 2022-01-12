@@ -46,7 +46,7 @@
     - admin
   tasks:
     - name: stop admin
-      shell: ps -ef | grep "java -jar {{ deploy_dir }}/admin/admin.jar --spring.profiles.active=admin" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
+      shell: "{{ deploy_dir }}/admin/scripts/stop_admin.sh admin"
       register: result
       changed_when: false
       failed_when: result.rc != 0
