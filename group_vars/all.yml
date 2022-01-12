@@ -21,7 +21,7 @@ storage_password: storage_123456
 # 部署服务选项
 enable_deploy_via: false
 enable_deploy_carrier: false
-enable_deploy_admin: True
+enable_deploy_admin: true
 enable_deploy_data: false
 enable_deploy_compute: false
 enable_deploy_storage: false
