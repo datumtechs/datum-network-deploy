@@ -68,6 +68,7 @@
 
 # install whl file
 - name: "install whl file"
+  become: true
   shell : "{{deploy_dir}}/miniconda/envs/python375/bin/python -m pip uninstall channel-sdk metis-dcv latticex-rosetta -y && {{deploy_dir}}/miniconda/envs/python375/bin/python -m pip install {{ deploy_dir }}/data/whl/*.whl -i https://pypi.douban.com/simple/"
 
 # copy start.sh file
