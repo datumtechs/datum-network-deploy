@@ -5,6 +5,7 @@
   with_items:
   - "{{ deploy_dir }}/admin"
   - "{{ deploy_dir }}/admin/sql"
+  - "{{ deploy_dir }}/admin/scripts"
   - "{{ deploy_dir }}/admin/config"
   - "{{ deploy_dir }}/admin/cert"
   - "{{ deploy_dir }}/admin/cert/web"
@@ -60,6 +61,18 @@
     dest: "{{ deploy_dir }}/admin/admin.jar"
     mode: 0600
     backup: yes
+
+- name: "Copy the admin start script"
+  template:
+    src: "start_admin.sh.j2"
+    dest: "{{ deploy_dir }}/admin/scripts/start_admin.sh"
+    mode: 0755
+
+- name: "Copy the admin stop script"
+  template:
+    src: "stop_admin.sh.j2"
+    dest: "{{ deploy_dir }}/admin/scripts/stop_admin.sh"
+    mode: 0755
 
 # 拷贝 web 静态文件
 - name: copy and extract admin.tar
