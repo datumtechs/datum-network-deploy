@@ -19,13 +19,13 @@ storage_user: metis_storage
 storage_password: storage_123456
 
 # 部署服务选项
-enable_deploy_via: True
-enable_deploy_carrier: True
+enable_deploy_via: false
+enable_deploy_carrier: false
 enable_deploy_admin: True
 enable_deploy_data: false
 enable_deploy_compute: false
-enable_deploy_storage: True
-enable_deploy_consul: True
+enable_deploy_storage: false
+enable_deploy_consul: true
 
 ###############################################
 # 端口号根据自己的部署情况进行设置，数量要和库存文件里面一致。
