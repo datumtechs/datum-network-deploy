@@ -62,19 +62,32 @@ ansible_ssh_user 设置为目标主机的用户名（不支持 root）, ansible_
 4. mysql 相关用户名密码
 5. 各个服务端口号
 
+**也可以在命令行用 -e 参数指定，注意后面后面的字符串每个key=value之间要用空格分割**
+
+其中-e对应后面的参数的key可以是admin、via、consul、data、consul、carrier
+
+~~~
+-e "admin=true"   			#只部署、启动、关闭、销毁admin		服务
+-e "admin=true via=true"	#只部署、启动、关闭、销毁admin,via	服务	
+~~~
+
+
+
 **如果只想部署、启动、关闭、销毁某一个或几个服务**
 
-我们只需要将all.yml中下面的相关参数置为False，默认情况下是除了storage服务为False，其它均为True
+我们也可以将all.yml中下面的相关参数置为true
 
 ```shell
-enable_deploy_via: True
-enable_deploy_carrier: True
-enable_deploy_admin: True
-enable_deploy_data: True
-enable_deploy_compute: True
-enable_deploy_storage: False
-enable_deploy_consul: True
+enable_deploy_via: "{{via|bool}}"
+enable_deploy_carrier: "{{carrier|bool}}"
+enable_deploy_admin: "{{admin|bool}}"
+enable_deploy_data: "{{data|bool}}"
+enable_deploy_compute: "{{compute|bool}}"
+enable_deploy_storage: "{{storage|bool}}"
+enable_deploy_consul: "{{consul|bool}}"		
 ```
+
+
 
 ## 主控节点做的准备工作
 
