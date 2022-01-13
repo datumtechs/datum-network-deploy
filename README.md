@@ -45,7 +45,7 @@ mkdir log
 
 ## 修改配置
 
-**inventory.ini 文件修改**
+**1.inventory.ini 文件修改**
 
 inventory.ini 库存文件根据自己的实际情况配置各个服务的 ip 地址
 
@@ -53,7 +53,7 @@ inventory.ini 库存文件根据自己的实际情况配置各个服务的 ip �
 
 ansible_ssh_user 设置为目标主机的用户名（不支持 root）, ansible_ssh_pass 设置为目标主机用户对应的密码，ansible_sudo_pass设置为 sudo 提权密码。
 
-**group_vars/all.yml 文件修改**
+**2.group_vars/all.yml 文件修改**
 
 必改选项为：
 1. 静态文件下载 url
@@ -62,7 +62,9 @@ ansible_ssh_user 设置为目标主机的用户名（不支持 root）, ansible_
 4. mysql 相关用户名密码
 5. 各个服务端口号
 
-**也可以在命令行用 -e 参数指定，注意后面后面的字符串每个key=value之间要用空格分割**
+**3.只部署部分服务的两种方法**
+
+**a.如果只想部署、启动、关闭、销毁某一个或几个服务可以在命令行用 -e 参数指定，注意后面后面的字符串每个key=value之间要用空格分割**
 
 其中-e对应后面的参数的key可以是admin、via、consul、data、consul、carrier
 
@@ -73,19 +75,23 @@ ansible_ssh_user 设置为目标主机的用户名（不支持 root）, ansible_
 
 
 
-**如果只想部署、启动、关闭、销毁某一个或几个服务**
-
-我们也可以将all.yml中下面的相关参数置为true
+**b.如果只想部署、启动、关闭、销毁某一个或几个服务我们也可以将all.yml中下面的相关参数置为true**
 
 ```shell
-enable_deploy_via: "{{via|bool}}"
-enable_deploy_carrier: "{{carrier|bool}}"
-enable_deploy_admin: "{{admin|bool}}"
-enable_deploy_data: "{{data|bool}}"
-enable_deploy_compute: "{{compute|bool}}"
-enable_deploy_storage: "{{storage|bool}}"
-enable_deploy_consul: "{{consul|bool}}"		
+enable_deploy_via: "{{via|default(false)|bool}}"
+enable_deploy_carrier: "{{carrier|default(false)|bool}}"
+enable_deploy_admin: "{{admin|default(false)|bool}}"
+enable_deploy_data: "{{data|default(false)|bool}}"
+enable_deploy_compute: "{{compute|default(false)|bool}}"
+enable_deploy_storage: "{{storage|default(false)|bool}}"
+enable_deploy_consul: "{{consul|default(false)|bool}}"
 ```
+
+例如，只部署via
+
+~~~
+enable_deploy_via: "{{via|default(false)|bool}}" 修改为 enable_deploy_via: true
+~~~
 
 
 
