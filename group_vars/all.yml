@@ -24,7 +24,6 @@ enable_deploy_carrier: "{{carrier|default(false)|bool}}"
 enable_deploy_admin: "{{admin|default(false)|bool}}"
 enable_deploy_data: "{{data|default(false)|bool}}"
 enable_deploy_compute: "{{compute|default(false)|bool}}"
-enable_deploy_storage: "{{storage|default(false)|bool}}"
 enable_deploy_consul: "{{consul|default(false)|bool}}"
 
 ###############################################
@@ -36,6 +35,10 @@ consul_serf_lan_port: [8300, 8301, 8302]
 consul_serf_wan_port: [8400, 8401, 8402]
 consul_http_port: [8500, 8501, 8502]
 consul_dns_port: [8600, 8601, 8602]
+
+# consul KV参数配置
+via_external_port: 20000
+storage_port: 9098
 
 # data 端口号
 data_port: [8700, 8701, 8702]
@@ -58,8 +61,6 @@ carrier_p2p_tcp_port: 10036
 # admin 端口号
 admin_web_port: 9090
 
-# storage 端口号
-storage_port: 9098
 
 # scan 端口号
 scan_web_port: 9001
@@ -100,7 +101,7 @@ via_ip: "{{ groups['via'][0] }}"
 
 # storage 相关信息
 storage_host: "{{ groups['storage'][0] }}"
-storage_ip: "{{ groups['storage'][0] }}"
+storage_ip: "192.168.10.149"
 
 # data 相关信息
 data_port_self: "{% set data_number_int = groups['data'] | length |int %} 

@@ -38,14 +38,14 @@
       uri: 
         url: http://{{consul_leader}}:{{consul_leader_port}}/v1/kv/metis/via_ip_port
         method: PUT
-        body: "{{via_ip}}_{{via_port}}" 
+        body: "{{via_ip}}_{{via_external_port}}"
         when: "ansible_host == consul_leader and enable_deploy_consul|default(false)"
 
     - name: Set data center address
       uri: 
         url: http://{{consul_leader}}:{{consul_leader_port}}/v1/kv/metis/dataCenter_ip_port
         method: PUT
-        body: "{{storage_ip}}_{{storage_port}}" 
+        body: "{{storage_ip}}_{{storage_port}}"
         when: "ansible_host == consul_leader and enable_deploy_consul|default(false)"
 
 - hosts: via
@@ -149,39 +149,3 @@
         state: started
         msg: "the node_exporter port {{ compute_port_self }} is not up"
       when: enable_deploy_compute|default(false)
-
-
-- hosts: storage
-  tags:
-    - storage_servers
-  tasks:
-    - name: start storage
-      shell: "nohup java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active=storage &"
-      args:
-        chdir: "{{ deploy_dir }}/storage"
-      register: result
-      changed_when: false
-      failed_when: result.rc != 0
-      when: enable_deploy_storage|default(false)
-
-    - name: wait until the storage_port port is up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ storage_port }}"
-        state: started
-        msg: "the node_exporter port {{ storage_port }} is not up"
-      when: enable_deploy_storage|default(false)
-
-# - hosts: scan
-#   tags:
-#     - scan
-#   tasks:
-#     - name: start scan
-#       shell: "nohup java -jar {{ deploy_dir }}/scan/scan.jar --spring.profiles.active={{ deploy_dir }}/scan/config/scan.yml &"
-
-#     - name: wait until the scan_web_port port is up
-#       wait_for:
-#         host: "{{ ansible_host }}"
-#         port: "{{ scan_web_port }}"
-#         state: started
-#         msg: "the node_exporter port {{ scan_web_port }} is not up"

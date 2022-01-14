@@ -73,13 +73,3 @@
         path: "{{ deploy_dir }}/compute"
         state: absent
       when: enable_deploy_compute|default(false)
-
-- hosts: storage
-  tags:
-    - storage_servers
-  tasks:
-    - name: clean storage
-      file:
-        path: "{{ deploy_dir }}/storage"
-        state: absent
-      when: enable_deploy_storage|default(false)

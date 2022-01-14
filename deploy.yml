@@ -44,17 +44,3 @@
     - consul_servers
   roles:
     - { role: consul_deploy, when: enable_deploy_consul|default(false) }
-
-- name: deploying storage
-  hosts: storage_servers
-  tags:
-    - storage
-  roles:
-    - { role: storage_deploy, when: enable_deploy_storage|default(false) }
-
-# - name: deploying scan
-#   hosts: scan
-#   tags:
-#     - scan
-#   roles:
-#     - scan_deploy

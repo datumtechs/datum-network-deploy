@@ -117,36 +117,3 @@
         state: stopped
         msg: "the pump port {{ consul_http_port_self | trim }} is not down"
       when: enable_deploy_consul|default(false)
-
-- hosts: storage
-  tags:
-    - storage
-  tasks:
-    - name: stop storage
-      shell: ps -ef | grep "java -jar {{ deploy_dir }}/storage/storage.jar --spring.profiles.active=storage" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
-      register: result
-      changed_when: false
-      failed_when: result.rc != 0
-      when: enable_deploy_storage|default(false)
-
-    - name: wait until the storage_port is down
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: "{{ storage_port }}"
-        state: stopped
-        msg: "the pump port {{ storage_port }} is not down"
-      when: enable_deploy_storage|default(false)
-
-# - hosts: scan
-#   tags:
-#     - scan
-#   tasks:
-#     - name: start scan
-#       shell: ps -ef | grep "java -jar {{ deploy_dir }}/scan/scan.jar" | awk '{print $1,$2}' | kill -9
-
-#     - name: wait until the scan_web_port is down
-#       wait_for:
-#         host: "{{ ansible_host }}"
-#         port: "{{ scan_web_port }}"
-#         state: stopped
-#         msg: "the pump port {{ scan_web_port }} is not down"
