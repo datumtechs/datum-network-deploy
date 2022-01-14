@@ -48,9 +48,11 @@
       register: result
       changed_when: false
       failed_when: result.rc != 0
+      when: enable_deploy_admin|default(false)
     - name: Debug clean admin information
       debug:
         var: result.stdout
+      when: enable_deploy_admin|default(false)
 
 - hosts: data
   tags:
