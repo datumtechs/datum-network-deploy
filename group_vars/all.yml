@@ -37,7 +37,7 @@ consul_http_port: [8500, 8501, 8502]
 consul_dns_port: [8600, 8601, 8602]
 
 # consul KV参数配置
-via_external_port: 20000
+via_external_port: 10031
 storage_port: 9098
 
 # data 端口号

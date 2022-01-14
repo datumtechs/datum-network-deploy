@@ -89,6 +89,11 @@
   shell: python3 {{ deploy_dir }}/get-pip.py
   when: result.stdout!=self_python_version
 
+- name: Install need python module
+  become: yes
+  shell: python3 -m pip install six
+  when: result.stdout!=self_python_version
+
 - name: Check whether update python3-dev
   become: true
   apt: name={{ item }} state=installed update_cache=yes
