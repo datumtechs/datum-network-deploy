@@ -183,12 +183,21 @@
     host: "%"
     state: present
 
+# 检查dev_metis_admin_0.3.0是否存在，如果存在则不需要导入admin.sql
+- name: Check if database dev_metis_admin_0.3.0 exists
+  shell: mysql -umetis_admin -padmin_123456 -e "show databases;" 2>/dev/null |grep "dev_metis_admin_0.3.0" |xargs echo -n
+  register: database_name
+  failed_when: database_name.rc != 0
+  changed_when: false
+  
 # 初始化数据库
 - name: Initialize database, create database and table
   shell: mysql -u{{ amin_user }} -p{{ admin_password }} < {{ deploy_dir }}/admin/sql/admin.sql
   register: result
   changed_when: false
   failed_when: result.rc != 0
+  when: database_name.stdout!="dev_metis_admin_0.3.0"
+
 
 # 安装 nginx
 - name: "install nginx"
