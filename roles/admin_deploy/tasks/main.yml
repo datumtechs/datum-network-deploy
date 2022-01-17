@@ -126,6 +126,14 @@
     regexp: "^bind-address"
     line: "bind-address   = 0.0.0.0"
 
+# 设置时区为 utc
+- name: mysql set time zone to utc
+  become: true
+  lineinfile:
+    path: /etc/mysql/mysql.conf.d/mysqld.cnf
+    regexp: "default-time_zone(.*)"
+    line: "default-time_zone = '+0:00'"
+
 - name: restart the MySQL service
   become: true
   service:

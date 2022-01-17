@@ -30,6 +30,12 @@
   fail: msg="Currently, only Ubuntu 18.04 is supported"
   when: "'18.04' != distro_version_shell_result.stdout"
 
+# 设置时区为 utc
+- name: set timezone to Etc/UTC
+  become: true
+  timezone:
+    name: Etc/UTC
+
 # 检查 python 
 - name: python check
   shell: python --version
