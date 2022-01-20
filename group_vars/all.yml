@@ -25,6 +25,8 @@ enable_deploy_admin: "{{admin|default(false)|bool}}"
 enable_deploy_data: "{{data|default(false)|bool}}"
 enable_deploy_compute: "{{compute|default(false)|bool}}"
 enable_deploy_consul: "{{consul|default(false)|bool}}"
+# 检查服务的状态
+check_service_status: "{{status|default(false)|bool}}"
 
 ###############################################
 # 端口号根据自己的部署情况进行设置，数量要和库存文件里面一致。

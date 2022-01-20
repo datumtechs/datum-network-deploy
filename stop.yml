@@ -21,6 +21,15 @@
         msg: "the pump port {{ via_port }} is not down"
       when: enable_deploy_via|default(false)
 
+    - name: check service via status
+      shell: ps -ef | grep "{{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/config/via.yml" | grep -v "grep" | awk '{print $2}'
+      register: check_result
+      when: check_service_status
+
+    - name: via status result
+      debug:
+        msg: check service via status result ,its pid is {{check_result.stdout }}
+      when: check_service_status
 
 - hosts: carrier
   tags:
@@ -41,6 +50,16 @@
         msg: "the pump port {{ carrier_rpc_port }} is not down"
       when: enable_deploy_carrier|default(false)
 
+    - name: check service carrier status
+      shell: ps -ef | grep "{{ deploy_dir }}/carrier/carrier --config-file {{ deploy_dir }}/carrier/config/carrier.yml" | grep -v "grep" | awk '{print $2}'
+      register: check_result
+      when: check_service_status
+
+    - name: carrier status result
+      debug:
+        msg: check service carrier status result ,its pid is {{check_result.stdout }}
+      when: check_service_status
+
 - hosts: admin
   tags:
     - admin
@@ -59,6 +78,16 @@
         state: stopped
         msg: "the pump port {{ admin_web_port }} is not down"
       when: enable_deploy_admin|default(false)
+
+    - name: check service admin status
+      shell: ps -ef|grep -v grep|grep {{ deploy_dir }}/admin/admin.jar |grep active=$PROFILE|awk '{print $2}'
+      register: check_result
+      when: check_service_status
+
+    - name: admin status result
+      debug:
+        msg: check service admin status result ,its pid is {{check_result.stdout }}
+      when: check_service_status
 
 - hosts: data
   tags:
@@ -79,6 +108,16 @@
         msg: "the pump port {{ data_port_self }} is not down"
       when: enable_deploy_data|default(false)
 
+    - name: check service data status
+      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.data_svc.main {{ deploy_dir }}/data/config/data.yml" | grep -v "grep" | awk '{print $2}'
+      register: check_result
+      when: check_service_status
+
+    - name: data status result
+      debug:
+        msg: check service data status result ,its pid is {{check_result.stdout }}
+      when: check_service_status
+
 - hosts: compute
   tags:
     - compute
@@ -97,6 +136,16 @@
         state: stopped
         msg: "the pump port {{ compute_port_self }} is not down"
       when: enable_deploy_compute|default(false)
+
+    - name: check service compute status
+      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.compute_svc.main {{ deploy_dir }}/compute/config/compute.yml" | grep -v "grep" | awk '{print $2}'
+      register: check_result
+      when: check_service_status
+
+    - name: compute status result
+      debug:
+        msg: check service compute status result ,its pid is {{check_result.stdout }}
+      when: check_service_status
 
 - name: stop consul
   hosts: consul
@@ -117,3 +166,13 @@
         state: stopped
         msg: "the pump port {{ consul_http_port_self | trim }} is not down"
       when: enable_deploy_consul|default(false)
+
+    - name: check service consul status
+      shell: ps -ef | grep "{{ deploy_dir }}/consul/consul agent -config-file {{ deploy_dir }}/consul/config/consul.json" | grep -v "grep" | awk '{print $2}'
+      register: check_result
+      when: check_service_status
+
+    - name: consul status result
+      debug:
+        msg: check service consul status result ,its pid is {{check_result.stdout }}
+      when: check_service_status
