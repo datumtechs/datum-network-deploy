@@ -56,13 +56,13 @@
 
 # Check whether the target machine CPU instruction
 - name: Check whether the target machine CPU instruction set is avx2
-  shell: cat /proc/cpuinfo |grep avx2
+  shell: cat /proc/cpuinfo |grep avx2 |cat
   register: cpu_check_result
 
 - name: copy avx2 latticex_rosetta
   copy:
     src: "{{ downloads_dir }}/avx2/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl"
-      dest: "{{ deploy_dir }}/data/whl/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl"
+    dest: "{{ deploy_dir }}/data/whl/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl"
     mode: 0755
     backup: yes
   when: cpu_check_result.stdout!=""
