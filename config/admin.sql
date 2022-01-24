@@ -252,8 +252,8 @@ CREATE TABLE `local_org` (
 -- ----------------------------
 DROP TABLE IF EXISTS `local_power_join_task`;
 CREATE TABLE `local_power_join_task` (
-  `node_id` varchar(256) DEFAULT NULL COMMENT '计算节点ID',
-  `task_id` varchar(256) DEFAULT NULL COMMENT '任务id',
+  `node_id` varchar(256) NOT NULL COMMENT '计算节点ID',
+  `task_id` varchar(256) NOT NULL COMMENT '任务id',
   `task_name` varchar(100) DEFAULT NULL COMMENT '任务名称',
   `owner_identity_id` varchar(256) DEFAULT NULL COMMENT '发起方ID',
   `owner_identity_name` varchar(128) DEFAULT NULL COMMENT '发起方名称',
@@ -443,12 +443,12 @@ CREATE TABLE `task_result_consumer` (
 
 DROP TABLE IF EXISTS `local_power_load_snapshot`;
 CREATE TABLE `local_power_load_snapshot` (
-    power_node_id varchar(256) NOT NULL COMMENT '算力节点id',
+    node_id varchar(256) NOT NULL COMMENT '算力节点id',
     snapshot_time DATETIME NOT NULL COMMENT '快照时间点，精确到小时',
     used_core int COMMENT '核心使用数',
     used_memory BIGINT COMMENT '内存使用数',
     used_bandwidth BIGINT COMMENT '带宽使用数',
-    PRIMARY KEY (power_node_id, snapshot_time)
+    PRIMARY KEY (node_id, snapshot_time)
 ) COMMENT='本地算力负载快照统计';
 
 
@@ -605,7 +605,7 @@ BEGIN
     INSERT INTO local_power_load_snapshot (node_id, snapshot_time, used_core, used_memory, used_bandwidth)
     SELECT node_id, DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m-%d %H:00:00'), sum(used_core) as used_core, sum(used_memory) as used_memory, sum(used_bandwidth) as used_bandwidth
     FROM  local_power_join_task
-    GROUP BY power_node_id;
+    GROUP BY node_id;
 END$$
 ALTER EVENT local_power_load_snapshot_event ENABLE$$
 DELIMITER ;
