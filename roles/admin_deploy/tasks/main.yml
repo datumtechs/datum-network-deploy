@@ -134,6 +134,14 @@
     regexp: "default-time_zone(.*)"
     line: "default-time_zone = '+0:00'"
 
+# mysql 开启时间调度器
+- name: mysql open time scheduler
+  become: true
+  lineinfile:
+    path: /etc/mysql/mysql.conf.d/mysqld.cnf
+    regexp: "^event_scheduler"
+    line: "event_scheduler = on"
+
 - name: restart the MySQL service
   become: true
   service:
