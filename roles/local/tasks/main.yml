@@ -43,6 +43,8 @@
   file: path="{{ item }}" state=directory mode=0755
   with_items:
   - "{{ downloads_dir }}"
+  - "{{ avx2 }}"
+  - "{{ no_avx2 }}"
 
 # 检查网络情况
 - name: detect outbound network[1]

@@ -72,6 +72,8 @@ scan_web_port: 9001
 # 下面的变量不建议用户修改
 # 文件下载目录，非必改变量
 downloads_dir: "{{ playbook_dir }}/downloads"
+avx2: "{{ downloads_dir }}/avx2"
+no_avx2: "{{ downloads_dir }}/no_avx2"
 
 # 证书文件，非必改目录
 via_cert_dir:   "{{ playbook_dir }}/config/via_cert"

@@ -108,10 +108,22 @@
 #     validate_certs: no
 
 # Python WHL file
-- name: download latticex rosetta whl package
+- name: download avx2 latticex rosetta whl package
   get_url:
-    url: "{{ download_url }}/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl"
-    dest: "{{ downloads_dir }}"
+    url: "{{ download_url }}/avx2/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl"
+    dest: "{{ avx2 }}"
+    mode: 0644
+    force: yes
+    validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 3
+  delay: "{{ 10 | random }}"
+
+- name: download no avx2 latticex rosetta whl package
+  get_url:
+    url: "{{ download_url }}/no_avx2/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl"
+    dest: "{{ no_avx2 }}"
     mode: 0644
     force: yes
     validate_certs: no

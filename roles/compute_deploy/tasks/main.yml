@@ -52,6 +52,27 @@
 - name: Install python3.7
   shell: "([ ! -e {{deploy_dir}}/miniconda/envs/python375 ] && ({{deploy_dir}}/miniconda/bin/conda create --name python375 python=3.7.5 -y))|cat"
 
+# Check whether the target machine CPU instruction
+- name: Check whether the target machine CPU instruction set is avx2
+  shell: cat /proc/cpuinfo |grep avx2
+  register: cpu_check_result
+
+- name: copy avx2 latticex_rosetta
+  copy:
+    src: "{{ downloads_dir }}/avx2/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl"
+      dest: "{{ deploy_dir }}/compute/whl/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl"
+    mode: 0755
+    backup: yes
+  when: cpu_check_result.stdout!=""
+
+- name: copy no avx2 latticex_rosetta
+  copy:
+    src: "{{ downloads_dir }}/no_avx2/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl"
+    dest: "{{ deploy_dir }}/compute/whl/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl"
+    mode: 0755
+    backup: yes
+  when: cpu_check_result.stdout==""
+
 # copy whl file
 - name: "copy whl file"
   copy:
@@ -60,7 +81,6 @@
     mode: 0600
     backup: yes
   with_items:
-    - latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl
     - channel_sdk-2.0.0-cp37-cp37m-linux_x86_64.whl
     - metis_dcv-0.9.1-py3-none-any.whl
 
