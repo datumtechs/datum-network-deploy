@@ -5,13 +5,16 @@ CREATE DATABASE `dev_metis_admin_0.3.0` DEFAULT CHARACTER SET utf8mb4 COLLATE ut
 use `dev_metis_admin_0.3.0`;
 /*
 Navicat MySQL Data Transfer
+
 Source Server         : 192.168.9.191
 Source Server Version : 50724
 Source Host           : 192.168.9.191:3306
 Source Database       : metis_admin
+
 Target Server Type    : MYSQL
 Target Server Version : 50724
 File Encoding         : 65001
+
 Date: 2021-07-30 11:39:34
 */
 
@@ -178,7 +181,7 @@ CREATE TABLE `local_data_auth` (
   `auth_value_end_at` datetime DEFAULT NULL COMMENT '授权值结束时间，auth_type = 1使用此字段',
   `create_at` datetime(3) DEFAULT NULL COMMENT '授权申请发起时间',
   `auth_at` datetime(3) DEFAULT NULL COMMENT '授权数据时间',
-  `status` int(4) DEFAULT '0' COMMENT '授权数据状态：0：等待授权审核，1:同意， 2:拒绝 ',
+  `status` int(4) DEFAULT '0' COMMENT '授权数据状态：0：等待授权审核，1:同意， 2:拒绝，3:失效(auth_type=1且auth_value_end_at超时) ',
   `identity_name` varchar(256) DEFAULT NULL COMMENT '元数据所属的组织信息，组织名称',
   `identity_id` varchar(256) DEFAULT NULL COMMENT '元数据所属的组织信息,组织的身份标识Id',
   `identity_node_id` varchar(256) DEFAULT NULL COMMENT '组织中调度服务的 nodeId',
@@ -345,20 +348,19 @@ CREATE TABLE `task` (
     `owner_Identity_id` varchar(256) DEFAULT NULL COMMENT '任务发起方组织ID',
     `owner_party_id` varchar(256) DEFAULT NULL COMMENT '任务发起方组织ID',
     `apply_user` varchar(256) DEFAULT NULL COMMENT '发起任务的用户ID',
-    `user_type` int(4) DEFAULT '0' COMMENT '发起任务用户类型 (0: 未定义; 1: 以太坊地址; 2: Alaya地址; 3: PlatON地址)',
+    `user_type` int(4) DEFAULT 0 COMMENT '发起任务用户类型 (0: 未定义; 1: 以太坊地址; 2: Alaya地址; 3: PlatON地址)',
     `create_At` datetime(3) DEFAULT NULL COMMENT '任务发起时间',
     `start_At` datetime(3) DEFAULT NULL COMMENT '任务启动时间',
     `auth_At` datetime(3) DEFAULT NULL COMMENT '任务授权时间',
     `auth_Status` varchar(10) DEFAULT NULL COMMENT '任务授权状态: pending:等待授权、denied:授权未通过',
     `end_At` datetime(3) DEFAULT NULL COMMENT '任务结束时间',
-    `status` tinyint(4) DEFAULT '0' COMMENT '任务状态(0:unknown未知、1:pending等在中、2:running计算中、3:failed失败、4:success成功)',
+    `status` tinyint(4) DEFAULT 0 COMMENT '任务状态(0:unknown未知、1:pending等在中、2:running计算中、3:failed失败、4:success成功)',
     `duration` BIGINT DEFAULT NULL COMMENT '任务声明计算时间',
-    `cost_core` INT DEFAULT '0' COMMENT '任务声明所需CPU',
-    `cost_Memory` BIGINT DEFAULT '0' COMMENT '任务声明所需内存',
-    `cost_Bandwidth` BIGINT DEFAULT '0' COMMENT '任务声明所需带宽',
-    `reviewed` tinyint(1) DEFAULT '0' COMMENT '任务是否被查看过，默认为false(0)',
-    `rec_create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `rec_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+    `cost_core` INT DEFAULT 0 COMMENT '任务声明所需CPU',
+    `cost_Memory` BIGINT DEFAULT 0 COMMENT '任务声明所需内存',
+    `cost_Bandwidth` BIGINT DEFAULT 0 COMMENT '任务声明所需带宽',
+    `reviewed` tinyint(1) DEFAULT 0 COMMENT '任务是否被查看过，默认为false(0)',
+    `update_at` datetime(3) NOT NULL COMMENT '最后更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `taskID` (`task_Id`) USING BTREE COMMENT 'task_id唯一'
 ) COMMENT='全网任务表 用于同步本地任务数据以及全网的相关数据';

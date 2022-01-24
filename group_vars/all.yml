@@ -25,6 +25,8 @@ enable_deploy_admin: "{{admin|default(false)|bool}}"
 enable_deploy_data: "{{data|default(false)|bool}}"
 enable_deploy_compute: "{{compute|default(false)|bool}}"
 enable_deploy_consul: "{{consul|default(false)|bool}}"
+# 检查服务的状态
+check_service_status: "{{status|default(false)|bool}}"
 
 ###############################################
 # 端口号根据自己的部署情况进行设置，数量要和库存文件里面一致。
@@ -38,6 +40,7 @@ consul_dns_port: [8600, 8601, 8602]
 
 # consul KV参数配置
 via_external_port: 10031
+via_external_ip : "{{ groups['via'][0] }}"
 storage_port: 9098
 
 # data 端口号

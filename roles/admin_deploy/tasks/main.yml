@@ -201,11 +201,15 @@
 
 # 检查dev_metis_admin_0.3.0是否存在，如果存在则不需要导入admin.sql
 - name: Check if database dev_metis_admin_0.3.0 exists
-  shell: mysql -u{ amin_user }} -p{{ admin_password }} -e "show databases;" 2>/dev/null |grep "dev_metis_admin_0.3.0" |xargs echo -n
+  shell: mysql -u{{ amin_user }} -p{{ admin_password }} -e "show databases;" 2>/dev/null |grep "dev_metis_admin_0.3.0" |xargs echo -n
   register: database_name
   failed_when: database_name.rc != 0
   changed_when: false
-  
+
+- name: Show database_name info
+  debug:
+    msg: database_name exits {{database_name.stdout }}
+
 # 初始化数据库
 - name: Initialize database, create database and table
   shell: mysql -u{{ amin_user }} -p{{ admin_password }} < {{ deploy_dir }}/admin/sql/admin.sql
