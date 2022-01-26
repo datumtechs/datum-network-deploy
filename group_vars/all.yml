@@ -40,6 +40,7 @@ consul_dns_port: [8600, 8601, 8602]
 
 # consul KV参数配置
 via_external_ip : "{{ groups['via'][0] }}"
+via_external_port: "{{ via_port | int}}"
 storage_port: 9098
 
 # data 端口号
