@@ -31,6 +31,11 @@ check_service_status: "{{status|default(false)|bool}}"
 ###############################################
 # 端口号根据自己的部署情况进行设置，数量要和库存文件里面一致。
 
+# carrier deploy use listen all ip
+enable_listen_all: true
+listen_all_ip: 0.0.0.0
+carrier_external_ip: xxx.xxx.xxx.xxx
+
 # consul 端口号
 consul_server_port: [8200, 8201, 8202]
 consul_serf_lan_port: [8300, 8301, 8302]

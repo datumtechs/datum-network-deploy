@@ -1,28 +1,57 @@
 # 调度服务相关配置文件模板
 # 通用配置项
-datadir: {{carrier_data_dir}}
-verbosity: debug
-# 调试模块
-pprof: true
-pprof-port: {{carrier_pprof_port}}
-pprof-addr: {{inventory_hostname}}
-debug: true
-# p2p 模块
-# tls-cert: {{carrier_tls_cert}}
-# tls-key: {{carrier_tls_key}}
-disable-grpc-gateway: false
-rpc-host: {{inventory_hostname}}
-rpc-port: {{carrier_rpc_port}}
-grpc-gateway-host: {{inventory_hostname}}
-grpc-gateway-port: {{carrier_grpc_gateway_port}}
-enable-debug-rpc-endpoints: true
-no-discovery: false
-bootstrap-node: {{bootstrap_node}}
-p2p-udp-port: {{carrier_p2p_udp_port}}
-p2p-tcp-port: {{carrier_p2p_tcp_port}} 
-p2p-local-ip: {{inventory_hostname}}
-p2p-host-ip: {{inventory_hostname}}
-p2p-priv-key: {{carrier_p2p_private_key}}
-# 注册中心信息
-discovery-server-ip: {{consul_leader}} 
-discovery-server-port: {{consul_leader_port}}
+{{ % if enable_listen_all % }}
+    datadir: {{carrier_data_dir}}
+    verbosity: debug
+    # 调试模块
+    pprof: true
+    pprof-port: {{carrier_pprof_port}}
+    pprof-addr: {{listen_all_ip}}
+    debug: true
+    # p2p 模块
+    # tls-cert: {{carrier_tls_cert}}
+    # tls-key: {{carrier_tls_key}}
+    disable-grpc-gateway: false
+    rpc-host: {{listen_all_ip}}
+    rpc-port: {{carrier_rpc_port}}
+    grpc-gateway-host: {{listen_all_ip}}
+    grpc-gateway-port: {{carrier_grpc_gateway_port}}
+    enable-debug-rpc-endpoints: true
+    no-discovery: false
+    bootstrap-node: {{bootstrap_node}}
+    p2p-udp-port: {{carrier_p2p_udp_port}}
+    p2p-tcp-port: {{carrier_p2p_tcp_port}}
+    p2p-local-ip: {{listen_all_ip}}
+    p2p-host-ip: {{carrier_external_ip}}
+    p2p-priv-key: {{carrier_p2p_private_key}}
+    # 注册中心信息
+    discovery-server-ip: {{consul_leader}}
+    discovery-server-port: {{consul_leader_port}}
+{% else %}
+    datadir: {{carrier_data_dir}}
+    verbosity: debug
+    # 调试模块
+    pprof: true
+    pprof-port: {{carrier_pprof_port}}
+    pprof-addr: {{inventory_hostname}}
+    debug: true
+    # p2p 模块
+    # tls-cert: {{carrier_tls_cert}}
+    # tls-key: {{carrier_tls_key}}
+    disable-grpc-gateway: false
+    rpc-host: {{inventory_hostname}}
+    rpc-port: {{carrier_rpc_port}}
+    grpc-gateway-host: {{inventory_hostname}}
+    grpc-gateway-port: {{carrier_grpc_gateway_port}}
+    enable-debug-rpc-endpoints: true
+    no-discovery: false
+    bootstrap-node: {{bootstrap_node}}
+    p2p-udp-port: {{carrier_p2p_udp_port}}
+    p2p-tcp-port: {{carrier_p2p_tcp_port}}
+    p2p-local-ip: {{inventory_hostname}}
+    p2p-host-ip: {{inventory_hostname}}
+    p2p-priv-key: {{carrier_p2p_private_key}}
+    # 注册中心信息
+    discovery-server-ip: {{consul_leader}}
+    discovery-server-port: {{consul_leader_port}}
+{% endif %}
