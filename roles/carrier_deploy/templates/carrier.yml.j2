@@ -1,6 +1,6 @@
 # 调度服务相关配置文件模板
 # 通用配置项
-{{ % if enable_listen_all % }}
+{% if enable_listen_all %}
     datadir: {{carrier_data_dir}}
     verbosity: debug
     # 调试模块
