@@ -38,6 +38,21 @@
     mode: 0600
     backup: yes
 
+# 安装依赖组件
+- name: Install dependencies
+  become: true
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+    - libssl-dev
+
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+    force_apt_get: yes
+    cache_valid_time: 86400
+
 # copy Miniconda3-latest-Linux-x86_64.sh
 - name: "copy Miniconda3 Executable file"
   copy:
