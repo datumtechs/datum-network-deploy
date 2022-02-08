@@ -35,6 +35,13 @@
     dest: "{{ deploy_dir }}/compute/config/compute.yml"
     mode: 0600
     backup: yes
+    
+# 安装依赖组件
+- name: Install dependencies
+  become: true
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+    - libssl-dev
 
 # copy Miniconda3-latest-Linux-x86_64.sh
 - name: "copy Miniconda3 Executable file"
