@@ -43,6 +43,13 @@
   with_items:
     - libssl-dev
 
+# 安装依赖组件
+- name: Install dependencies
+  become: true
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+    - libssl-dev
+
 # copy Miniconda3-latest-Linux-x86_64.sh
 - name: "copy Miniconda3 Executable file"
   copy:
