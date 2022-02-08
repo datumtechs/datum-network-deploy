@@ -38,7 +38,7 @@ listen_all_ip: 0.0.0.0
 carrier_external_ip: xxx.xxx.xxx.xxx
 
 # consul KV参数配置
-via_external_ip : "{{ groups['via'][0] }}"
+via_external_ip: "{{ groups['via'][0] }}"
 via_external_port: "{{ via_port | int}}"
 storage_port: 9098
 
