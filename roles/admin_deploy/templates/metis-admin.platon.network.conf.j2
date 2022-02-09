@@ -10,6 +10,7 @@ server {
         ssl_session_cache shared:SSL:10m;
         ssl_session_timeout 10m;
         charset utf-8;
+        client_max_body_size 5m;
 
         location /metis-admin {
                 proxy_pass  http://localhost:{{admin_web_port}}/metis-admin;
@@ -33,6 +34,7 @@ server {
         listen 80;
         server_name {{admin_server_name}};
         charset utf-8;
+        client_max_body_size 5m;
 
         location /metis-admin {
                 proxy_pass  http://localhost:{{admin_web_port}}/metis-admin;
