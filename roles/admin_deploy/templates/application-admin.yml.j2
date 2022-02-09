@@ -35,7 +35,7 @@ spring:
   # =============================== consul ===============================
   cloud:
     consul:
-      host: {{consul_leader}} 
+      host: {{consul_leader_ip}}
       port: {{consul_leader_port}}
       discovery:  # 服务发现配置
         enabled: true
