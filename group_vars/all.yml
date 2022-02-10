@@ -114,6 +114,19 @@ via_ip: "{{ groups['via'][0] }}"
 storage_host: "{{ groups['storage'][0] }}"
 storage_ip: "192.168.10.149"
 
+# consul agent 信息
+consul_zip_name: "{{ consul_download_url.split('/')[-1] | trim }}"
+consul_number_int: "{{ groups['consul'] | length | int}}"
+consul_leader_ip: "{{ groups['consul'][0] }}"
+consul_leader_port: "{{ consul_http_port[0] }}"
+consul_leader_serf_lan_port: "{{ consul_serf_lan_port[0] }}"
+consul_http_port_self:   "{% set consul_number_int = consul_number_int | int %}
+                          {% for i in range(consul_number_int) %}
+                              {% if groups['consul'][i] == inventory_hostname %}
+                                {{consul_http_port[i] |int}}
+                              {% endif %}
+                          {% endfor %}"
+
 # data 相关信息
 data_port_self: "{% set data_number_int = groups['data'] | length |int %} 
                   {% for i in range(data_number_int) %}
