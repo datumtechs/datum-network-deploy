@@ -112,13 +112,42 @@ ansible-playbook -i inventory.ini local_prepare.yml
 
 ## 配置文件说明
 
+
 本部署脚本主要需要用户自行配置下述几个文件：
 
 1. 管理组织内部所有服务的网络拓扑的 `inventory.ini` 文件。
  
 2. 管理各个服务所需的配置项的 `group_vars/all.yml` 文件。
 
+
+### 配置文件用途说明
+
+inventory.ini: 组织中各个服务的主机ip的相关配置，由用户根据自己情况定义。
+
+group_vars/all.yml: 组织各个服务的相关配置项配置，由用户根据自己情况定义。
+
+ansible.cfg: ansible 配置文件，建议不要乱动。
+
+config目录: 相关配置模版，建议不要乱动。
+
+roles目录: ansible tasks 的集合，建议不要乱动。
+
+local_prepare.yml: 用来下载相关安装包的配置，建议不要乱动。
+
+bootstrap.yml: 初始化集群各个节点的配置，建议不要乱动。
+
+deploy.yml: 安装各个服务，建议不要乱动。
+
+start.yml: 启动所有服务，建议不要乱动。
+
+stop.yml: 停止所有服务，建议不要乱动。
+
+cleanup.yml: 销毁集群，建议不要乱动。
+
+
+
 ### 单组织内部各服务的主机网络拓扑配置文件 `inventory.ini`
+
 
 在metis-deploy项目的根目录下有一名为`inventory.ini`的配置文件，它管理者单组织内部各个服务所部署的主机IP情况(注: inventory.ini 不可重命名)。用户根据自己的网络情况配置各个服务部署机器的 ip 地址。
 
@@ -128,7 +157,9 @@ ansible-playbook -i inventory.ini local_prepare.yml
 
 `ansible_ssh_user` 设置为要登录目标主机的 ssh 用户名, `ansible_ssh_pass` 为ssh 用户对应的密码, `ansible_sudo_pass` 为目标主机上的用户进行提权时的密码。
 
+
 #### 文件的各个项的说明如下：
+
 
 ```ini
 # 库存文件，主要用来配置主机列表和主机组
@@ -283,7 +314,7 @@ cluster_name = demo-cluster
 
 ### 配置项说明
 
-#### 2. 部署服务开关选项
+#### 1. 部署服务开关选项
 
 enable_deploy_via: 是否部署、启动、关闭、销毁 via，部署为 true，不部署设置为 false。
 
@@ -298,12 +329,12 @@ enable_deploy_compute: 是否部署、启动、关闭、销毁 compute，部署�
 enable_deploy_consul: 是否部署、启动、关闭、销毁 consul, 部署为 true，不部署设置为 false。
 
 
-#### 3. 设置检查对应的服务的进程是否存在 (可忽略不管)
+#### 2. 设置检查对应的服务的进程是否存在 (可忽略不管)
 
 check_service_status: 需要检查设置为 true， 否则设置为 false。
 
 
-#### 4. consul的 key-value 选项
+#### 3. consul的 key-value 选项
 
 via_external_ip: via服务的外网IP (需要用户自行修改)
 
@@ -312,7 +343,7 @@ via_external_port: via服务的外网端口 (需要用户自行修改)
 storage_port: (不要乱动)
 
 
-#### 5. 配置 consul 端口号 (建议只开通内网端口策略)
+#### 4. 配置 consul 端口号 (建议只开通内网端口策略)
 
 consul_server_port: consul服务的端口，数组形式[8200, 8201, 8202], 端口号根据自己的部署情况进行设置，数量要和库存`inventory.ini`文件里面ip数量一致。
 
@@ -326,7 +357,7 @@ consul_dns_port:  DNS 服务器端口，数组形式[8600, 8601, 8602], 端口�
 
 
 
-#### 6. admin web 证书相关配置  (不要乱动)
+#### 5. admin web 证书相关配置  (不要乱动)
 
 enable_tls: 是否启用 https，启用设置为 true，需要配置证书和相应的域名，证书里面的密码套件等，不启用设置为 false，同时忽略下面的配置。
 
@@ -338,7 +369,7 @@ admin_ssl_ciphers: ngnix 配置项 ssl_ciphers，证书支持的密码算法。
 
 
 
-#### 7. admin mysql 相关配置 (需要用户自行修改)
+#### 6. admin mysql 相关配置 (需要用户自行修改)
 
 mysql_root_password: mysql root 账户密码。
 
@@ -347,46 +378,46 @@ amin_user: mysql 创建业务库的普通用户名称。
 admin_password: mysql 普通用户的密码。
 
 
-#### 8. 配置 admin web 端口号 (建议只开通内网端口策略)
+#### 7. 配置 admin web 端口号 (建议只开通内网端口策略)
 
 admin_web_port: 为 admin 提供 web 服务的端口。
 
-#### 9. carrier 服务的启动命令行各个ip配置
+#### 8. carrier 服务的启动命令行各个ip配置
 
 carrier_p2p_external_ip: carrier的p2p服务开通的外网ip (写具体的外网ip，给外部组织发现本组织用)。
 
 
-#### 10. carrier 服务的启动命令行各个port配置
+#### 9. carrier 服务的启动命令行各个port配置
 
-carrier_pprof_port: carrier的golang语言调试pprof服务监听port，配套`carrier_pprof_ip`的内外网情况开通内外网端口策略，用户根据具体情况定义。
+carrier_pprof_port: carrier的golang语言调试pprof服务监听port，开通内外网端口策略，用户根据具体情况定义。
 
-carrier_rpc_port: carrier的rpc server监听的port，配套`carrier_rpc_ip`的内外网情况开通内外网端口策略，用户根据具体情况定义。
+carrier_rpc_port: carrier的rpc server监听的port，开通内外网端口策略，用户根据具体情况定义。
 
-carrier_grpc_gateway_port: carrier的 rpc api 的 restful server监听port，配套`carrier_grpc_gateway_ip`的内外网情况开通内外网端口策略，用户根据具体情况定义。
+carrier_grpc_gateway_port: carrier的 rpc api 的 restful server监听port，开通内外网端口策略，用户根据具体情况定义。
 
-carrier_p2p_udp_port: carrier的 p2p udp server 监听port，配套`carrier_p2p_listen_ip`的内外网情况开通内外网端口策略，用户根据具体情况定义。
+carrier_p2p_udp_port: carrier的 p2p udp server 监听port，开通内外网端口策略，用户根据具体情况定义。
 
-carrier_p2p_tcp_port: carrier的 p2p tcp server 监听port，配套`carrier_p2p_listen_ip`的内外网情况开通内外网端口策略，用户根据具体情况定义。
+carrier_p2p_tcp_port: carrier的 p2p tcp server 监听port，开通内外网端口策略，用户根据具体情况定义。
 
 
-#### 11. carrier 服务连接进metis网络时优先连接的引导节点的nodeId数组 (enr前缀格式)
+#### 10. carrier 服务连接进metis网络时优先连接的引导节点的nodeId数组 (enr前缀格式)
 
 bootstrap_nodes: 数组形式，如: ["enr:-Jy...CJzM", "enr:-Jy4Q...JzM"] (建议不要自己添加，直接使用官方提供的)
 
 
 
-#### 12. via 服务端口号 (建议只开通内网端口策略)
+#### 11. via 服务端口号 (建议只开通内网端口策略)
 
 via_port: via服务监听的port。
 
 
-#### 13. fighter(data) 服务端口号 (建议只开通内网端口策略)
+#### 12. fighter(data) 服务端口号 (建议只开通内网端口策略)
 
 data_port: 数据服务监听的端口，数组形式[8700, 8701, 8702], 端口号根据自己的部署情况进行设置，数量要和库存`inventory.ini`文件里面ip数量一致。
 
 
 
-#### 14. fighter(compute) 服务端口号 (建议只开通内网端口策略)
+#### 13. fighter(compute) 服务端口号 (建议只开通内网端口策略)
 
 compute_port: 数据服务监听的端口，数组形式[8801, 8802, 8803], 端口号根据自己的部署情况进行设置，数量要和库存`inventory.ini`文件里面ip数量一致。
 
@@ -398,10 +429,6 @@ compute_port: 数据服务监听的端口，数组形式[8801, 8802, 8803], 端�
 
 ```yml
 ---
-# ############################################### 公共配置项 ###############################################
-
-# 公共变量
-listen_all_ip: 0.0.0.0
 
 # ############################################### 部署服务开关选项 ###############################################
 enable_deploy_via: true
@@ -448,12 +475,6 @@ admin_password: admin_123456
 admin_web_port: 9090
 
 ## ---------------------------- carrier 服务配置 ----------------------------
-# carrier 服务相关网络配置
-carrier_pprof_ip: "{{ listen_all_ip }}"
-carrier_rpc_ip: "{{ listen_all_ip }}"
-carrier_grpc_gateway_ip: "{{ listen_all_ip }}"
-carrier_p2p_listen_ip: "{{ listen_all_ip }}"
-carrier_p2p_external_ip: xxx.xxx.xxx.xxx
 # carrier 端口号
 carrier_pprof_port: 10032
 carrier_rpc_port: 10033
@@ -496,6 +517,13 @@ compute_cert_dir:   "{{ playbook_dir }}/config/compute_cert"
 data_cert_dir:   "{{ playbook_dir }}/config/data_cert"
 
 # #### 下面的变量不能进行更改 ####
+
+# 公共变量
+listen_all_ip: 0.0.0.0
+carrier_pprof_ip: "{{ listen_all_ip }}"
+carrier_rpc_ip: "{{ listen_all_ip }}"
+carrier_grpc_gateway_ip: "{{ listen_all_ip }}"
+carrier_p2p_listen_ip: "{{ listen_all_ip }}"
 
 # 文件下载目录，非必改变量
 downloads_dir: "{{ playbook_dir }}/downloads"
@@ -552,10 +580,6 @@ self_python_version: 3.6.9
 
 ```yml
 ---
-# ############################################### 公共配置项 ###############################################
-
-# 公共变量
-listen_all_ip: 0.0.0.0
 
 # ############################################### 部署服务开关选项 ###############################################
 enable_deploy_via: true
@@ -603,10 +627,6 @@ admin_web_port: 9090
 
 ## ---------------------------- carrier 服务配置 ----------------------------
 # carrier 服务相关网络配置
-carrier_pprof_ip: "{{ listen_all_ip }}"
-carrier_rpc_ip: "{{ listen_all_ip }}"
-carrier_grpc_gateway_ip: "{{ listen_all_ip }}"
-carrier_p2p_listen_ip: "{{ listen_all_ip }}"
 carrier_p2p_external_ip: xxx.xxx.xxx.xxx
 # carrier 端口号
 carrier_pprof_port: 10032
@@ -650,6 +670,13 @@ compute_cert_dir:   "{{ playbook_dir }}/config/compute_cert"
 data_cert_dir:   "{{ playbook_dir }}/config/data_cert"
 
 # #### 下面的变量不能进行更改 ####
+
+# 公共变量
+listen_all_ip: 0.0.0.0
+carrier_pprof_ip: "{{ listen_all_ip }}"
+carrier_rpc_ip: "{{ listen_all_ip }}"
+carrier_grpc_gateway_ip: "{{ listen_all_ip }}"
+carrier_p2p_listen_ip: "{{ listen_all_ip }}"
 
 # 文件下载目录，非必改变量
 downloads_dir: "{{ playbook_dir }}/downloads"
@@ -761,31 +788,6 @@ ansible-playbook -i inventory.ini cleanup.yml
 ```
 
 
-## 配置文件补充说明
-
-inventory.ini: 组织中各个服务的主机ip的相关配置，由用户根据自己情况定义。
-
-group_vars/all.yml: 组织各个服务的相关配置项配置，由用户根据自己情况定义。
-
-ansible.cfg: ansible 配置文件，建议不要乱动。
-
-config目录: 相关配置模版，建议不要乱动。
-
-roles目录: ansible tasks 的集合，建议不要乱动。
-
-local_prepare.yml: 用来下载相关安装包的配置，建议不要乱动。
-
-bootstrap.yml: 初始化集群各个节点的配置，建议不要乱动。
-
-deploy.yml: 安装各个服务，建议不要乱动。
-
-start.yml: 启动所有服务，建议不要乱动。
-
-stop.yml: 停止所有服务，建议不要乱动。
-
-cleanup.yml: 销毁集群，建议不要乱动。
-
-
 ## 部署单组织demo
 
 根据上述操作说明，下面我们具体的写个demo来部署我们的网络，根据之前的部署情况我们区分为两种情况，【一】支持所有服务部署在一台机器上 (即: 单个宿主机部署单个组织所有服务, 建议只在测试阶段使用); 【二】支持每台宿主机不是一个服务 (生产阶段建议使用这种)。
@@ -861,10 +863,7 @@ cluster_name = demo-cluster
 
 ```yml
 ---
-# ############################################### 公共配置项 ###############################################
 
-# 公共变量
-listen_all_ip: 0.0.0.0
 
 # ############################################### 部署服务开关选项 ###############################################
 enable_deploy_via: true
@@ -912,10 +911,6 @@ admin_web_port: 9090
 
 ## ---------------------------- carrier 服务配置 ----------------------------
 # carrier 服务相关网络配置
-carrier_pprof_ip: "{{ listen_all_ip }}"
-carrier_rpc_ip: "{{ listen_all_ip }}"
-carrier_grpc_gateway_ip: "{{ listen_all_ip }}"
-carrier_p2p_listen_ip: "{{ listen_all_ip }}"
 carrier_p2p_external_ip: 39.98.126.40
 # carrier 端口号
 carrier_pprof_port: 7701
@@ -959,6 +954,13 @@ compute_cert_dir:   "{{ playbook_dir }}/config/compute_cert"
 data_cert_dir:   "{{ playbook_dir }}/config/data_cert"
 
 # #### 下面的变量不能进行更改 ####
+
+# 公共变量
+listen_all_ip: 0.0.0.0
+carrier_pprof_ip: "{{ listen_all_ip }}"
+carrier_rpc_ip: "{{ listen_all_ip }}"
+carrier_grpc_gateway_ip: "{{ listen_all_ip }}"
+carrier_p2p_listen_ip: "{{ listen_all_ip }}"
 
 # 文件下载目录，非必改变量
 downloads_dir: "{{ playbook_dir }}/downloads"
@@ -1073,10 +1075,6 @@ cluster_name = demo-cluster
 
 ```yml
 ---
-# ############################################### 公共配置项 ###############################################
-
-# 公共变量
-listen_all_ip: 0.0.0.0
 
 # ############################################### 部署服务开关选项 ###############################################
 enable_deploy_via: false
@@ -1124,10 +1122,6 @@ admin_web_port: 9090
 
 ## ---------------------------- carrier 服务配置 ----------------------------
 # carrier 服务相关网络配置
-carrier_pprof_ip: "{{ listen_all_ip }}"
-carrier_rpc_ip: "{{ listen_all_ip }}"
-carrier_grpc_gateway_ip: "{{ listen_all_ip }}"
-carrier_p2p_listen_ip: "{{ listen_all_ip }}"
 carrier_p2p_external_ip: 39.98.126.40
 # carrier 端口号
 carrier_pprof_port: 7701
@@ -1171,6 +1165,13 @@ compute_cert_dir:   "{{ playbook_dir }}/config/compute_cert"
 data_cert_dir:   "{{ playbook_dir }}/config/data_cert"
 
 # #### 下面的变量不能进行更改 ####
+
+# 公共变量
+listen_all_ip: 0.0.0.0
+carrier_pprof_ip: "{{ listen_all_ip }}"
+carrier_rpc_ip: "{{ listen_all_ip }}"
+carrier_grpc_gateway_ip: "{{ listen_all_ip }}"
+carrier_p2p_listen_ip: "{{ listen_all_ip }}"
 
 # 文件下载目录，非必改变量
 downloads_dir: "{{ playbook_dir }}/downloads"
@@ -1713,10 +1714,6 @@ cluster_name = demo-cluster
 
 ```yml
 ---
-# ############################################### 公共配置项 ###############################################
-
-# 公共变量
-listen_all_ip: 0.0.0.0
 
 # ############################################### 部署服务开关选项 ###############################################
 enable_deploy_via: true
@@ -1764,10 +1761,6 @@ admin_web_port: 9090
 
 ## ---------------------------- carrier 服务配置 ----------------------------
 # carrier 服务相关网络配置
-carrier_pprof_ip: "{{ listen_all_ip }}"
-carrier_rpc_ip: "{{ listen_all_ip }}"
-carrier_grpc_gateway_ip: "{{ listen_all_ip }}"
-carrier_p2p_listen_ip: "{{ listen_all_ip }}"
 carrier_p2p_external_ip: 39.98.126.40
 # carrier 端口号
 carrier_pprof_port: 7701
@@ -1811,6 +1804,13 @@ compute_cert_dir:   "{{ playbook_dir }}/config/compute_cert"
 data_cert_dir:   "{{ playbook_dir }}/config/data_cert"
 
 # #### 下面的变量不能进行更改 ####
+
+# 公共变量
+listen_all_ip: 0.0.0.0
+carrier_pprof_ip: "{{ listen_all_ip }}"
+carrier_rpc_ip: "{{ listen_all_ip }}"
+carrier_grpc_gateway_ip: "{{ listen_all_ip }}"
+carrier_p2p_listen_ip: "{{ listen_all_ip }}"
 
 # 文件下载目录，非必改变量
 downloads_dir: "{{ playbook_dir }}/downloads"
@@ -1923,10 +1923,6 @@ cluster_name = demo-cluster
 
 ```yml
 ---
-# ############################################### 公共配置项 ###############################################
-
-# 公共变量
-listen_all_ip: 0.0.0.0
 
 # ############################################### 部署服务开关选项 ###############################################
 enable_deploy_via: false
@@ -1974,10 +1970,6 @@ admin_web_port: 9090
 
 ## ---------------------------- carrier 服务配置 ----------------------------
 # carrier 服务相关网络配置
-carrier_pprof_ip: "{{ listen_all_ip }}"
-carrier_rpc_ip: "{{ listen_all_ip }}"
-carrier_grpc_gateway_ip: "{{ listen_all_ip }}"
-carrier_p2p_listen_ip: "{{ listen_all_ip }}"
 carrier_p2p_external_ip: 39.98.126.40
 # carrier 端口号
 carrier_pprof_port: 7701
@@ -2021,6 +2013,13 @@ compute_cert_dir:   "{{ playbook_dir }}/config/compute_cert"
 data_cert_dir:   "{{ playbook_dir }}/config/data_cert"
 
 # #### 下面的变量不能进行更改 ####
+
+# 公共变量
+listen_all_ip: 0.0.0.0
+carrier_pprof_ip: "{{ listen_all_ip }}"
+carrier_rpc_ip: "{{ listen_all_ip }}"
+carrier_grpc_gateway_ip: "{{ listen_all_ip }}"
+carrier_p2p_listen_ip: "{{ listen_all_ip }}"
 
 # 文件下载目录，非必改变量
 downloads_dir: "{{ playbook_dir }}/downloads"
