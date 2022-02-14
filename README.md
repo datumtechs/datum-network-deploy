@@ -31,6 +31,12 @@ metis网络由多个metisNode组成，一个MetisNode其实是一个组织的逻
 **consul 节点**：为整个组织的注册中心服务，一个组织建议配置奇数个（1，3，5等），方便 raft 共识算法选择 leader。
 
 
+- ### MetisNode 内部必须存在的服务，以及部署时的顺序
+
+>从上述图中我们已经知道了MetisNode内部各个服务的网络拓扑，那么简而已见 在组织内部我们必须要有的服务为 consul、 carrier、 admin，其他的服务根据自身情况而定；如果需要提供数据能力或者提供算力能力去参与多方协同计算，那么还必须有 via，和fighter，其中需要提供数据能力时需部署fighter(data)、需要提供算力能力时部署fighter(compute)。
+
+**服务部署的顺序为: [1] consul服务 -> [2] carrier 服务 -> [3] admin服务, 然后根据实际情况 部署 [4] via 服务 -> [5] fighter(data)服务、fighter(compute)服务**
+
 
 - ### Moirea 和 MetisNode 的关系
 
