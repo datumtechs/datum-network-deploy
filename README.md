@@ -114,13 +114,9 @@ ansible-playbook -i inventory.ini local_prepare.yml
 
 本部署脚本主要需要用户自行配置下述几个文件：
 
-1、 管理组织内部所有服务的网络拓扑的 `inventory.ini` 文件。
+1. 管理组织内部所有服务的网络拓扑的 `inventory.ini` 文件。
  
-2、 管理各个服务所需的配置项的 `group_vars/all.yml` 文件。
-
-
-
-
+2. 管理各个服务所需的配置项的 `group_vars/all.yml` 文件。
 
 ### 单组织内部各服务的主机网络拓扑配置文件 `inventory.ini`
 
@@ -132,9 +128,7 @@ ansible-playbook -i inventory.ini local_prepare.yml
 
 `ansible_ssh_user` 设置为要登录目标主机的 ssh 用户名, `ansible_ssh_pass` 为ssh 用户对应的密码, `ansible_sudo_pass` 为目标主机上的用户进行提权时的密码。
 
-
 #### 文件的各个项的说明如下：
-
 
 ```ini
 # 库存文件，主要用来配置主机列表和主机组
@@ -285,17 +279,9 @@ deployment_method = binary
 cluster_name = demo-cluster
 ```
 
-
 ## 配置 `group_vars/all.yml` 中各项说明 (仅对用户可能需要修改的项做说明)：
 
-
 ### 配置项说明
-
-
-#### 1. 公共配置项
-
-listen_all_ip: 地址 `0.0.0.0`。
-
 
 #### 2. 部署服务开关选项
 
@@ -365,18 +351,7 @@ admin_password: mysql 普通用户的密码。
 
 admin_web_port: 为 admin 提供 web 服务的端口。
 
-
 #### 9. carrier 服务的启动命令行各个ip配置
-
-以下各ip选项的值根据实际使用情况来指定，"{{ listen_all_ip }}" 表示将对应功能提供外网访问形式， "{{ inventory_hostname }}" 表示对应的功能只提供内网访问形式 (注： carrier_p2p_external_ip选项除外)。
-
-carrier_pprof_ip: carrier的golang语言调试pprof服务监听ip (建议使用仅内网访问形式 "{{ inventory_hostname }}")。
-
-carrier_rpc_ip: carrier的rpc server监听的ip (强烈建议使用 外网访问形式 "{{ listen_all_ip }}")。
-
-carrier_grpc_gateway_ip: carrier的 rpc api 的 restful server监听ip (建议使用仅内网访问形式 "{{ inventory_hostname }}")。
-
-carrier_p2p_listen_ip: carrier的 p2p server (包含了 tcp和udp)监听ip (强烈建议使用 外网访问形式 "{{ listen_all_ip }}")。
 
 carrier_p2p_external_ip: carrier的p2p服务开通的外网ip (写具体的外网ip，给外部组织发现本组织用)。
 

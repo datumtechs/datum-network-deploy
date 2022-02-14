@@ -1,8 +1,4 @@
 ---
-# ############################################### 公共配置项 ###############################################
-
-# 公共变量
-listen_all_ip: 0.0.0.0
 
 # ############################################### 部署服务开关选项 ###############################################
 enable_deploy_via: "{{via|default(false)|bool}}"
@@ -50,11 +46,8 @@ admin_web_port: 9090
 
 ## ---------------------------- carrier 服务配置 ----------------------------
 # carrier 服务相关网络配置
-carrier_pprof_ip: "{{ listen_all_ip }}"
-carrier_rpc_ip: "{{ listen_all_ip }}"
-carrier_grpc_gateway_ip: "{{ listen_all_ip }}"
-carrier_p2p_listen_ip: "{{ listen_all_ip }}"
 carrier_p2p_external_ip: xxx.xxx.xxx.xxx
+
 # carrier 端口号
 carrier_pprof_port: 10032
 carrier_rpc_port: 10033
@@ -96,7 +89,14 @@ storage_cert_dir:   "{{ playbook_dir }}/config/storage_cert"
 compute_cert_dir:   "{{ playbook_dir }}/config/compute_cert"
 data_cert_dir:   "{{ playbook_dir }}/config/data_cert"
 
-# #### 下面的变量不能进行更改 ####
+# #### 下面的变量不能进行更改 #### 
+
+# 公共变量
+listen_all_ip: 0.0.0.0
+carrier_pprof_ip: "{{ listen_all_ip }}"
+carrier_rpc_ip: "{{ listen_all_ip }}"
+carrier_grpc_gateway_ip: "{{ listen_all_ip }}"
+carrier_p2p_listen_ip: "{{ listen_all_ip }}"
 
 # 文件下载目录，非必改变量
 downloads_dir: "{{ playbook_dir }}/downloads"
