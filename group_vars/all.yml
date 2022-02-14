@@ -1,36 +1,31 @@
 ---
+# ############################################### 公共配置项 ###############################################
 
-# 下面的这些变量需要用户根据实际情况进行配置
-# 服务静态文件下载 url
-download_url: "http://192.168.9.150/metis/"
-consul_download_url: "http://192.168.9.150/metis/consul_1.10.4_linux_amd64.zip"
+# 公共变量
+listen_all_ip: 0.0.0.0
 
-# admin web 服务相关配置信息
-enable_tls: false # 是否启用 https，启用的需要配置证书和相应的域名，证书里面的密码套件等，不启用的话，忽略下面的配置。
-admin_server_name: metis-admin.platon.network
-admin_ssl_protocols: "TLSv1 TLSv1.1 TLSv1.2"
-admin_ssl_ciphers: ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
-
-# mysql 相关用户名密码
-mysql_root_password: jatel
-amin_user: metis_admin
-admin_password: admin_123456
-storage_user: metis_storage
-storage_password: storage_123456
-
-# 部署服务选项
+# ############################################### 部署服务开关选项 ###############################################
 enable_deploy_via: "{{via|default(false)|bool}}"
 enable_deploy_carrier: "{{carrier|default(false)|bool}}"
 enable_deploy_admin: "{{admin|default(false)|bool}}"
 enable_deploy_data: "{{data|default(false)|bool}}"
 enable_deploy_compute: "{{compute|default(false)|bool}}"
 enable_deploy_consul: "{{consul|default(false)|bool}}"
+
 # 检查服务的状态
 check_service_status: "{{status|default(false)|bool}}"
 
-###############################################
-# 端口号根据自己的部署情况进行设置，数量要和库存文件里面一致。
+# ############################################### consul的 key-value 选项 ###############################################
 
+via_external_ip: "{{ groups['via'][0] }}"
+via_external_port: "{{ via_port | int}}"
+storage_port: 9098
+
+
+# ############################################### 各服务配置项 ###############################################
+
+## ---------------------------- consul 服务配置 ----------------------------
+# 端口号根据自己的部署情况进行设置，数量要和库存`inventory.ini`文件里面ip数量一致。
 # consul 端口号
 consul_server_port: [8200, 8201, 8202]
 consul_serf_lan_port: [8300, 8301, 8302]
@@ -38,42 +33,59 @@ consul_serf_wan_port: [8400, 8401, 8402]
 consul_http_port: [8500, 8501, 8502]
 consul_dns_port: [8600, 8601, 8602]
 
-# consul KV参数配置
-via_external_ip : "{{ groups['via'][0] }}"
-via_external_port: "{{ via_port | int}}"
-storage_port: 9098
+## ---------------------------- admin web 服务配置 ----------------------------
+# admin web 服务证书相关配置信息
+enable_tls: false # 是否启用 https，启用的需要配置证书和相应的域名，证书里面的密码套件等，不启用的话，忽略下面的配置。
+admin_server_name: metis-admin.platon.network
+admin_ssl_protocols: "TLSv1 TLSv1.1 TLSv1.2"
+admin_ssl_ciphers: ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
 
-# data 端口号
-data_port: [8700, 8701, 8702]
-
-# compute 端口号
-compute_port: [8801, 8802, 8803]
-
-# 下面的服务只能部署一个，只能设置一个端口号
-# via 服务端口号
-via_port: 10031
-
-# carrier 端口号
-carrier_pprof_port: 10032
-carrier_rpc_port: 10033
-carrier_grpc_gateway_port: 10034
-bootstrap_node: []
-carrier_p2p_udp_port: 10035
-carrier_p2p_tcp_port: 10036
+# admin web 的 mysql 相关用户名密码
+mysql_root_password: jatel
+amin_user: metis_admin
+admin_password: admin_123456
 
 # admin 端口号
 admin_web_port: 9090
 
+## ---------------------------- carrier 服务配置 ----------------------------
+# carrier 服务相关网络配置
+carrier_pprof_ip: "{{ listen_all_ip }}"
+carrier_rpc_ip: "{{ listen_all_ip }}"
+carrier_grpc_gateway_ip: "{{ listen_all_ip }}"
+carrier_p2p_listen_ip: "{{ listen_all_ip }}"
+carrier_p2p_external_ip: xxx.xxx.xxx.xxx
+# carrier 端口号
+carrier_pprof_port: 10032
+carrier_rpc_port: 10033
+carrier_grpc_gateway_port: 10034
+carrier_p2p_udp_port: 10035
+carrier_p2p_tcp_port: 10036
+# carrier 服务连接进metis网络时优先连接的引导节点的nodeId数组 (enr前缀格式)
+bootstrap_nodes: []
 
-# scan 端口号
-scan_web_port: 9001
-###############################################
+## ---------------------------- via 服务配置 ----------------------------
 
-# 下面的变量不建议用户修改
-# 文件下载目录，非必改变量
-downloads_dir: "{{ playbook_dir }}/downloads"
-avx2: "{{ downloads_dir }}/avx2"
-no_avx2: "{{ downloads_dir }}/no_avx2"
+# via 服务端口号
+via_port: 10031
+
+## ---------------------------- fighter(data) 服务配置 ----------------------------
+# 端口号根据自己的部署情况进行设置，数量要和库存`inventory.ini`文件里面ip数量一致。
+# data 端口号
+data_port: [8700, 8701, 8702]
+
+## ---------------------------- fighter(compute) 服务配置 ----------------------------
+# 端口号根据自己的部署情况进行设置，数量要和库存`inventory.ini`文件里面ip数量一致。
+# compute 端口号
+compute_port: [8801, 8802, 8803]
+
+############################################################################################## 用户不需要改动的、不需要关心的配置项 ##############################################################################################
+
+# #### 下面的变量不建议用户修改 ####
+
+# 服务静态文件下载 url
+download_url: "http://192.168.9.150/metis/"
+consul_download_url: "http://192.168.9.150/metis/consul_1.10.4_linux_amd64.zip"
 
 # 证书文件，非必改目录
 via_cert_dir:   "{{ playbook_dir }}/config/via_cert"
@@ -82,31 +94,38 @@ admin_cert_dir:   "{{ playbook_dir }}/config/admin_cert"
 scan_cert_dir:   "{{ playbook_dir }}/config/scan_cert"
 storage_cert_dir:   "{{ playbook_dir }}/config/storage_cert"
 compute_cert_dir:   "{{ playbook_dir }}/config/compute_cert"
-data_cert_dir:   "{{ playbook_dir }}/config/data_cert" 
+data_cert_dir:   "{{ playbook_dir }}/config/data_cert"
 
-# 下面的变量不能进行更改
+# #### 下面的变量不能进行更改 ####
+
+# 文件下载目录，非必改变量
+downloads_dir: "{{ playbook_dir }}/downloads"
+avx2: "{{ downloads_dir }}/avx2"
+no_avx2: "{{ downloads_dir }}/no_avx2"
 
 # 目标主机文件安装目录
 deploy_dir: "/home/{{ansible_ssh_user}}"
 
-# consul agent 信息
-consul_zip_name: "{{ consul_download_url.split('/')[-1] | trim }}"
-consul_number_int: "{{ groups['consul'] | length | int}}"
-consul_leader: "{{ groups['consul'][0] }}"
-consul_leader_port: "{{ consul_http_port[0] }}"
-consul_leader_serf_lan_port: "{{ consul_serf_lan_port[0] }}"
-consul_http_port_self:   "{% set consul_number_int = consul_number_int | int %}
-                          {% for i in range(consul_number_int) %}
-                              {% if groups['consul'][i] == inventory_hostname %}
-                                {{consul_http_port[i] |int}}  
-                              {% endif %}
-                          {% endfor %}"
+
 # via 相关信息
 via_ip: "{{ groups['via'][0] }}"
 
 # storage 相关信息
 storage_host: "{{ groups['storage'][0] }}"
 storage_ip: "192.168.10.149"
+
+# consul agent 信息
+consul_zip_name: "{{ consul_download_url.split('/')[-1] | trim }}"
+consul_number_int: "{{ groups['consul'] | length | int}}"
+consul_leader_ip: "{{ groups['consul'][0] }}"
+consul_leader_port: "{{ consul_http_port[0] }}"
+consul_leader_serf_lan_port: "{{ consul_serf_lan_port[0] }}"
+consul_http_port_self:   "{% set consul_number_int = consul_number_int | int %}
+                          {% for i in range(consul_number_int) %}
+                              {% if groups['consul'][i] == inventory_hostname %}
+                                {{consul_http_port[i] |int}}
+                              {% endif %}
+                          {% endfor %}"
 
 # data 相关信息
 data_port_self: "{% set data_number_int = groups['data'] | length |int %} 
