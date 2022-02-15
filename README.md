@@ -96,7 +96,7 @@ pip install -r ./requirements.txt
 
 3、检查 ansible 版本(>2.4.2, 建议2.7.11)，检查 jinja2 安装和版本(>=2.9.6)信息。
 
-4、 检查主机IP清单（inventory.ini）配置是否正确。至少包括一个 consul 主机， ssh 账户不支持 root 只能用普通账户。
+4、 检查主机(内网)IP清单（inventory.ini）配置是否正确。至少包括一个 consul 主机， ssh 账户不支持 root 只能用普通账户。
 
 5、 创建下载目录，检查网络连接，无法连接外网直接报错退出。
 
@@ -122,7 +122,7 @@ ansible-playbook -i inventory.ini local_prepare.yml
 
 ### 配置文件用途说明
 
-inventory.ini: 组织中各个服务的主机ip的相关配置，由用户根据自己情况定义。
+inventory.ini: 组织中各个服务的主机(内网)ip的相关配置，由用户根据自己情况定义。
 
 group_vars/all.yml: 组织各个服务的相关配置项配置，由用户根据自己情况定义。
 
@@ -149,7 +149,7 @@ cleanup.yml: 销毁集群，建议不要乱动。
 ### 单组织内部各服务的主机网络拓扑配置文件 `inventory.ini`
 
 
-在metis-deploy项目的根目录下有一名为`inventory.ini`的配置文件，它管理者单组织内部各个服务所部署的主机IP情况(注: inventory.ini 不可重命名)。用户根据自己的网络情况配置各个服务部署机器的 ip 地址。
+在metis-deploy项目的根目录下有一名为`inventory.ini`的配置文件，它管理者单组织内部各个服务所部署的主机(内网)IP情况(注: inventory.ini 不可重新命名)。用户根据自己的网络情况配置各个服务部署机器的 ip 地址。
 
 配置仅支持两种形式，【一】支持所有服务部署在一台机器上(即: 单个宿主机部署单个组织所有服务, 建议只在测试阶段使用); 【二】支持每台宿主机不是一个服务 (生产阶段建议使用这种)。
 
