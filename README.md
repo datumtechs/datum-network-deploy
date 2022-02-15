@@ -89,7 +89,7 @@ mkdir log
 # 先进入本项目目录
 cd metis-deploy
 
-# 安装 ansible 和 依赖模块
+# 安装 ansible 和 依赖模块  (注意: pip使用的是 pip3)
 pip install -r ./requirements.txt
 ```
 
