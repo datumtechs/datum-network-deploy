@@ -70,7 +70,7 @@ Moirea可以理解为是一个提供数据市场、全网数据统计、任务�
 
 ```sh
 # 使用git 下载本脚本项目
-git clone http://192.168.9.66/Metisnetwork/metis-deploy.git
+git clone https://github.com/Metisnetwork/Metis-Deploy.git
 
 # 进入项目目录
 cd metis-deploy
