@@ -5,9 +5,6 @@ deployment_method: binary
 #目标机系统自带Python版本
 self_python_version: 3.6.9
 
-# 部署服务开关
-enable_deploy_consul: true
-
 # 检查服务的状态
 check_service_status: true
 
