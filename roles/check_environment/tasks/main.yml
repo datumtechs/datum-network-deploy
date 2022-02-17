@@ -1,7 +1,15 @@
 ---
 
-# 目前只支持 Ubuntu 18.04 操作系统上面安装服务
+# 检查主机清单是否正确
+- name: Ensure consul exists
+  fail: msg="consul should be specified."
+  when: groups['consul'] | length < 1
 
+- name: Check ansible_ssh_user variable
+  fail: msg="ansible_ssh_user == 'root' is not supported, please ssh via normal user"
+  when: ansible_ssh_user == 'root'
+
+# 目前只支持 Ubuntu 18.04 操作系统上面安装服务
 # 判断操作系统
 - name: Get distro name from /etc/os-release
   shell: "([ -f /etc/os-release ] && grep '^NAME=' /etc/os-release | sed s'/NAME=//' | tr -d \\\")"

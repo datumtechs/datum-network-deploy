@@ -74,6 +74,13 @@
     dest: "{{ deploy_dir }}/admin/scripts/stop_admin.sh"
     mode: 0755
 
+# 安装依赖组件
+- name: Install dependencies
+  become: true
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+    - unzip
+
 # 拷贝 web 静态文件
 - name: copy and extract admin.tar
   unarchive:
@@ -103,6 +110,16 @@
     - libmysqlclient-dev
     - python-mysqldb
 
+- name: Install python dependencies
+  become: true
+  apt:
+    name:
+      - python3
+      - python3-pip
+      - python3-setuptools
+    state: latest
+    update_cache: True
+
 - name: "Installing mysql pip dependencies"
   pip:
     name: "{{ item }}"
@@ -110,6 +127,7 @@
   with_items:
     - pymysql
     - mysqlclient
+  executable: pip3
 
 - name: Start the MySQL service
   become: true

@@ -38,7 +38,7 @@
       uri: 
         url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/metis/via_ip_port
         method: PUT
-        body: "{{via_external_ip}}_{{via_external_port}}"
+        body: "{{via_external_ip}}_{{via_port}}"
         when: "ansible_host == consul_leader_ip and enable_deploy_consul|default(false)"
 
     - name: Set data center address
