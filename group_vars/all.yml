@@ -15,8 +15,6 @@ check_service_status: true
 storage_ip: 192.168.112.150
 storage_port: 9098
 
-# via 服务端口号
-via_port: 10031
 
 # #### 下面的变量不建议用户修改 ####
 
