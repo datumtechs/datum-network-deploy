@@ -4,7 +4,7 @@
 
 1. inventory.ini 配置文件里面配置的 ip 地址为内网 ip， 主控机和目标机在同一个内网中，保证网络互通。
 
-2. 需要配置外网 ip 的是 via 和 carrier， via_external_ip 配置 via 外网 ip， carrier_p2p_external_ip 配置 carrier 外网 ip。
+2. 需要配置外网 ip 的是 via 和 carrier， via_external_ip 配置 via 外网 ip， carrier_external_ip 配置 carrier 外网 ip。
 
 3. 服务端口信息
    

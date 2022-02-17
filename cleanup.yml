@@ -1,8 +1,6 @@
 ---
 
 # 销毁集群
-
-
 - hosts: via
   tags:
     - via_servers

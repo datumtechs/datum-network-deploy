@@ -29,14 +29,12 @@
     msg: "jinja2({{ jinja2_version }}) version is too low, Please run `pip install --upgrade -r requirements.txt` to upgrade."
   when: jinja2_version | version_compare('2.9.6', '<')
 
-# 检查主机清单是否正确
-- name: Ensure consul exists
-  fail: msg="consul should be specified."
-  when: groups['consul'] | length < 1
-
-- name: Check ansible_ssh_user variable
-  fail: msg="ansible_ssh_user == 'root' is not supported, please ssh via normal user"
-  when: ansible_ssh_user == 'root'
+# 安装依赖组件
+- name: Install dependencies
+  become: true
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+    - sshpass
 
 # 创建下载文件放置目录
 - name: create downloads directory
