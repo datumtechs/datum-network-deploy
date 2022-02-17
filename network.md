@@ -25,3 +25,11 @@
 |  consul  | consul_http_port  | HTTP API 端口  | 对组织内部开放  |
 |  consul  | consul_dns_port  | DNS 服务器端口  | 对组织内部开放  |
 
+
+**【注意事项】:** 
+
+1、最后需要对浏览器开通80端口策略
+
+2、对于fighter(data)一定要开放 [31000 ~ 31100]端口段 100 个内网端口。
+
+3、对于fighter(compute)一定要开放 [41000 ~ 41100]端口段 100 个内网端口。

@@ -4,17 +4,17 @@
 
 metis 网络由多个 metisNode 组成，一个 MetisNode 其实是一个组织的逻辑总称，关于 MetisNode 的网络拓扑具体如下所示：
 
-- *各个MetisNode间的网络拓扑*
+- ### *各个MetisNode间的网络拓扑*
 
  ![organizations][MetisNode的各组织网络拓扑]
 
  MetisNode 间的网络拓扑，其中在各个 MetisNode 之间 (也就是各个组织之间)是通过 p2p 网络互相建立起连接的；每个 MetisNode 通过自身的 carrier 和外界的 MetisNode 的 carrier 进行 p2p 连接。
 
-- *单个MetisNode 内部各个服务的网络拓扑*
+- ### *单个MetisNode 内部各个服务的网络拓扑*
 
  ![inside organization][单个MetisNode的内部各服务网络拓扑]
 
-在 MetisNode 内测的各个服务划分 admin, via, carrier, fighter(data), fighter(compute), consul 等角色服务。admin、carrier、via、fighter都将自身的信息自动注册到 consul，各个服务间通过 consul 中的其他服务信息做服务发现。对于组织内部的各服务具体功能如下：
+在 MetisNode 内测的各个服务划分 admin, via, carrier, fighter(data), fighter(compute), consul 等角色服务。admin、carrier、via、fighter都将自身的信息自动注册到 consul，各个内部服务间通过 consul 中的其他内部服务信息做服务间相互发现。对于组织内部的各服务具体功能如下：
 
 **via 节点**：为整个组织的 task 消息网关，一个组织只能部署一个网关(只能有一个)。via 服务提供组织和外部进行多方协助 task 时的唯一外网端口 (内外网端口一致)。
 
@@ -28,13 +28,20 @@ metis 网络由多个 metisNode 组成，一个 MetisNode 其实是一个组织�
 
 **consul 节点**：为整个组织的注册中心服务，一个组织建议配置奇数个（1，3，5等），方便 raft 共识算法选择 leader。
 
-- *MetisNode 内部必须存在的服务，以及部署时的顺序*
+
+- ### *MetisNode 内部必须存在的服务，以及部署时的顺序*
 
 > 从上述图中我们已经知道了 MetisNode 内部各个服务的网络拓扑，那么显而易见组织内部必须要有的服务为 consul、 carrier、 admin，其他的服务根据自身情况而定；如果需要提供数据能力或者提供算力能力去参与多方协同计算，那么还必须有 via 和 fighter，其中需要提供数据能力时需部署 fighter(data)、需要提供算力能力时部署 fighter(compute)。
 
-**服务部署的顺序为: [1] consul服务 -> [2] carrier 服务 -> [3] admin服务, 然后根据实际情况部署 [4] via 服务 -> [5] fighter(data)服务、fighter(compute)服务**
+**服务部署的顺序为:**
 
-- *Moirea 和 MetisNode 的关系*
+```
+(一)、必须部署部分(不管是否参与任务计算都要部署的):  [1] consul服务 -> [2] carrier 服务 -> [3] admin服务； 
+
+(二)、非必须部署部分(如需要参与任务计算都要部署的): [4] via 服务 -> [5] fighter(data)服务、fighter(compute)服务。
+```
+
+- ### *Moirea 和 MetisNode 的关系*
 
 ![Moirea and MetisNode][Moirea和MetisNode间的拓扑]
 
@@ -42,7 +49,7 @@ Moirea 可以理解为是一个提供数据市场、全网数据统计、任务�
 
 ## MetisNode 部署脚本说明
 
-本脚本为 ansibl e自动化部署脚本，包括单组织内部 admin, via, carrier, fighter(data), fighter(compute), consul 角色服务，ansible 脚本支持[部署]，[启动]，[停止]，[清理]各个角色节点。
+本脚本为 ansibl e自动化部署脚本，包括单组织内部 admin, via, carrier, fighter(data), fighter(compute), consul 角色服务，ansible 脚本支持[部署]，[启动]，[停止]，[销毁]各个角色节点。
 
 ## 环境要求
 
@@ -311,6 +318,11 @@ data_port: 数据服务监听的端口，数组形式[8700, 8701, 8702], 端口�
 
 compute_port: 数据服务监听的端口，数组形式[8801, 8802, 8803], 端口号根据自己的部署情况进行设置，数量要和库存`inventory.ini`文件里面ip数量一致。
 
+## 组织内各个服务的网络情况
+
+参考: [network](./network.md)
+
+
 ## 脚本的各个操作说明 (预准备、部署、启动、关闭、销毁等操作)
 
 > **请务必检查以上配置是否正确，确认正确之后再进行以下操作**
@@ -365,7 +377,14 @@ ansible-playbook -i inventory.ini stop.yml
 ansible-playbook -i inventory.ini cleanup.yml
 ```
 
+
+## 使用说明
+
+在整个 MetisNode 部署完成后，需要根据 [使用说明](./MetisNetwork使用说明.md)
+
 ## FAQ
+
+部署中常见问题及解决方法[参考](./FAQ.md)
 
 [MetisNode的各组织网络拓扑]: ./img/MetisNode的各组织网络拓扑.jpg
 [单个MetisNode的内部各服务网络拓扑]: ./img/单个MetisNode的内部各服务网络拓扑.jpg

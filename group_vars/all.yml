@@ -11,17 +11,17 @@ enable_deploy_consul: true
 # 检查服务的状态
 check_service_status: true
 
-# ############################################### consul的 key-value 选项 ###############################################
+# consul的 key-value 选项 
 storage_ip: 192.168.112.150
 storage_port: 9098
-
-# carrier 服务连接进metis网络时优先连接的引导节点的nodeId数组 (enr前缀格式)
-bootstrap_nodes: []
 
 # via 服务端口号
 via_port: 10031
 
 # #### 下面的变量不建议用户修改 ####
+
+# carrier 服务连接进metis网络时优先连接的引导节点的nodeId数组 (enr前缀格式)
+bootstrap_nodes: []
 
 # 服务静态文件下载 url
 download_url: "http://192.168.9.150/metis/"
