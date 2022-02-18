@@ -1,10 +1,6 @@
 ---
 
 # 检查主机清单是否正确
-- name: Ensure consul exists
-  fail: msg="consul should be specified."
-  when: groups['consul'] | length < 1
-
 - name: Check ansible_ssh_user variable
   fail: msg="ansible_ssh_user == 'root' is not supported, please ssh via normal user"
   when: ansible_ssh_user == 'root'
@@ -71,7 +67,8 @@
   with_items:
     - python3
     - python3-pip
-  when: "'command not found' in py3_st.stdout"
+    - python3-setuptools
+  when: "'command not found' in py3_st.stdout" 
 
 - name : Get current system self python3 version
   shell: python3 -c "import sys;print('.'.join([str(i) for i in sys.version_info[:3]]))" | xargs echo -n

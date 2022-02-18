@@ -74,7 +74,7 @@
     dest: "{{ deploy_dir }}/admin/scripts/stop_admin.sh"
     mode: 0755
 
-# 安装依赖组件
+# 安装依赖工具
 - name: Install dependencies
   become: true
   apt: name={{ item }} state=installed update_cache=yes
@@ -110,24 +110,14 @@
     - libmysqlclient-dev
     - python-mysqldb
 
-- name: Install python dependencies
-  become: true
-  apt:
-    name:
-      - python3
-      - python3-pip
-      - python3-setuptools
-    state: latest
-    update_cache: True
-
 - name: "Installing mysql pip dependencies"
   pip:
     name: "{{ item }}"
+    executable: pip3
     state: present
   with_items:
     - pymysql
     - mysqlclient
-  executable: pip3
 
 - name: Start the MySQL service
   become: true
@@ -250,13 +240,12 @@
     path: /etc/nginx/sites-enabled/default
     state: absent
 
-- name: "Generate metis-admin.platon.network.conf nginx configuration file based on metis-admin.platon.network.conf.j2 template file"
+- name: "Generate metis-admin.technocore.network.conf nginx configuration file based on metis-admin.technocore.network.conf.j2 template file"
   become: true
   template:
-    src: "metis-admin.platon.network.conf.j2"
-    dest: "/etc/nginx/conf.d/metis-admin.platon.network.conf"
+    src: "metis-admin.technocore.network.conf.j2"
+    dest: "/etc/nginx/conf.d/metis-admin.technocore.network.conf"
     mode: 0600
-    backup: yes
 
 - name: restart nginx
   become: true

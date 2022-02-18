@@ -29,10 +29,10 @@
     msg: "jinja2({{ jinja2_version }}) version is too low, Please run `pip install --upgrade -r requirements.txt` to upgrade."
   when: jinja2_version | version_compare('2.9.6', '<')
 
-# 安装依赖组件
+# 安装依赖工具
 - name: Install dependencies
   become: true
-  apt: name={{ item }} state=installed update_cache=yes
+  apt: name={{ item }} state=installed
   with_items:
     - sshpass
 

@@ -1,11 +1,13 @@
 # 调度服务相关配置文件模板
 datadir: {{carrier_data_dir}}
 verbosity: debug
+
 # 调试模块
 pprof: true
 pprof-port: {{carrier_pprof_port}}
 pprof-addr: {{carrier_pprof_ip}}
 debug: true
+
 # p2p 模块
 # tls-cert: {{carrier_tls_cert}}
 # tls-key: {{carrier_tls_key}}
@@ -16,12 +18,19 @@ grpc-gateway-host: {{carrier_grpc_gateway_ip}}
 grpc-gateway-port: {{carrier_grpc_gateway_port}}
 enable-debug-rpc-endpoints: true
 no-discovery: false
-bootstrap-node: {{bootstrap_nodes}}
+{% set bootstrap_nodes_array = [] %}
+{% set bootstrap_nodes_number_int = bootstrap_nodes | length |int %}
+{% for i in range(bootstrap_nodes_number_int) %}
+{% set varname = "%s" |format(bootstrap_nodes[i]) %}
+{% set _ = bootstrap_nodes_array.append(varname) %}
+{% endfor %}
+bootstrap-node: {{bootstrap_nodes_array}}
 p2p-udp-port: {{carrier_p2p_udp_port}}
 p2p-tcp-port: {{carrier_p2p_tcp_port}}
 p2p-local-ip: {{carrier_p2p_listen_ip}}
 p2p-host-ip: {{carrier_external_ip}}
 p2p-priv-key: {{carrier_p2p_private_key}}
+
 # 注册中心信息
 discovery-server-ip: {{consul_leader_ip}}
 discovery-server-port: {{consul_leader_port}}

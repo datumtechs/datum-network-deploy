@@ -28,18 +28,14 @@ metis 网络由多个 metisNode 组成，一个 MetisNode 其实是一个组织�
 
 **consul 节点**：为整个组织的注册中心服务，一个组织建议配置奇数个（1，3，5等），方便 raft 共识算法选择 leader。
 
-
 - ### *MetisNode 内部必须存在的服务，以及部署时的顺序*
 
 > 从上述图中我们已经知道了 MetisNode 内部各个服务的网络拓扑，那么显而易见组织内部必须要有的服务为 consul、 carrier、 admin，其他的服务根据自身情况而定；如果需要提供数据能力或者提供算力能力去参与多方协同计算，那么还必须有 via 和 fighter，其中需要提供数据能力时需部署 fighter(data)、需要提供算力能力时部署 fighter(compute)。
 
 **服务部署的顺序为:**
 
-```
-(一)、必须部署部分(不管是否参与任务计算都要部署的):  [1] consul服务 -> [2] carrier 服务 -> [3] admin服务； 
-
-(二)、非必须部署部分(如需要参与任务计算都要部署的): [4] via 服务 -> [5] fighter(data)服务、fighter(compute)服务。
-```
+> (一)、必须部署部分(不管是否参与任务计算都要部署的):  [1] consul服务 -> [2] carrier 服务 -> [3] admin服务。
+> (二)、非必须部署部分(如需要参与任务计算都要部署的): [4] via 服务 -> [5] fighter(data)服务、fighter(compute)服务。
 
 - ### *Moirea 和 MetisNode 的关系*
 
@@ -96,9 +92,10 @@ pip install -r ./requirements.txt
 
 # 检查 ansible 版本(>2.4.2, 建议2.7.11)，检查 jinja2 安装和版本(>=2.9.6)信息。
 # 创建下载目录，检查网络连接，无法连接外网直接报错退出，下载安装包需要可以连接外网。
+# 下载依赖的工具和组件（需要输入 sudo 密码）。
 # 下载安装包到下载目录(go 二进制文件，jar 包，web 静态资源文件，python 的 whl 文件，shell 脚本)，下载任务最多尝试 3 次，每次尝试的延迟是10之内的随机值。
 
-ansible-playbook local_prepare.yml
+ansible-playbook --ask-sudo-pass local_prepare.yml
 ```
 
 ## 工程各文件功能简介
@@ -174,12 +171,12 @@ ${目标机内网IP} ansible_ssh_user="${ ssh 账户名称 }" ansible_ssh_pass="
 cluster_name = demo-cluster
 
 # 部署服务开关
-enable_deploy_via = true      # 是否部署、启动、关闭、销毁 via，部署为 true，不部署设置为 false
-enable_deploy_carrier = true  # 是否部署、启动、关闭、销毁 carrier，部署为 true，不部署设置为 false。
-enable_deploy_admin = true    # 是否部署、启动、关闭、销毁 admin，部署为 true，不部署设置为 false。
-enable_deploy_data = true     # 是否部署、启动、关闭、销毁 data，部署为 true，不部署设置为 false。
-enable_deploy_compute = true  # 是否部署、启动、关闭、销毁 compute，部署为 true，不部署设置为 false。
-enable_deploy_consul: true    # 是否部署、启动、关闭、销毁 consul，部署为 true，不部署设置为 false。
+enable_deploy_via = True      # 是否部署、启动、关闭、销毁 via，部署为 True，不部署设置为 False
+enable_deploy_carrier = True  # 是否部署、启动、关闭、销毁 carrier，部署为 True，不部署设置为 False。
+enable_deploy_admin = True    # 是否部署、启动、关闭、销毁 admin，部署为 True，不部署设置为 False。
+enable_deploy_data = True     # 是否部署、启动、关闭、销毁 data，部署为 True，不部署设置为 False。
+enable_deploy_compute = True  # 是否部署、启动、关闭、销毁 compute，部署为 True，不部署设置为 False。
+enable_deploy_consul = True    # 是否部署、启动、关闭、销毁 consul，部署为 True，不部署设置为 False。
 
 # consul 服务的端口号配置
 # 端口号根据自己的部署情况进行设置，数量要和 consul 组里面的 ip 数量一致。
@@ -190,7 +187,7 @@ consul_http_port = [8500, 8501, 8502]
 consul_dns_port = [8600, 8601, 8602]
 
 # admin web 服务证书相关配置信息
-enable_tls = false # 是否启用 https，启用的需要配置证书和相应的域名，证书里面的密码套件等，不启用的话，忽略下面的配置。
+enable_tls = False # 是否启用 https，启用的需要配置证书和相应的域名，证书里面的密码套件等，不启用的话，忽略下面的配置。
 admin_server_name = metis-admin.demo.network
 admin_ssl_protocols = "TLSv1 TLSv1.1 TLSv1.2"
 admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
@@ -204,7 +201,7 @@ admin_password = admin_123456
 admin_web_port = 9090
 
 # carrier 外网
-carrier_external_ip = 192.168.112.158
+carrier_external_ip = ${carrier 目标机外网 IP}
 
 # carrier 端口号
 carrier_pprof_port = 10032
@@ -214,7 +211,7 @@ carrier_p2p_udp_port = 10035
 carrier_p2p_tcp_port = 10036
 
 # via 外网 
-via_external_ip = 192.168.112.156
+via_external_ip = ${via 目标机外网 IP}
 
 # via 服务端口号
 via_port = 10031
@@ -228,13 +225,15 @@ data_port = [8700, 8701, 8702]
 compute_port = [8700, 8701, 8702]
 ```
 
-### `inventory.ini` 中各变量说明 (仅对用户可能需要修改的项做说明)：
+### `inventory.ini` 中各变量说明
 
-#### 1. ssh 相关配置（非必须）
+#### 1. ssh 相关配置（非必须，不配置在执行 playbook 时输入密码）
 
-ansible_ssh_user： ssh 账户名称
-ansible_ssh_pass： ssh 账户密码
-ansible_sudo_pass： ssh 账户 sudo 提权密码
+ansible_ssh_user： 目标机 ssh 账户名称
+
+ansible_ssh_pass： 目标机 ssh 账户密码
+
+ansible_sudo_pass： 目标机 ssh 账户 sudo 提权密码
 
 #### 2. 集群名称变量
 
@@ -242,33 +241,33 @@ cluster_name： 整个组织的名称
 
 #### 3. 部署服务开关选项
 
-enable_deploy_via: 是否部署、启动、关闭、销毁 via，部署为 true，不部署设置为 false。
+enable_deploy_via: 是否部署、启动、关闭、销毁 via，部署为 True，不部署设置为 False。
 
-enable_deploy_carrier: 是否部署、启动、关闭、销毁 carrier，部署为 true，不部署设置为 false。
+enable_deploy_carrier: 是否部署、启动、关闭、销毁 carrier，部署为 True，不部署设置为 False。
 
-enable_deploy_admin: 是否部署、启动、关闭、销毁 admin，部署为 true，不部署设置为 false。
+enable_deploy_admin: 是否部署、启动、关闭、销毁 admin，部署为 True，不部署设置为 False。
 
-enable_deploy_data: 是否部署、启动、关闭、销毁 data，部署为 true，不部署设置为 false。
+enable_deploy_data: 是否部署、启动、关闭、销毁 data，部署为 True，不部署设置为 False。
 
-enable_deploy_compute: 是否部署、启动、关闭、销毁 compute，部署为 true，不部署设置为 false。
+enable_deploy_compute: 是否部署、启动、关闭、销毁 compute，部署为 True，不部署设置为 False。
 
-enable_deploy_consul: 是否部署、启动、关闭、销毁 consul，部署为 true，不部署设置为 false。
+enable_deploy_consul: 是否部署、启动、关闭、销毁 consul，部署为 True，不部署设置为 False。
 
 #### 4. 配置 consul 服务端口号 (建议只开通内网端口策略)
 
-consul_server_port: consul服务的端口，数组形式[8200, 8201, 8202], 端口号根据自己的部署情况进行设置，数量要和库存`inventory.ini`文件里面ip数量一致。
+consul_server_port: consul服务的端口，数组形式[8200, 8201, 8202], 端口号根据自己的部署情况进行设置，数量要和 consul 组的成员数量一致。
 
-consul_serf_lan_port: Serf LAN gossip 通信应该绑定的端口，数组形式[8300, 8301, 8302], 端口号根据自己的部署情况进行设置，数量要和库存`inventory.ini`文件里面ip数量一致。
+consul_serf_lan_port: Serf LAN gossip 通信应该绑定的端口，数组形式[8300, 8301, 8302], 端口号根据自己的部署情况进行设置，数量要和 consul 组的成员数量一致。
 
-consul_serf_wan_port: Serf WAN gossip 通信应该绑定的端口，数组形式[8400, 8401, 8402], 端口号根据自己的部署情况进行设置，数量要和库存`inventory.ini`文件里面ip数量一致。
+consul_serf_wan_port: Serf WAN gossip 通信应该绑定的端口，数组形式[8400, 8401, 8402], 端口号根据自己的部署情况进行设置，数量要和 consul 组的成员数量一致。
 
-consul_http_port: HTTP API 端口，数组形式[8500, 8501, 8502], 端口号根据自己的部署情况进行设置，数量要和库存`inventory.ini`文件里面ip数量一致。
+consul_http_port: HTTP API 端口，数组形式[8500, 8501, 8502], 端口号根据自己的部署情况进行设置，数量要和 consul 组的成员数量一致。
 
-consul_dns_port:  DNS 服务器端口，数组形式[8600, 8601, 8602], 端口号根据自己的部署情况进行设置，数量要和库存`inventory.ini`文件里面ip数量一致。
+consul_dns_port:  DNS 服务器端口，数组形式[8600, 8601, 8602], 端口号根据自己的部署情况进行设置，数量要和 consul 组的成员数量一致。
 
 #### 5. admin web 证书相关配置
 
-enable_tls: 是否启用 https，启用设置为 true，需要配置证书和相应的域名，证书里面的密码套件等，不启用设置为 false，同时忽略下面的配置。
+enable_tls: 是否启用 https，启用设置为 True，需要配置证书和相应的域名，证书里面的密码套件等，不启用设置为 False，同时忽略下面的配置。
 
 admin_server_name: ngnix 配置项 server_name，admin 服务部署的机器的域名。
 
@@ -314,20 +313,19 @@ via_port: via服务监听的port。
 
 #### 12. fighter(data) 服务端口号 (建议只开通内网端口策略)
 
-data_port: 数据服务监听的端口，数组形式[8700, 8701, 8702], 端口号根据自己的部署情况进行设置，数量要和库存`inventory.ini`文件里面ip数量一致。
+data_port: 数据服务监听的端口，数组形式[8700, 8701, 8702], 端口号根据自己的部署情况进行设置，数量要和 data 组的成员数量一致。
 
 #### 13. fighter(compute) 服务端口号 (建议只开通内网端口策略)
 
-compute_port: 数据服务监听的端口，数组形式[8801, 8802, 8803], 端口号根据自己的部署情况进行设置，数量要和库存`inventory.ini`文件里面ip数量一致。
+compute_port: 数据服务监听的端口，数组形式[8801, 8802, 8803], 端口号根据自己的部署情况进行设置，数量要和 compute 组的成员数量一致。
 
 ## 配置文件示例
 
-[参考](./配置demo示例.md)
+`inventory.ini` 配置例子参考：[配置demo示例](./配置demo示例.md)
 
 ## 组织内各个服务的网络情况
 
-参考: [network](./network.md)
-
+网络要求参考：[网络情况](./network.md)
 
 ## 脚本的各个操作说明 (预准备、部署、启动、关闭、销毁等操作)
 
@@ -336,9 +334,9 @@ compute_port: 数据服务监听的端口，数组形式[8801, 8802, 8803], 端�
 ### 1. 首次部署前的准备工作 (下面两个命令是前期准备工作，只用在首次部署时执行一次，后续都不用执行)
 
 ```shell
-# 在主控机上执行的准备工作，主要是下载部署相关的二进制文件，在脚本`metis-deploy`根目录执行：
+# 在主控机上执行的准备工作，主要是下载部署相关的二进制文件，在脚本`metis-deploy`根目录执行(需要输入 sudo 密码）：
 
-ansible-playbook local_prepare.yml
+ansible-playbook --ask-sudo-pass local_prepare.yml
 
 
 # 初始化集群各个节点，主要是检查目标机的环境信息（操作系统版本，python 和 python3 安装），在脚本`metis-deploy`根目录执行：
@@ -383,15 +381,10 @@ ansible-playbook -i inventory.ini stop.yml
 ansible-playbook -i inventory.ini cleanup.yml
 ```
 
-
 ## 使用说明
 
-在整个 MetisNode 部署完成后，需要根据 [使用说明](./MetisNetwork使用说明.md)
+MetisNode 部署完成后参考：[使用说明](./MetisNetwork使用说明.md)
 
 ## FAQ
 
-部署中常见问题及解决方法[参考](./FAQ.md)
-
-[MetisNode的各组织网络拓扑]: ./img/MetisNode的各组织网络拓扑.jpg
-[单个MetisNode的内部各服务网络拓扑]: ./img/单个MetisNode的内部各服务网络拓扑.jpg
-[Moirea和MetisNode间的拓扑]: ./img/Moirea和MetisNode间的拓扑.jpg
+部署中常见问题及解决方法参考：[FAQ](./FAQ.md)
