@@ -217,9 +217,9 @@
     host: "%"
     state: present
 
-# 检查dev_metis_admin_0.3.0是否存在，如果存在则不需要导入admin.sql
-- name: Check if database dev_metis_admin_0.3.0 exists
-  shell: mysql -u{{ amin_user }} -p{{ admin_password }} -e "show databases;" 2>/dev/null |grep "dev_metis_admin_0.3.0" |xargs echo -n
+# 检查metis_admin是否存在，如果存在则不需要导入admin.sql
+- name: Check if database metis_admin exists
+  shell: mysql -u{{ amin_user }} -p{{ admin_password }} -e "show databases;" 2>/dev/null |grep "metis_admin" |xargs echo -n
   register: database_name
   failed_when: database_name.rc != 0
   changed_when: false
@@ -234,7 +234,7 @@
   register: result
   changed_when: false
   failed_when: result.rc != 0
-  when: database_name.stdout!="dev_metis_admin_0.3.0"
+  when: database_name.stdout!="metis_admin"
 
 
 # 安装 nginx
