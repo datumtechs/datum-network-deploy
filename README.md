@@ -61,7 +61,7 @@ Moirea 可以理解为是一个提供数据市场、全网数据统计、任务�
 
 ```shell
 # 使用git 下载本脚本项目
-git clone http://192.168.9.66/Metisnetwork/metis-deploy.git
+git clone https://github.com/Metisnetwork/Metis-Deploy.git
 
 # 进入项目目录
 cd metis-deploy
@@ -388,3 +388,8 @@ MetisNode 部署完成后参考：[使用说明](./MetisNetwork使用说明.md)
 ## FAQ
 
 部署中常见问题及解决方法参考：[FAQ](./FAQ.md)
+
+
+[MetisNode的各组织网络拓扑]: ./img/MetisNode的各组织网络拓扑.jpg
+[单个MetisNode的内部各服务网络拓扑]: ./img/单个MetisNode的内部各服务网络拓扑.jpg
+[Moirea和MetisNode间的拓扑]: ./img/Moirea和MetisNode间的拓扑.jpg

@@ -57,12 +57,12 @@ fighter(compute)服务的内部端口`40000` (注意: 另外需要开通100个�
 cluster_name = demo-cluster
 
 # 部署服务开关
-enable_deploy_via = true
-enable_deploy_carrier = true
-enable_deploy_admin = true
-enable_deploy_data = true
-enable_deploy_compute = true
-enable_deploy_consul: true
+enable_deploy_via = True
+enable_deploy_carrier = True
+enable_deploy_admin = True
+enable_deploy_data = True
+enable_deploy_compute = True
+enable_deploy_consul = True
 
 # consul 服务的端口号配置
 # 端口号根据自己的部署情况进行设置，数量要和 consul 组里面的 ip 数量一致。
@@ -73,7 +73,7 @@ consul_http_port: [8500]
 consul_dns_port: [8600]
 
 # admin web 服务证书相关配置信息
-enable_tls = false # 是否启用 https，启用的需要配置证书和相应的域名，证书里面的密码套件等，不启用的话，忽略下面的配置。
+enable_tls = False # 是否启用 https，启用的需要配置证书和相应的域名，证书里面的密码套件等，不启用的话，忽略下面的配置。
 admin_server_name = metis-admin.demo.network
 admin_ssl_protocols = "TLSv1 TLSv1.1 TLSv1.2"
 admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
@@ -160,12 +160,12 @@ compute_port = [40000]
 cluster_name = demo-cluster
 
 # 部署服务开关
-enable_deploy_via = false
-enable_deploy_carrier = false
-enable_deploy_admin = false
-enable_deploy_data = true
-enable_deploy_compute = true
-enable_deploy_consul: false
+enable_deploy_via = False
+enable_deploy_carrier = False
+enable_deploy_admin = False
+enable_deploy_data = True
+enable_deploy_compute = True
+enable_deploy_consul: False
 
 # consul 服务的端口号配置
 # 端口号根据自己的部署情况进行设置，数量要和 consul 组里面的 ip 数量一致。
@@ -176,7 +176,7 @@ consul_http_port: [8500]
 consul_dns_port: [8600]
 
 # admin web 服务证书相关配置信息
-enable_tls = false # 是否启用 https，启用的需要配置证书和相应的域名，证书里面的密码套件等，不启用的话，忽略下面的配置。
+enable_tls = False # 是否启用 https，启用的需要配置证书和相应的域名，证书里面的密码套件等，不启用的话，忽略下面的配置。
 admin_server_name = metis-admin.demo.network
 admin_ssl_protocols = "TLSv1 TLSv1.1 TLSv1.2"
 admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
@@ -690,12 +690,12 @@ via的外网IP为`39.98.126.50`、via的内外网端口为`10040`;
 cluster_name = demo-cluster
 
 # 部署服务开关
-enable_deploy_via = true
-enable_deploy_carrier = true
-enable_deploy_admin = true
-enable_deploy_data = true
-enable_deploy_compute = true
-enable_deploy_consul: true
+enable_deploy_via = True
+enable_deploy_carrier = True
+enable_deploy_admin = True
+enable_deploy_data = True
+enable_deploy_compute = True
+enable_deploy_consul = True
 
 # consul 服务的端口号配置
 # 端口号根据自己的部署情况进行设置，数量要和 consul 组里面的 ip 数量一致。
@@ -706,7 +706,7 @@ consul_http_port: [8500]
 consul_dns_port: [8600]
 
 # admin web 服务证书相关配置信息
-enable_tls = false # 是否启用 https，启用的需要配置证书和相应的域名，证书里面的密码套件等，不启用的话，忽略下面的配置。
+enable_tls = False # 是否启用 https，启用的需要配置证书和相应的域名，证书里面的密码套件等，不启用的话，忽略下面的配置。
 admin_server_name = metis-admin.demo.network
 admin_ssl_protocols = "TLSv1 TLSv1.1 TLSv1.2"
 admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
@@ -791,12 +791,12 @@ compute_port = [40000, 40000]
 cluster_name = demo-cluster
 
 # 部署服务开关
-enable_deploy_via: false
-enable_deploy_carrier: false
-enable_deploy_admin: false
-enable_deploy_data: true
-enable_deploy_compute: true
-enable_deploy_consul: false
+enable_deploy_via: False
+enable_deploy_carrier: False
+enable_deploy_admin: False
+enable_deploy_data: True
+enable_deploy_compute: True
+enable_deploy_consul: False
 
 # consul 服务的端口号配置
 # 端口号根据自己的部署情况进行设置，数量要和 consul 组里面的 ip 数量一致。
@@ -807,7 +807,7 @@ consul_http_port: [8500]
 consul_dns_port: [8600]
 
 # admin web 服务证书相关配置信息
-enable_tls = false # 是否启用 https，启用的需要配置证书和相应的域名，证书里面的密码套件等，不启用的话，忽略下面的配置。
+enable_tls = False # 是否启用 https，启用的需要配置证书和相应的域名，证书里面的密码套件等，不启用的话，忽略下面的配置。
 admin_server_name = metis-admin.demo.network
 admin_ssl_protocols = "TLSv1 TLSv1.1 TLSv1.2"
 admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
