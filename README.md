@@ -77,7 +77,7 @@ mkdir log
 
 ```shell
 # 先进入本项目目录
-cd metis-deploy
+cd Metis-Deploy
 
 # 安装 python 相关工具(默认 Ubuntu 18.04自带python2.7 和 python3.6)
 sudo apt install -y python3 python3-pip python python-pip  
@@ -334,12 +334,12 @@ compute_port: 数据服务监听的端口，数组形式[8801, 8802, 8803], 端�
 ### 1. 首次部署前的准备工作 (下面两个命令是前期准备工作，只用在首次部署时执行一次，后续都不用执行)
 
 ```shell
-# 在主控机上执行的准备工作，主要是下载部署相关的二进制文件，在脚本`metis-deploy`根目录执行(需要输入 sudo 密码）：
+# 在主控机上执行的准备工作，主要是下载部署相关的二进制文件，在脚本`Metis-Deploy`根目录执行(需要输入 sudo 密码）：
 
 ansible-playbook --ask-sudo-pass local_prepare.yml
 
 
-# 初始化集群各个节点，主要是检查目标机的环境信息（操作系统版本，python 和 python3 安装），在脚本`metis-deploy`根目录执行：
+# 初始化集群各个节点，主要是检查目标机的环境信息（操作系统版本，python 和 python3 安装），在脚本`Metis-Deploy`根目录执行：
 
 ansible-playbook -i inventory.ini bootstrap.yml
 ```
@@ -347,7 +347,7 @@ ansible-playbook -i inventory.ini bootstrap.yml
 ### 2. 安装相关服务
 
 ```shell
-# 在主控机上给各个目标机安装二进制文件和配置文件 (安装对应的服务)，在脚本`metis-deploy`根目录执行：
+# 在主控机上给各个目标机安装二进制文件和配置文件 (安装对应的服务)，在脚本`Metis-Deploy`根目录执行：
 
 ansible-playbook -i inventory.ini deploy.yml
 ```
@@ -355,7 +355,7 @@ ansible-playbook -i inventory.ini deploy.yml
 ### 3. 启动相关服务
 
 ```shell
-# 在主控机上启动(后台运行)各个目标主机上的相关服务 (启动对应的服务)，在脚本`metis-deploy`根目录执行：
+# 在主控机上启动(后台运行)各个目标主机上的相关服务 (启动对应的服务)，在脚本`Metis-Deploy`根目录执行：
 
 ansible-playbook -i inventory.ini start.yml
 ```
@@ -363,7 +363,7 @@ ansible-playbook -i inventory.ini start.yml
 ### 4. 停止服务
 
 ```shell
-# 在主控机上停止各个目标主机上的相关服务 (停止对应的服务)，在脚本`metis-deploy`根目录执行：
+# 在主控机上停止各个目标主机上的相关服务 (停止对应的服务)，在脚本`Metis-Deploy`根目录执行：
 
 ansible-playbook -i inventory.ini stop.yml 
 ```
@@ -373,11 +373,11 @@ ansible-playbook -i inventory.ini stop.yml
 > **此操作需要先停止服务，此操作为危险操作，会清除全部的数据包括 mysql 数据库里面的 admin 业务库数据**
 
 ```shell
-# 先在主控机上停止各个目标主机上的相关服务 (停止对应的服务)，在脚本`metis-deploy`根目录执行：
+# 先在主控机上停止各个目标主机上的相关服务 (停止对应的服务)，在脚本`Metis-Deploy`根目录执行：
 
 ansible-playbook -i inventory.ini stop.yml 
 
-# 然后再在主控机上清除各个目标机上的相关服务的数据和安装的二进文件配置等信息 (清除所有数据)，在脚本`metis-deploy`根目录执行：
+# 然后再在主控机上清除各个目标机上的相关服务的数据和安装的二进文件配置等信息 (清除所有数据)，在脚本`Metis-Deploy`根目录执行：
 ansible-playbook -i inventory.ini cleanup.yml
 ```
 
