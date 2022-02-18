@@ -34,19 +34,51 @@
       changed_when: false
       failed_when: result.rc != 0
 
+    - name: get v1/kv/metis/via_ip_port
+      uri:
+        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/metis/via_ip_port
+        return_content: yes
+      when: ansible_host == consul_leader_ip
+      register: via_ip_port_content
+      failed_when: false
+
+    - name: Debug via_ip_port_content information
+      debug:
+        var: via_ip_port_content
+      when: ansible_host == consul_leader_ip
+
     - name: Set via external network address
       uri: 
         url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/metis/via_ip_port
         method: PUT
         body: "{{via_external_ip}}_{{via_port}}"
-        when: "ansible_host == consul_leader_ip and enable_deploy_consul|default(false)"
+      when: 
+        - ansible_host == consul_leader_ip 
+        - enable_deploy_consul|default(false)
+        - 404 == via_ip_port_content.status
+
+    - name: get v1/kv/metis/dataCenter_ip_port
+      uri:
+        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/metis/dataCenter_ip_port
+        return_content: yes
+      when: ansible_host == consul_leader_ip
+      register: dataCenter_ip_port_content
+      failed_when: false
+
+    - name: Debug dataCenter_ip_port_content information
+      debug:
+        var: dataCenter_ip_port_content
+      when: ansible_host == consul_leader_ip
 
     - name: Set data center address
       uri: 
         url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/metis/dataCenter_ip_port
         method: PUT
         body: "{{storage_ip}}_{{storage_port}}"
-        when: "ansible_host == consul_leader_ip and enable_deploy_consul|default(false)"
+      when: 
+        - ansible_host == consul_leader_ip 
+        - enable_deploy_consul|default(false)
+        - 404 == dataCenter_ip_port_content.status
 
 - hosts: via
   tags:

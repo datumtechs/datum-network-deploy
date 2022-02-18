@@ -79,34 +79,6 @@
   retries: 3
   delay: "{{ 10 | random }}"
 
-- name: download storage jar package
-  get_url:
-    url: "{{ download_url }}/storage.jar"
-    dest: "{{ downloads_dir }}"
-    mode: 0644
-    force: yes
-    validate_certs: no
-  register: get_url_result
-  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
-  retries: 3
-  delay: "{{ 10 | random }}"
-
-# - name: download scan jar package
-#   get_url:
-#     url: "{{ download_url }}/scan.jar"
-#     dest: "{{ downloads_dir }}"
-#     mode: 0644
-#     force: yes
-#     validate_certs: no
-
-# - name: download scan Web static files
-#   get_url:
-#     url: "{{ download_url }}/scan.tar.gz"
-#     dest: "{{ downloads_dir }}"
-#     mode: 0644
-#     force: yes
-#     validate_certs: no
-
 # Python WHL file
 - name: download avx2 latticex rosetta whl package
   get_url:
