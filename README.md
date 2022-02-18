@@ -62,7 +62,7 @@ Moirea 可以理解为是一个提供数据市场、全网数据统计、任务�
 git clone https://github.com/Metisnetwork/Metis-Deploy.git
 
 # 进入项目目录
-cd metis-deploy
+cd Metis-Deploy
 
 # 切换项目到 ansible 分支
 git checkout ansible
