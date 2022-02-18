@@ -42,7 +42,7 @@
       when: enable_deploy_admin|default(false)
     # 删除数据库
     - name: drop database
-      shell: mysql -u{{ amin_user }} -p{{ admin_password }} -e "drop database if exists \`dev_metis_admin_0.3.0\`"
+      shell: mysql -u{{ amin_user }} -p{{ admin_password }} -e "drop database if exists \`metis_admin\`"
       register: result
       changed_when: false
       failed_when: result.rc != 0
