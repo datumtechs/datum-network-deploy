@@ -370,7 +370,7 @@ ansible-playbook -i inventory.ini stop.yml
 
 ### 5. 销毁服务
 
-> **此操作需要先停止服务，此操作为危险操作，会清除全部的数据包括 mysql 数据库里面的 admin 业务库数据**
+> **此操作需要先停止服务，此操作为危险操作，会清除全部的数据包括 mysql 数据库里面的 admin 业务库数据，如果当前MetisNode(组织)之前已经在admin管理台操作过【注册过身份信息】，那么需要先在admin管理台执行【注销身份】再做cleanup操作。**
 
 ```shell
 # 先在主控机上停止各个目标主机上的相关服务 (停止对应的服务)，在脚本`Metis-Deploy`根目录执行：
