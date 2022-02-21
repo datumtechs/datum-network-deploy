@@ -45,22 +45,22 @@ Moirea 可以理解为是一个提供数据市场、全网数据统计、任务�
 
 ## MetisNode 部署脚本说明
 
-本脚本为 ansibl e自动化部署脚本，包括单组织内部 admin, via, carrier, fighter(data), fighter(compute), consul 角色服务，ansible 脚本支持[部署]，[启动]，[停止]，[销毁]各个角色节点。
+本脚本为 ansible 自动化部署脚本，包括单组织内部 admin, via, carrier, fighter(data), fighter(compute), consul 角色服务，ansible 脚本支持**部署**，**启动**，**停止**，**销毁**各个角色节点。
 
 ## 环境要求
 
-主控机(ansible 下发命令的机器和目标机(各服务部署的机器)。
+主控机 (ansible 下发命令的机器) 和目标机 (各服务部署的机器)。
 
 1. 稳定版 ansible 主控机和目标机仅支持 Ubuntu 18.04 操作系统。
 
-2. 处理器架构仅支持 x86_64 架构的处理器（仅目标机要求）。
+2. 处理器架构仅支持 x86_64 架构的处理器 (仅目标机要求)。
 
-### 主控机的环境和部署前准备工作
+### 主控机部署前准备工作
 
 *1. 在主控机上下载脚本：*
 
 ```shell
-# 使用git 下载本脚本项目
+# 使用 git 下载脚本项目
 git clone https://github.com/Metisnetwork/Metis-Deploy.git
 
 # 进入项目目录
@@ -79,8 +79,8 @@ mkdir log
 # 先进入本项目目录
 cd Metis-Deploy
 
-# 安装 python 相关工具(默认 Ubuntu 18.04自带python2.7 和 python3.6)
-sudo apt install -y python3 python3-pip python python-pip  
+# 安装 python 相关工具(Ubuntu 18.04 默认的 python 版本为 python2.7， python3 版本为 python3.6)
+sudo apt install -y python python-pip python3 python3-pip
 
 # 安装 ansible 和 依赖模块
 pip install -r ./requirements.txt
@@ -100,7 +100,7 @@ ansible-playbook --ask-sudo-pass local_prepare.yml
 
 ## 工程各文件功能简介
 
-inventory.ini: 主机清单文件，组织中各个服务的主机(内网)ip和变量，由用户根据自己情况定义。
+inventory.ini: 主机清单文件，组织中各个服务的主机ip (内网) 和变量，由用户根据自己情况定义。
 
 group_vars/all.yml: 公共变量，不建议修改。
 
@@ -110,21 +110,21 @@ config 目录: 配置文件，不建议修改。
 
 roles 目录: ansible roles 的集合，建议不要乱动。
 
-local_prepare.yml: 主控机上执行用来下载相关安装包的配置，建议不要乱动。
+local_prepare.yml: 主控机执行环境检查，下载安装包等任务的剧本，建议不要乱动。
 
-bootstrap.yml: 初始化集群各个节点的配置，建议不要乱动。
+bootstrap.yml: 初始化集群各个节点等任务的剧本，建议不要乱动。
 
-deploy.yml: 安装各个服务，建议不要乱动。
+deploy.yml: 安装各个服务的剧本，建议不要乱动。
 
-start.yml: 启动所有服务，建议不要乱动。
+start.yml: 启动所有服务的剧本，建议不要乱动。
 
-stop.yml: 停止所有服务，建议不要乱动。
+stop.yml: 停止所有服务的剧本，建议不要乱动。
 
-cleanup.yml: 销毁集群，建议不要乱动。
+cleanup.yml: 销毁集群的剧本，建议不要乱动。
 
-## 单组织内部各服务的主机网络拓扑配置文件 `inventory.ini`
+## 单组织内部主机清单文件 `inventory.ini`
 
-`inventory.ini` 主机清单文件，配置部署主机(内网) IP 和 变量。
+`inventory.ini` 主机清单文件，配置部署主机IP (内网) 和 变量。
 
 配置有两种常见的形式：
 
@@ -136,7 +136,7 @@ cleanup.yml: 销毁集群，建议不要乱动。
 
 > 为简化操作，避免在执行 playbook 时输入密码，可以配置如下密码 `ansible_ssh_user` 设置为要登录目标主机的 ssh 用户名, `ansible_ssh_pass` 为用户的 ssh 密码, `ansible_sudo_pass` 为目标主机上的用户进行提权时的密码。也可以根据实际情况不配置，在执行 playbook 时输入密码。
 
-`inventory.ini` 文件各配置项的说明如下：
+### `inventory.ini` 文件模板
 
 ```ini
 # 库存文件，主要用来配置主机列表和主机组
@@ -176,10 +176,9 @@ enable_deploy_carrier = True  # 是否部署、启动、关闭、销毁 carrier�
 enable_deploy_admin = True    # 是否部署、启动、关闭、销毁 admin，部署为 True，不部署设置为 False。
 enable_deploy_data = True     # 是否部署、启动、关闭、销毁 data，部署为 True，不部署设置为 False。
 enable_deploy_compute = True  # 是否部署、启动、关闭、销毁 compute，部署为 True，不部署设置为 False。
-enable_deploy_consul = True    # 是否部署、启动、关闭、销毁 consul，部署为 True，不部署设置为 False。
+enable_deploy_consul = True   # 是否部署、启动、关闭、销毁 consul，部署为 True，不部署设置为 False。
 
-# consul 服务的端口号配置
-# 端口号根据自己的部署情况进行设置，数量要和 consul 组里面的 ip 数量一致。
+# consul 服务的端口，根据自己的部署情况进行设置，数量要和 consul 组里面的 ip 数量一致。
 consul_server_port = [8200, 8201, 8202]
 consul_serf_lan_port = [8300, 8301, 8302]
 consul_serf_wan_port = [8400, 8401, 8402]
@@ -187,7 +186,7 @@ consul_http_port = [8500, 8501, 8502]
 consul_dns_port = [8600, 8601, 8602]
 
 # admin web 服务证书相关配置信息
-enable_tls = False # 是否启用 https，启用的需要配置证书和相应的域名，证书里面的密码套件等，不启用的话，忽略下面的配置。
+enable_tls = False # 是否启用 https，启用设置为 True，需要配置证书和相应的域名，证书里面的密码套件等，不启用设置为 False，忽略下面的配置。
 admin_server_name = metis-admin.demo.network
 admin_ssl_protocols = "TLSv1 TLSv1.1 TLSv1.2"
 admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
@@ -197,47 +196,45 @@ mysql_root_password = metis_root
 amin_user = metis_admin
 admin_password = admin_123456
 
-# admin 端口号
+# admin web 服务端口号
 admin_web_port = 9090
 
-# carrier 外网
+# carrier 外网 ip 地址
 carrier_external_ip = ${carrier 目标机外网 IP}
 
-# carrier 端口号
+# carrier 服务端口号
 carrier_pprof_port = 10032
 carrier_rpc_port = 10033
 carrier_grpc_gateway_port = 10034
 carrier_p2p_udp_port = 10035
 carrier_p2p_tcp_port = 10036
 
-# via 外网 
+# via 外网 ip 地址
 via_external_ip = ${via 目标机外网 IP}
 
 # via 服务端口号
 via_port = 10031
 
-# 端口号根据自己的部署情况进行设置，数量要和 data 组里面的 ip 数量一致。
-# data 端口号
+# data 端口号，根据自己的部署情况进行设置，数量要和 data 组里面的 ip 数量一致。
 data_port = [8700, 8701, 8702]
 
-# 端口号根据自己的部署情况进行设置，数量要和 compute 组里面的 ip 数量一致。
-# compute 端口号
+# compute 端口号，根据自己的部署情况进行设置，数量要和 compute 组里面的 ip 数量一致。
 compute_port = [8700, 8701, 8702]
 ```
 
 ### `inventory.ini` 中各变量说明
 
-#### 1. ssh 相关配置（非必须，不配置在执行 playbook 时输入密码）
+#### 1. ssh 相关配置（非必须，不配置在执行 playbook 时手动输入密码）
 
-ansible_ssh_user： 目标机 ssh 账户名称
+ansible_ssh_user：目标机 ssh 账户名称
 
-ansible_ssh_pass： 目标机 ssh 账户密码
+ansible_ssh_pass：目标机 ssh 账户密码
 
-ansible_sudo_pass： 目标机 ssh 账户 sudo 提权密码
+ansible_sudo_pass：目标机 ssh 账户 sudo 提权密码
 
 #### 2. 集群名称变量
 
-cluster_name： 整个组织的名称
+cluster_name：整个组织的名称
 
 #### 3. 部署服务开关选项
 
@@ -287,29 +284,29 @@ admin_password: mysql 普通用户的密码。
 
 admin_web_port: 为 admin 提供 web 服务的端口。
 
-#### 8. carrier 服务的外网 ip
+#### 8. carrier 服务的外网 ip 地址
 
-carrier_external_ip: carrier的p2p服务开通的外网ip (写具体的外网ip，给外部组织发现本组织用)。
+carrier_external_ip: carrier 的 p2p 服务开通的外网 ip (具体的外网 ip，给外部组织发现本组织用)。
 
 #### 9. carrier 服务的端口号配置
 
-carrier_pprof_port: carrier的golang语言调试pprof服务监听port，开通内外网端口策略，用户根据具体情况定义。
+carrier_pprof_port: carrier 的 golang 语言调试 pprof 服务监听 port，开发调试使用，建议开通内网端口策略即可，用户根据具体情况定义。
 
-carrier_rpc_port: carrier的rpc server监听的port，开通内外网端口策略，用户根据具体情况定义。
+carrier_rpc_port: carrier 的 rpc server 监听的 port，开通内外网端口策略，用户根据具体情况定义。
 
 carrier_grpc_gateway_port: carrier的 rpc api 的 restful server监听port，开通内外网端口策略，用户根据具体情况定义。
 
-carrier_p2p_udp_port: carrier的 p2p udp server 监听port，开通内外网端口策略，用户根据具体情况定义。
+carrier_p2p_udp_port: carrier 的 p2p udp server 监听 port，开通内外网端口策略，用户根据具体情况定义。
 
-carrier_p2p_tcp_port: carrier的 p2p tcp server 监听port，开通内外网端口策略，用户根据具体情况定义。
+carrier_p2p_tcp_port: carrier 的 p2p tcp server 监听 port，开通内外网端口策略，用户根据具体情况定义。
 
-#### 10. via 服务的外网 ip
+#### 10. via 服务的外网 ip 地址
 
-via_external_ip: via 服务需要开通外网 ip
+via_external_ip: via 服务需要开通外网 ip，其他组织需要通过此 ip 地址和组织内 data，compute 服务通信。
 
-#### 11. via 服务端口号 (建议只开通内网端口策略)
+#### 11. via 服务端口号
 
-via_port: via服务监听的port。
+via_port: via 服务监听的 port。
 
 #### 12. fighter(data) 服务端口号 (建议只开通内网端口策略)
 
@@ -327,19 +324,19 @@ compute_port: 数据服务监听的端口，数组形式[8801, 8802, 8803], 端�
 
 网络要求参考：[网络情况](./network.md)
 
-## 脚本的各个操作说明 (预准备、部署、启动、关闭、销毁等操作)
+## 脚本的各个操作说明 (主控机准备、 初始化、部署、启动、关闭、销毁等操作)
 
 > **请务必检查以上配置是否正确，确认正确之后再进行以下操作**
 
 ### 1. 首次部署前的准备工作 (下面两个命令是前期准备工作，只用在首次部署时执行一次，后续都不用执行)
 
 ```shell
-# 在主控机上执行的准备工作，主要是下载部署相关的二进制文件，在脚本`Metis-Deploy`根目录执行(需要输入 sudo 密码）：
+# 在主控机上执行的准备工作，主要是下载部署相关的二进制文件，在脚本 `Metis-Deploy` 根目录执行(需要输入 sudo 密码）：
 
 ansible-playbook --ask-sudo-pass local_prepare.yml
 
 
-# 初始化集群各个节点，主要是检查目标机的环境信息（操作系统版本，python 和 python3 安装），在脚本`Metis-Deploy`根目录执行：
+# 初始化集群各个节点，主要是检查目标机的环境信息（操作系统版本，python 和 python3 安装），在脚本 `Metis-Deploy` 根目录执行：
 
 ansible-playbook -i inventory.ini bootstrap.yml
 ```
@@ -347,7 +344,7 @@ ansible-playbook -i inventory.ini bootstrap.yml
 ### 2. 安装相关服务
 
 ```shell
-# 在主控机上给各个目标机安装二进制文件和配置文件 (安装对应的服务)，在脚本`Metis-Deploy`根目录执行：
+# 在主控机上给各个目标机安装二进制文件和配置文件 (安装对应的服务)，在脚本 `Metis-Deploy` 根目录执行：
 
 ansible-playbook -i inventory.ini deploy.yml
 ```
@@ -355,7 +352,7 @@ ansible-playbook -i inventory.ini deploy.yml
 ### 3. 启动相关服务
 
 ```shell
-# 在主控机上启动(后台运行)各个目标主机上的相关服务 (启动对应的服务)，在脚本`Metis-Deploy`根目录执行：
+# 在主控机上启动各个目标主机上的相关服务 (后台守护态运行)，在脚本 `Metis-Deploy` 根目录执行：
 
 ansible-playbook -i inventory.ini start.yml
 ```
@@ -363,21 +360,21 @@ ansible-playbook -i inventory.ini start.yml
 ### 4. 停止服务
 
 ```shell
-# 在主控机上停止各个目标主机上的相关服务 (停止对应的服务)，在脚本`Metis-Deploy`根目录执行：
+# 在主控机上停止各个目标主机上的相关服务 (用信号优雅停机)，在脚本 `Metis-Deploy` 根目录执行：
 
 ansible-playbook -i inventory.ini stop.yml 
 ```
 
 ### 5. 销毁服务
 
-> **此操作需要先停止服务，此操作为危险操作，会清除全部的数据包括 mysql 数据库里面的 admin 业务库数据，如果当前MetisNode(组织)之前已经在admin管理台操作过【注册过身份信息】，那么需要先在admin管理台执行【注销身份】再做cleanup操作。**
+> **此操作需要先停止服务，此操作为危险操作，会清除全部的数据包括 mysql 数据库里面的 admin 业务库数据，如果当前 MetisNode (组织)之前已经在 admin 管理台操作过【注册过身份信息】，那么需要先在 admin 管理台执行【注销身份】再做cleanup操作。**
 
 ```shell
-# 先在主控机上停止各个目标主机上的相关服务 (停止对应的服务)，在脚本`Metis-Deploy`根目录执行：
+# 先在主控机上停止各个目标主机上的相关服务 (用信号优雅停机)，在脚本 `Metis-Deploy` 根目录执行：
 
 ansible-playbook -i inventory.ini stop.yml 
 
-# 然后再在主控机上清除各个目标机上的相关服务的数据和安装的二进文件配置等信息 (清除所有数据)，在脚本`Metis-Deploy`根目录执行：
+# 然后再在主控机上清除各个目标机上的相关服务的数据和安装的二进文件配置等信息 (清除所有数据)，在脚本 `Metis-Deploy` 根目录执行：
 ansible-playbook -i inventory.ini cleanup.yml
 ```
 
