@@ -1,4 +1,4 @@
-# metis 部署
+# metis 部署 [English](./README_EN.md)
 
 ## metis 网络拓扑
 
@@ -318,11 +318,11 @@ compute_port: 数据服务监听的端口，数组形式[8801, 8802, 8803], 端�
 
 ## 配置文件示例
 
-`inventory.ini` 配置例子参考：[配置demo示例](./配置demo示例.md)
+`inventory.ini` 配置例子参考：[配置demo示例](./doc/ZH/配置demo示例.md)
 
 ## 组织内各个服务的网络情况
 
-网络要求参考：[网络情况](./network.md)
+网络要求参考：[网络情况](./doc/ZH/network.md)
 
 ## 脚本的各个操作说明 (主控机准备、 初始化、部署、启动、关闭、销毁等操作)
 
@@ -380,11 +380,11 @@ ansible-playbook -i inventory.ini cleanup.yml
 
 ## 使用说明
 
-MetisNode 部署完成后参考：[使用说明](./MetisNetwork使用说明.md)
+MetisNode 部署完成后参考：[使用说明](./doc/ZH/MetisNetwork使用说明.md)
 
 ## FAQ
 
-部署中常见问题及解决方法参考：[FAQ](./FAQ.md)
+部署中常见问题及解决方法参考：[FAQ](./doc/ZH/FAQ.md)
 
 
 [MetisNode的各组织网络拓扑]: ./img/MetisNode的各组织网络拓扑.jpg
