@@ -328,13 +328,13 @@ compute_port: The port on which the data service listens, in the form of an arra
 
 ## Example of Configuration File
 
-`inventory.ini` Configuration example: [Configuration demo example](./doc/EN/Configuration demo example.md)
+`inventory.ini` Configuration example: [Configuration demo example](./doc/EN/ConfigurationDemoExample.md)
 
 
 
 ## Network of Each Service in the Organization
 
-Network requirements: [Network](./doc/EN/Network Configuration.md)
+Network requirements: [Network](./doc/EN/NetworkConfiguration.md)
 
 ## Description of Each Operation of the Script (Master Computer Preparation, Initialization, Deployment, Startup, Shutdown, Destruction, etc.)
 
@@ -394,7 +394,7 @@ ansible-playbook -i inventory.ini cleanup.yml
 
 ## Instructions for Use
 
-After the deployment of MetisNode is completed, please refer to: [Instructions for Use](./doc/EN/Instructions for Use of MetisNetwork.md)
+After the deployment of MetisNode is completed, please refer to: [Instructions for Use](./doc/EN/InstructionsForUseOfMetisNetwork.md)
 
 ## FAQ
 
