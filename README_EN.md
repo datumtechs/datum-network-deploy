@@ -1,4 +1,4 @@
-# Metis  Deployment [Chinese](./README.md)
+# Metis  Deployment [[Chinese](./README.md)]
 
 ## Metis Network Topology
 
