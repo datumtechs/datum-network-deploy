@@ -1,6 +1,6 @@
 # Network Configuration
 
-![ansible](./img/ansible.png)
+![ansible](../../img/ansible.png)
 
 
 1. The ip address configured in the `inventory.ini` configuration file is the intranet ip, and the master computer and the target computer are in the same intranet for the sake of network interoperability.

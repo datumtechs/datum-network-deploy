@@ -1,6 +1,6 @@
 # network 配置事项
 
-![ansible](./img/ansible.png)
+![ansible](../../img/ansible.png)
 
 1. inventory.ini 配置文件里面配置的 ip 地址为内网 ip， 主控机和目标机在同一个内网中，保证网络互通。
 
