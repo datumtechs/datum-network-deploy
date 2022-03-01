@@ -1,4 +1,4 @@
-# metis 部署 [[英文](./README_EN.md)]
+# metis 部署 [[English](./README_EN.md)]
 
 ## metis 网络拓扑
 
