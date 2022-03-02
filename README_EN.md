@@ -56,6 +56,15 @@ The master computer (where ansible issues commands) and the target computer (whe
 
 2. The processor architecture only supports processors of the x86_64 architecture (required by the target computer only).
 
+3. Suggested Host Resource Requirements
+
+|Service Name|Machine Configuration Recommendations|
+|---|---|
+|Via|4C, 8G memory, 200GB high-efficiency cloud disk|
+|Fighter|8C, 16G memory, 200GB high-efficiency cloud disk|
+|Carrier|8C, 16G memory, 200GB high-efficiency cloud disk|
+|Admin (self-built MySQL) + Consul|8C, 16G memory, 200GB high-efficiency cloud disk|
+
 
 ### Preparation before Deployment
 
