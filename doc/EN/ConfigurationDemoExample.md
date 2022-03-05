@@ -39,17 +39,17 @@ Then we have the following configuration:
 
 # Resource node. An organization can configure multiple resource services
 [data]
-192.168.10.150 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.150 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 
 # Computing nodes. An organization can configure multiple computing services
 [compute]
-192.168.10.150 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.150 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 
 # Registration center. An organization needs to configure an odd number (1, 3, 5, etc.) of registration centers to facilitate raft to choose the leader
 [consul]
-192.168.10.150 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.150 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 ## Global variables
 [all:vars]
@@ -142,12 +142,12 @@ Then we modify the configuration as follows:
 
 # Resource node. An organization can configure multiple resource services
 [data]
-192.168.10.150 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.150 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 
 # Computing nodes. An organization can configure multiple computing services
 [compute]
-192.168.10.150 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.150 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 
 # Registration center. An organization needs to configure an odd number (1, 3, 5, etc.) of registration centers to facilitate raft to choose the leader
@@ -659,31 +659,31 @@ Then we have the following configuration:
 
 # Task gateway. An organization has a gateway service
 [via]
-192.168.10.150 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.150 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 # Scheduling. An organization has a scheduling service
 [carrier]
-192.168.10.151 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.151 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 # Management console. An organization has a management console service
 [admin]
-192.168.10.152 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.152 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 # Resource node, an organization can configure multiple resource services
 [data]
-192.168.10.153 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
-192.168.10.154 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.153 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
+192.168.10.154 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 
 # Computing nodes. An organization can configure multiple computing services
 [compute]
-192.168.10.155 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
-192.168.10.156 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.155 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
+192.168.10.156 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 
 # Registration center. An organization needs to configure an odd number (1, 3, 5, etc.) of registration centers to facilitate raft to choose the leader
 [consul]
-192.168.10.157 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.157 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 ## Global variables
 [all:vars]
@@ -775,12 +775,12 @@ Then we modify the configuration as follows:
 
 # Resource node. An organization can configure multiple resource services
 [data]
-192.168.10.161 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.161 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 
 # Computing nodes. An organization can configure multiple computing services
 [compute]
-192.168.10.162 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.162 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 
 # Registration center. An organization needs to configure an odd number (1, 3, 5, etc.) of registration centers to facilitate raft to choose the leader

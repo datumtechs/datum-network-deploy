@@ -39,17 +39,17 @@ fighter(compute)服务的内部端口`40000` (注意: 另外需要开通100个�
 
 # 资源节点，一个组织可以配置多个资源服务
 [data]
-192.168.10.150 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.150 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 
 # 计算节点，一个组织可以配置多个计算服务
 [compute]
-192.168.10.150 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.150 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 
 # 注册中心，一个组织要配置奇数个(1,3,5,等）注册中心，方便 raft 选择leader
 [consul]
-192.168.10.150 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.150 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 ## Global variables
 [all:vars]
@@ -143,12 +143,12 @@ compute_port = [40000]
 
 # 资源节点，一个组织可以配置多个资源服务
 [data]
-192.168.10.150 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.150 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 
 # 计算节点，一个组织可以配置多个计算服务
 [compute]
-192.168.10.150 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.150 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 
 # 注册中心，一个组织要配置奇数个(3,5,等）注册中心，方便 raft 选择leader
@@ -659,30 +659,30 @@ via的外网IP为`39.98.126.50`、via的内外网端口为`10040`;
 
 # 任务网关，一个组织有一个网关服务
 [via]
-192.168.10.150 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.150 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 # 调度，一个组织有一个调度服务
 [carrier]
-192.168.10.151 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.151 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 # 管理台，一个组织有一个管理台服务
 [admin]
-192.168.10.152 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.152 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 # 资源节点，一个组织可以配置多个资源服务
 [data]
-192.168.10.153 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
-192.168.10.154 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.153 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
+192.168.10.154 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 
 # 计算节点，一个组织可以配置多个计算服务
 [compute]
-192.168.10.155 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
-192.168.10.156 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.155 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
+192.168.10.156 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 # 注册中心，一个组织要配置奇数个(3,5,等）注册中心，方便 raft 选择leader
 [consul]
-192.168.10.157 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.157 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 ## Global variables
 [all:vars]
@@ -774,12 +774,12 @@ compute_port = [40000, 40000]
 
 # 资源节点，一个组织可以配置多个资源服务
 [data]
-192.168.10.161 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.161 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 
 # 计算节点，一个组织可以配置多个计算服务
 [compute]
-192.168.10.162 ansible_ssh_user="user1" ansible_ssh_pass="Abc@123!" ansible_sudo_pass="Abc@123!"
+192.168.10.162 ansible_ssh_user="user" ansible_ssh_pass="123456" ansible_sudo_pass="123456"
 
 
 # 注册中心，一个组织要配置奇数个(3,5,等）注册中心，方便 raft 选择leader
