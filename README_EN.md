@@ -405,6 +405,10 @@ ansible-playbook -i inventory.ini cleanup.yml
 
 After the deployment of MetisNode is completed, please refer to: [Instructions for Use](./doc/EN/InstructionsForUseOfMetisNetwork.md)
 
+## Task event type code comparison table
+
+[Click to view](./doc/EN/eventCodeDetails.md)
+
 ## FAQ
 
 For common problems and solutions in deployment, refer to: [FAQ](./doc/EN/FAQ_EN.md)
