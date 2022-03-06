@@ -172,7 +172,7 @@ ${目标机内网IP} ansible_ssh_user="${ ssh 账户名称 }" ansible_ssh_pass="
 
 # 注册中心，一个组织要配置奇数个(1, 3, 5个等）注册中心，方便 raft 选择leader
 [consul]
-${目标机外网IP} ansible_ssh_user="${ ssh 账户名称 }" ansible_ssh_pass="${ ss 账户密码 }" ansible_sudo_pass="${ sudo 提权密码 }"
+${目标机内网IP} ansible_ssh_user="${ ssh 账户名称 }" ansible_ssh_pass="${ ss 账户密码 }" ansible_sudo_pass="${ sudo 提权密码 }"
 
 
 [all:vars]
