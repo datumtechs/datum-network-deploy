@@ -175,7 +175,7 @@ ${intranet IP of target computer} ansible_ssh_user="${ ssh account name }" ansib
 
 # Registration center. An organization needs to configure an odd number (1, 3, 5, etc.) of registration centers to facilitate raft to choose the leader
 [consul]
-${extranet IP of target computer} ansible_ssh_user="${ ssh account name }" ansible_ssh_pass="${ ssh account password }" ansible_sudo_pass="${ sudo privilege escalation password }"
+${intranet IP of target computer} ansible_ssh_user="${ ssh account name }" ansible_ssh_pass="${ ssh account password }" ansible_sudo_pass="${ sudo privilege escalation password }"
 
 
 [all:vars]
