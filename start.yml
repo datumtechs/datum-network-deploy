@@ -33,29 +33,53 @@
       register: result
       changed_when: false
       failed_when: result.rc != 0
-
-    - name: get v1/kv/metis/via_ip_port
+    # Glacier2
+    - name: get v1/kv/metis/glacier2_ip_port
       uri:
-        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/metis/via_ip_port
+        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/metis/glacier2_ip_port
         return_content: yes
       when: ansible_host == consul_leader_ip
-      register: via_ip_port_content
+      register: glacier2_ip_port_content
       failed_when: false
 
-    - name: Debug via_ip_port_content information
+    - name: Debug glacier2_ip_port_content information
       debug:
-        var: via_ip_port_content
+        var: glacier2_ip_port_content
       when: ansible_host == consul_leader_ip
 
-    - name: Set via external network address
+    - name: Set glacier2 external network address
       uri: 
-        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/metis/via_ip_port
+        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/metis/glacier2_ip_port
         method: PUT
-        body: "{{via_external_ip}}_{{via_port}}"
+        body: "{{ice_via_external_ip}}_{{ice_glacier2_port}}"
       when: 
         - ansible_host == consul_leader_ip 
         - enable_deploy_consul|default(false)
-        - 404 == via_ip_port_content.status
+        - 404 == glacier2_ip_port_content.status
+
+    # IceGrid
+    - name: get v1/kv/metis/icegrid_ip_port
+      uri:
+        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/metis/icegrid_ip_port
+        return_content: yes
+      when: ansible_host == consul_leader_ip
+      register: icegrid_ip_port_content
+      failed_when: false
+
+    - name: Debug icegrid_ip_port_content information
+      debug:
+        var: icegrid_ip_port_content
+      when: ansible_host == consul_leader_ip
+
+    - name: Set icegrid external network address
+      uri: 
+        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/metis/icegrid_ip_port
+        method: PUT
+        body: "{{ice_via_external_ip}}_{{ice_grid_port}}"
+      when: 
+        - ansible_host == consul_leader_ip 
+        - enable_deploy_consul|default(false)
+        - 404 == icegrid_ip_port_content.status
 
     - name: get v1/kv/metis/dataCenter_ip_port
       uri:
