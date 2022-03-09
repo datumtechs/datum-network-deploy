@@ -1,19 +1,19 @@
 ---
 
 # go Binary executable file 
-# 网关服务
-- name: download via binary
+  # ice via服务
+- name: download ice via zip
   get_url:
-    url: "{{ download_url }}/via"
+    url: "{{ download_url }}/ice_via.zip"
     dest: "{{ downloads_dir }}"
-    mode: 0744
+    mode: 0644
     force: yes
     validate_certs: no
   register: get_url_result
   until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
   retries: 3
   delay: "{{ 10 | random }}"
-
+  
 # 调度服务
 - name: download carrier binary
   get_url:

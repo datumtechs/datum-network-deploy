@@ -3,12 +3,12 @@
 
 # deploy metis cluster
 
-- name: deploying via 
-  hosts: via
+- name: deploying ice via 
+  hosts: ice_via
   tags:
-    - via_servers
+    - ice_via_servers
   roles:
-    - { role: via_deploy, when: enable_deploy_via|default(false) }
+    - { role: ice_via_deploy, when: enable_deploy_ice_via|default(false) }
 
 - name: deploying carrier
   hosts: carrier

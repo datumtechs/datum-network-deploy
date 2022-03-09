@@ -1,0 +1,58 @@
+---
+
+- name: Extract ice via zip 
+  unarchive:
+    src: "{{ downloads_dir }}/ice_via.zip"
+    dest: "{{ deploy_dir }}"
+    mode: 0755
+
+- name: create deploy directories
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+  - "{{ deploy_dir }}/ice_via/config"
+  - "{{ deploy_dir }}/ice_via/cert"
+  - "{{ deploy_dir }}/ice_via/logs"
+  - "{{ deploy_dir }}/ice_via/deploy/lmdb/registry"
+
+- name: "Copy certificate"
+  copy:
+    src: "{{ ice_via_cert_dir }}/{{ item }}"
+    dest: "{{ deploy_dir }}/ice_via/cert/{{ item }}"
+    mode: 0600
+    backup: yes
+  with_items:
+    - ca.pem
+    - server.pem
+    - server.key
+    - client.pem
+    - client.key
+
+# - name: Set certificate-related facts
+#   set_fact:
+#     via_cert_file: "{{ deploy_dir }}/ice_via/cert/server.pem"
+#     via_key_file: "{{ deploy_dir }}/ice_via/cert/server.key"
+#     io_cert_file: "{{ deploy_dir }}/ice_via/cert/client.pem"
+#     io_key_file: "{{ deploy_dir }}/ice_via/cert/client.key"
+#     ca_cert_file: "{{ deploy_dir }}/ice_via/cert/ca.pem"
+
+- name: "Generate ice_grid.yml configuration file based on ice_grid.yml.j2 template file"
+  template:
+    src: "ice_grid.yml.j2"
+    dest: "{{ deploy_dir }}/ice_via/config/ice_grid.yml"
+    mode: 0600
+    backup: yes
+
+- name: "Generate ice_glacier2.yml configuration file based on ice_glacier2.yml.j2 template file"
+  template:
+    src: "ice_glacier2.yml.j2"
+    dest: "{{ deploy_dir }}/ice_via/config/ice_glacier2.yml"
+    mode: 0600
+    backup: yes
+
+- name: "Generate ice_glacier2_ssl.yml configuration file based on ice_glacier2_ssl.yml.j2 template file"
+  template:
+    src: "ice_glacier2_ssl.yml.j2"
+    dest: "{{ deploy_dir }}/ice_via/config/ice_glacier2_ssl.yml"
+    mode: 0600
+    backup: yes
+

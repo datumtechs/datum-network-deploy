@@ -80,24 +80,39 @@
         - enable_deploy_consul|default(false)
         - 404 == dataCenter_ip_port_content.status
 
-- hosts: via
+- hosts: ice_via
   tags:
-    - via_servers
+    - ice_via_servers
   tasks:
-    - name: start via
-      shell: "nohup {{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/config/via.yml >/dev/null 2>&1 &"
+    - name: start IceGrid
+      shell: "{{ deploy_dir }}/ice_via/bin/run_icegrid.sh"
       register: result
       changed_when: false
       failed_when: result.rc != 0
-      when: enable_deploy_via|default(false)
+      when: enable_deploy_ice_via|default(false)
       
-    - name: wait until the via_port port is up
+    - name: wait until the IceGrid port is up
       wait_for:
         host: "{{ ansible_host }}"
-        port: "{{ via_port }}"
+        port: "{{ ice_grid_port }}"
         state: started
-        msg: "the node_exporter port {{ via_port }} is not up"
-      when: enable_deploy_via|default(false)
+        msg: "the node_exporter port {{ ice_grid_port }} is not up"
+      when: enable_deploy_ice_via|default(false)
+
+    - name: start Glacier2
+      shell: "{{ deploy_dir }}/ice_via/bin/run_glacier2.sh {{ ice_protocol }}"
+      register: result
+      changed_when: false
+      failed_when: result.rc != 0
+      when: enable_deploy_ice_via|default(false)
+      
+    - name: wait until the Glacier2 port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ ice_glacier2_port }}"
+        state: started
+        msg: "the node_exporter port {{ ice_glacier2_port }} is not up"
+      when: enable_deploy_ice_via|default(false)
 
 - hosts: carrier
   tags:

@@ -1,34 +1,41 @@
 ---
 
 # 停止所有服务
-
-- hosts: via
+- hosts: ice_via
   tags:
-    - via
+    - ice_via_servers
   tasks:
-    - name: stop via
-      shell: ps -ef | grep "{{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/config/via.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
+    - name: stop ice via
+      shell: "{{ deploy_dir }}/ice_via/bin/stop.sh"
       register: result
       changed_when: false
       failed_when: result.rc != 0
-      when: enable_deploy_via|default(false)
+      when: enable_deploy_ice_via|default(false)
 
-    - name: wait until the via_port is down
+    - name: wait until the IceGrid port is down
       wait_for:
         host: "{{ ansible_host }}"
-        port: "{{ via_port }}"
+        port: "{{ ice_grid_port }}"
         state: stopped
-        msg: "the pump port {{ via_port }} is not down"
-      when: enable_deploy_via|default(false)
+        msg: "the pump port {{ ice_grid_port }} is not down"
+      when: enable_deploy_ice_via|default(false)
 
-    - name: check service via status
-      shell: ps -ef | grep "{{ deploy_dir }}/via/via -cnf {{ deploy_dir }}/via/config/via.yml" | grep -v "grep" | awk '{print $2}'
+    - name: wait until the Glacier2 port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ ice_glacier2_port }}"
+        state: stopped
+        msg: "the pump port {{ ice_glacier2_port }} is not down"
+      when: enable_deploy_ice_via|default(false)
+
+    - name: check service ice via status
+      shell: "{{ deploy_dir }}/ice_via/bin/status.sh"
       register: check_result
       when: check_service_status
 
-    - name: via status result
+    - name: ice via status result
       debug:
-        msg: check service via status result ,its pid is {{check_result.stdout }}
+        msg: check service ice via status result ,its pid is {{check_result.stdout }}
       when: check_service_status
 
 - hosts: carrier

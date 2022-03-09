@@ -14,9 +14,9 @@ The network topology between MetisNodes (that is, between organizations) is conn
 
  ![inside organization][单个MetisNode的内部各服务网络拓扑]
 
-For each service in the closed beta test of MetisNode, there are such role services as admin, via, carrier, fighter(data), fighter(compute), and consul. Admin, carrier, via, and fighter all have their information automatically registered to consul, and each internal service discovers each other through other internal service information in consul. The specific functions of each service within the organization are as follows:
+For each service in the closed beta test of MetisNode, there are such role services as admin, Glacier2, IceGrid, carrier, fighter(data), fighter(compute), and consul. Admin, carrier, Glacier2, IceGrid, and fighter all have their information automatically registered to consul, and each internal service discovers each other through other internal service information in consul. The specific functions of each service within the organization are as follows:
 
-**via node**: The task message gateway for the entire organization. An organization can deploy (only) one gateway. The via service provides the only extranet port (the intranet and the extranet share the same port) when the organization and the outside perform multi-party assistance tasks.
+**ice_via node**: The ICE VIA nodes include Glacier2 and IceGrid services. Glacier2 can be used as a router, with the function of penetrating the firewall, and forwarding client requests to the server through Glacier2; IceGrid can be used as a registrar to register server-related information and services with IceGrid services; Glacier2 services and IceGrid services provide organizational and external The only external network port for multi-party assistance tasks (the internal and external network ports are the same).
 
 **carrier node**: It provides task scheduling services for the entire organization. An organization can deploy (only) one scheduling service. Carrier acts as the brain of the entire MetisNode and is responsible for task scheduling, resource service scheduling, metadata and internal resource information management within the organization, as well as data synchronization, p2p, etc.
 
@@ -30,13 +30,13 @@ For each service in the closed beta test of MetisNode, there are such role servi
 
 - ### *Services that must exist inside MetisNode and the order in which they are deployed*
 
-> From the above figure, we get to know the network topology of each service inside MetisNode. It is thus clear that consul, carrier, and admin are the services required in the organization, and other services are deployed as needed; if you need to provide data capabilities or computing services for multi-party collaborative computing, you must also have via and fighter. In the former case, you need to deploy fighter (data), and in the latter case, you need to deploy fighter (compute).
+> From the above figure, we get to know the network topology of each service inside MetisNode. It is thus clear that consul, carrier, and admin are the services required in the organization, and other services are deployed as needed; if you need to provide data capabilities or computing services for multi-party collaborative computing, you must also have ice_via(Glacier2/IceGrid) and fighter. In the former case, you need to deploy fighter (data), and in the latter case, you need to deploy fighter (compute).
 
 **The order of service deployment:**
 
 > (1) Services that must be deployed (whether involved in task computing or not): [1] consul service -> [2] carrier service -> [3] admin service.
 > 
-> (2) Optional services (only needed for task computing): [4] via service -> [5] fighter(data) service and fighter(compute) service.
+> (2) Optional services (only needed for task computing): [4] ice_via service(Glacier2/IceGrid) -> [5] fighter(data) service and fighter(compute) service.
 
 - ### *Relationship between Moirea and MetisNode*
 
@@ -46,7 +46,7 @@ Moirea can be seen as a platform that provides a data market, network-wide data 
 
 ## Description of MetisNode Deployment Script
 
-This script is an ansible automated deployment script, including admin, via, carrier, fighter(data), fighter(compute), and consul role services within a single organization. The ansible script can **deploy, start, stop , and destroy** each role node.
+This script is an ansible automated deployment script, including admin, ice_via, carrier, fighter(data), fighter(compute), and consul role services within a single organization. The ansible script can **deploy, start, stop , and destroy** each role node.
 
 ## Environment Requirements
 
@@ -60,7 +60,7 @@ The master computer (where ansible issues commands) and the target computer (whe
 
 |Service Name|Machine Configuration Recommendations|
 |---|---|
-|Via|4C, 8G memory, 200GB high-efficiency cloud disk|
+|ice_via(Glacier2/IceGrid)|4C, 8G memory, 200GB high-efficiency cloud disk|
 |Fighter|8C, 16G memory, 200GB high-efficiency cloud disk|
 |Carrier|8C, 16G memory, 200GB high-efficiency cloud disk|
 |Admin (self-built MySQL) + Consul|8C, 16G memory, 200GB high-efficiency cloud disk|
@@ -154,7 +154,7 @@ At present, the remote host ssh login does not support the root user but ordinar
 # Inventory file, mainly to configure the host list and host group
 
 # Task gateway. An organization has a gateway service
-[via]
+[ice_via]
 ${intranet IP of target computer} ansible_ssh_user="${ ssh account name }" ansible_ssh_pass="${ ssh account password }" ansible_sudo_pass="${ sudo privilege escalation password }"
 
 # Scheduling. An organization has a scheduling service
@@ -183,7 +183,7 @@ ${intranet IP of target computer} ansible_ssh_user="${ ssh account name }" ansib
 cluster_name = demo-cluster
 
 # Deploy service switch
-enable_deploy_via = True # Whether to deploy, start, close, destroy via. If yes, True; if no, False
+enable_deploy_ice_via = True # Whether to deploy, start, close, destroy ice_via. If yes, True; if no, False
 enable_deploy_carrier = True # Whether to deploy, start, shut down, and destroy carrier. If yes, True; if no, False.
 enable_deploy_admin = True # Whether to deploy, start, close, and destroy admin. If yes, True; if no, False.
 enable_deploy_data = True # Whether to deploy, start, close, and destroy data. If yes, True; if no, False.
@@ -222,11 +222,17 @@ carrier_grpc_gateway_port = 10034
 carrier_p2p_udp_port = 10035
 carrier_p2p_tcp_port = 10036
 
-# via extranet ip address
-via_external_ip = ${extranet IP of via target computer}
+# glacier2/icegrid service port number
+glacier2_port = 10031
+icegrid_port = 20031
 
-# via service port number
-via_port = 10031
+# ice via extranet ip address
+ice_via_external_ip = ${extranet IP of ice_via target computer}
+# ice_via service port number
+ice_glacier2_port = 10031   # Glacier2 service port number
+ice_grid_port = 10032       # IceGrid service port number
+# Ice transport protocol: tcp(default)/ssl 
+ice_protocol = tcp
 
 # data port number, set according to your deployment. 
 # The number should be consistent with the number of ips in the data group.
@@ -255,7 +261,7 @@ cluster_name: The name of the entire organization
 
 #### 3. Deployment service switch options
 
-enable_deploy_via: Whether to deploy, start, close, and destroy via. If yes, True; if no, False.
+enable_deploy_ice_via: Whether to deploy, start, close, and destroy ice_via. If yes, True; if no, False.
 
 enable_deploy_carrier: Whether to deploy, start, shut down, and destroy carrier. If yes, True; if no, False.
 
@@ -319,19 +325,24 @@ carrier_p2p_udp_port: The port on which carrier's p2p udp server listens. The in
 
 carrier_p2p_tcp_port: The port on which carrier's p2p tcp server listens. The intranet and extranet port policies are enabled, which can be defined by the user as needed.
 
-#### 10. The extranet ip address of the via service
+#### 10. The extranet ip address of the ice_via service
 
-via_external_ip: The extranet ip should be opened for the via service, through which other organizations communicate with the data and compute services in the organization.
+ice_via_external_ip: ice_via(Glacier2/IceGrid)服务所在外网ip，其中：IceGrid服务通过此ip用于本组织的服务注册和Glacier2服务寻址；其他组织需要通过此Glacier2服务的ip地址和组织内data，compute服务通信。
 
-#### 11. via service port number
+#### 11. ice_via service port number
 
-via_port: The port on which the via service listens.
+ice_glacier2_port: Glacier2服务监听的port。
+ice_grid_port: IceGrid服务监听的port。
 
-#### 12. fighter(data) service port number (it is recommended to enable the intranet port policy only)
+#### 12. ice_via Service Transport protocol
+
+ice_protocol：ice_via service transport protocol, tcp by default, also supports ssl.
+
+#### 13. fighter(data) service port number (it is recommended to enable the intranet port policy only)
 
 data_port: The port on which the data service listens, in the form of an array [8700, 8701, 8702]. The port number is set according to your deployment, and the number should be consistent with the number of members in the data group.
 
-#### 13. fighter(compute) service port number (it is recommended to enable the intranet port policy only)
+#### 14. fighter(compute) service port number (it is recommended to enable the intranet port policy only)
 
 compute_port: The port on which the data service listens, in the form of an array [8801, 8802, 8803], the port number is set according to your own deployment, and the number should be consistent with the number of members in the compute group.
 
