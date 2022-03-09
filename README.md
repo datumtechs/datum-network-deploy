@@ -398,6 +398,10 @@ ansible-playbook -i inventory.ini cleanup.yml
 
 MetisNode 部署完成后参考：[使用说明](./doc/ZH/MetisNetwork使用说明.md)
 
+## 任务事件类型码对照表
+
+[点击查看](./doc/ZH/事件码对照表.md)
+
 ## FAQ
 
 部署中常见问题及解决方法参考：[FAQ](./doc/ZH/FAQ.md)
