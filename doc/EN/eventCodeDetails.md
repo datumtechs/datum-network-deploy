@@ -11,14 +11,16 @@
 |  0209004   |     Failed to build compute task environment      |
 |  0209005   |        Create network channel successfully        |
 |  0209006   |         Failed to create network channel          |
-|  0209007   |      Successful registration to via service       |
-|  0209008   |         Failed to register to via service         |
+|  0209007   |      Successful registration to Glacier2 service  |
+|  0209008   |         Failed to register to Glacier2 service    |
 |  0209009   |        Set up network channel successfully        |
 |  0209010   |           Failed to set network channel           |
 |  0209011   |           Start executing the contract            |
 |  0209012   |      The contract was executed successfully       |
 |  0209013   |             Contract execution failed             |
 |  0209014   |      Failed to use resource exceeding limit       |
+|  0209015   |      Successful registration to IceGrid service   |
+|  0209016   |         Failed to register to IceGrid service     |
 
 ## Compute node related
 | event code |                      detail                       |
@@ -30,14 +32,16 @@
 |  0309004   |     Failed to build compute task environment      |
 |  0309005   |        Create network channel successfully        |
 |  0309006   |         Failed to create network channel          |
-|  0309007   |      Successful registration to via service       |
-|  0309008   |         Failed to register to via service         |
+|  0309007   |      Successful registration to Glacier2 service  |
+|  0309008   |         Failed to register to Glacier2 service    |
 |  0309009   |        Set up network channel successfully        |
 |  0309010   |           Failed to set network channel           |
 |  0309011   |           Start executing the contract            |
 |  0309012   |      The contract was executed successfully       |
 |  0309013   |             Contract execution failed             |
 |  0309014   |      Failed to use resource exceeding limit       |
+|  0309015   |      Successful registration to IceGrid service   |
+|  0309016   |         Failed to register to IceGrid service     |
 
 ## Data is shared with computing nodes
 

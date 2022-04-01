@@ -22,7 +22,7 @@ download_url: "https://download.technocore.network/metis/0.3.0/"
 consul_download_url: "https://releases.hashicorp.com/consul/1.10.4/consul_1.10.4_linux_amd64.zip"
 
 # 证书文件，非必改目录
-via_cert_dir:   "{{ playbook_dir }}/config/via_cert"
+ice_via_cert_dir:   "{{ playbook_dir }}/config/ice_via_cert"
 carrier_cert_dir:   "{{ playbook_dir }}/config/carrier_cert"
 admin_cert_dir:   "{{ playbook_dir }}/config/admin_cert"
 scan_cert_dir:   "{{ playbook_dir }}/config/scan_cert"

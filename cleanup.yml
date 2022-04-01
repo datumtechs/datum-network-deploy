@@ -1,15 +1,15 @@
 ---
 
 # 销毁集群
-- hosts: via
+- hosts: ice_via
   tags:
-    - via_servers
+    - ice_via_servers
   tasks:
-    - name: clean via
+    - name: clean ice via
       file:
-        path: "{{ deploy_dir }}/via"
+        path: "{{ deploy_dir }}/ice_via"
         state: absent
-      when: enable_deploy_via|default(false)
+      when: enable_deploy_ice_via|default(false)
 
 - hosts: consul
   tags:
