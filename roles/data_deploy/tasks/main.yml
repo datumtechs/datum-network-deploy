@@ -90,7 +90,7 @@
     mode: 0600
     backup: yes
   with_items:
-    - channel_sdk-2.0.0-cp37-cp37m-linux_x86_64.whl
+    - channel_sdk-2.0.1-cp37-cp37m-linux_x86_64.whl
     - metis_dcv-0.9.1-py3-none-any.whl
 
 # install whl file
