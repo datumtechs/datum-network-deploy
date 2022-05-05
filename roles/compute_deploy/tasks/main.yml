@@ -90,10 +90,11 @@
   with_items:
     - channel_sdk-2.0.1-cp37-cp37m-linux_x86_64.whl
     - metis_dcv-0.9.1-py3-none-any.whl
+    - latticex_psi-1.0.0-cp37-cp37m-linux_x86_64.whl
 
 # install whl file
 - name: "install whl file"
-  shell : "{{deploy_dir}}/miniconda/envs/python375/bin/python -m pip uninstall channel-sdk metis-dcv latticex-rosetta -y && {{deploy_dir}}/miniconda/envs/python375/bin/python -m pip install {{ deploy_dir }}/compute/whl/*.whl -i https://pypi.douban.com/simple/"
+  shell : "{{deploy_dir}}/miniconda/envs/python375/bin/python -m pip uninstall channel-sdk metis-dcv latticex-rosetta latticex-psi -y && {{deploy_dir}}/miniconda/envs/python375/bin/python -m pip install {{ deploy_dir }}/compute/whl/*.whl -i https://pypi.douban.com/simple/"
 
 # copy start.sh file
 - name: "copy start.sh file"

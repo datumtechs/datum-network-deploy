@@ -116,6 +116,18 @@
   retries: 3
   delay: "{{ 10 | random }}"
 
+- name: download psi sdk whl package
+  get_url:
+    url: "{{ download_url }}/latticex_psi-1.0.0-cp37-cp37m-linux_x86_64.whl"
+    dest: "{{ downloads_dir }}"
+    mode: 0644
+    force: yes
+    validate_certs: no
+  register: get_url_result
+  until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+  retries: 3
+  delay: "{{ 10 | random }}"
+
 - name: download metis dcv whl package
   get_url:
     url: "{{ download_url }}/metis_dcv-0.9.1-py3-none-any.whl"
