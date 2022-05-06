@@ -240,11 +240,11 @@
     path: /etc/nginx/sites-enabled/default
     state: absent
 
-- name: "Generate metis-admin.technocore.network.conf nginx configuration file based on metis-admin.technocore.network.conf.j2 template file"
+- name: "Generate metis-admin.platon.network.conf nginx configuration file based on metis-admin.platon.network.conf.j2 template file"
   become: true
   template:
-    src: "metis-admin.technocore.network.conf.j2"
-    dest: "/etc/nginx/conf.d/metis-admin.technocore.network.conf"
+    src: "metis-admin.platon.network.conf.j2"
+    dest: "/etc/nginx/conf.d/metis-admin.platon.network.conf"
     mode: 0600
 
 - name: restart nginx
