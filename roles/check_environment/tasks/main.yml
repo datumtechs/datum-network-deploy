@@ -111,3 +111,11 @@
   with_items:
     - python3-dev
   when: result.stdout!=self_python_version
+
+- name: Install libtbb2 and libgmpxx4ldbl for support psi
+  become: true
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+    - libtbb2
+    - libgmpxx4ldbl
+
