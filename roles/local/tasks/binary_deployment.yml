@@ -82,7 +82,7 @@
 # Python WHL file
 - name: download avx2 latticex rosetta whl package
   get_url:
-    url: "{{ download_url }}/avx2/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl"
+    url: "{{ download_url }}/avx2/{{ latticex_rosetta }}"
     dest: "{{ avx2 }}"
     mode: 0644
     force: yes
@@ -94,7 +94,7 @@
 
 - name: download no avx2 latticex rosetta whl package
   get_url:
-    url: "{{ download_url }}/no_avx2/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl"
+    url: "{{ download_url }}/no_avx2/{{ latticex_rosetta }}"
     dest: "{{ no_avx2 }}"
     mode: 0644
     force: yes
@@ -118,7 +118,7 @@
 
 - name: download psi sdk whl package
   get_url:
-    url: "{{ download_url }}/latticex_psi-1.0.0-cp37-cp37m-linux_x86_64.whl"
+    url: "{{ download_url }}/{{ latticex_psi }}"
     dest: "{{ downloads_dir }}"
     mode: 0644
     force: yes
@@ -130,7 +130,7 @@
 
 - name: download metis dcv whl package
   get_url:
-    url: "{{ download_url }}/metis_dcv-0.9.1-py3-none-any.whl"
+    url: "{{ download_url }}/{{ metis_dcv }}"
     dest: "{{ downloads_dir }}"
     mode: 0644
     force: yes
