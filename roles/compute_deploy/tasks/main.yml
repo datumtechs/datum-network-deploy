@@ -66,16 +66,16 @@
 
 - name: copy avx2 latticex_rosetta
   copy:
-    src: "{{ downloads_dir }}/avx2/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl"
-    dest: "{{ deploy_dir }}/compute/whl/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl"
+    src: "{{ downloads_dir }}/avx2/{{ latticex_rosetta }}"
+    dest: "{{ deploy_dir }}/compute/whl/{{ latticex_rosetta }}"
     mode: 0755
     backup: yes
   when: cpu_check_result.stdout!=""
 
 - name: copy no avx2 latticex_rosetta
   copy:
-    src: "{{ downloads_dir }}/no_avx2/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl"
-    dest: "{{ deploy_dir }}/compute/whl/latticex_rosetta-1.0.0-cp37-cp37m-linux_x86_64.whl"
+    src: "{{ downloads_dir }}/no_avx2/{{ latticex_rosetta }}"
+    dest: "{{ deploy_dir }}/compute/whl/{{ latticex_rosetta }}"
     mode: 0755
     backup: yes
   when: cpu_check_result.stdout==""
@@ -88,9 +88,9 @@
     mode: 0600
     backup: yes
   with_items:
-    - channel_sdk-2.0.1-cp37-cp37m-linux_x86_64.whl
-    - metis_dcv-0.9.1-py3-none-any.whl
-    - latticex_psi-1.0.0-cp37-cp37m-linux_x86_64.whl
+    - "{{ channel_sdk }}"
+    - "{{ metis_dcv }}"
+    - "{{ latticex_psi }}"
 
 # install whl file
 - name: "install whl file"

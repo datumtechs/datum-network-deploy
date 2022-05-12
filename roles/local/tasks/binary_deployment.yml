@@ -106,7 +106,7 @@
 
 - name: download channel sdk whl package
   get_url:
-    url: "{{ download_url }}/channel_sdk-2.0.1-cp37-cp37m-linux_x86_64.whl"
+    url: "{{ download_url }}/{{ channel_sdk }}"
     dest: "{{ downloads_dir }}"
     mode: 0644
     force: yes
