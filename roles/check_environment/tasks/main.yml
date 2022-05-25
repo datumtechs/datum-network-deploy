@@ -126,6 +126,8 @@
 - name: rosetta lib search path
   shell: echo {{item}}>>/home/{{ansible_ssh_user}}/.bashrc;source /home/{{ansible_ssh_user}}/.bashrc
   when: bashrc_result.stdout.find('LD_LIBRARY_PATH')==-1
+  args:
+   executable: /bin/bash
   with_items:
     - export LD_LIBRARY_PATH={{deploy_dir}}/miniconda/envs/python375/lib/python3.7/site-packages/latticex/psi_c 
    
