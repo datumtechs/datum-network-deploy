@@ -1,7 +1,7 @@
 ---
 # 在各个节点安装相应服务
 
-# deploy metis cluster
+# deploy datum cluster
 
 - name: deploying ice via 
   hosts: ice_via
