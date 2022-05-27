@@ -101,7 +101,7 @@
     - data
   tasks:
     - name: stop data
-      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.data_svc.main {{ deploy_dir }}/data/config/data.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
+      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m datum.data_svc.main {{ deploy_dir }}/data/config/data.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
       register: result
       changed_when: false
       failed_when: result.rc != 0
@@ -116,7 +116,7 @@
       when: enable_deploy_data|default(false)
 
     - name: check service data status
-      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.data_svc.main {{ deploy_dir }}/data/config/data.yml" | grep -v "grep" | awk '{print $2}'
+      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m datum.data_svc.main {{ deploy_dir }}/data/config/data.yml" | grep -v "grep" | awk '{print $2}'
       register: check_result
       when: check_service_status
 
@@ -130,7 +130,7 @@
     - compute
   tasks:
     - name: stop compute
-      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.compute_svc.main {{ deploy_dir }}/compute/config/compute.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
+      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m datum.compute_svc.main {{ deploy_dir }}/compute/config/compute.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
       register: result
       changed_when: false
       failed_when: result.rc != 0
@@ -145,7 +145,7 @@
       when: enable_deploy_compute|default(false)
 
     - name: check service compute status
-      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.compute_svc.main {{ deploy_dir }}/compute/config/compute.yml" | grep -v "grep" | awk '{print $2}'
+      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m datum.compute_svc.main {{ deploy_dir }}/compute/config/compute.yml" | grep -v "grep" | awk '{print $2}'
       register: check_result
       when: check_service_status
 

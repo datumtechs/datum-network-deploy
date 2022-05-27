@@ -128,9 +128,9 @@
   retries: 3
   delay: "{{ 10 | random }}"
 
-- name: download metis dcv whl package
+- name: download datum dcv whl package
   get_url:
-    url: "{{ download_url }}/{{ metis_dcv }}"
+    url: "{{ download_url }}/{{ fighter_dcv }}"
     dest: "{{ downloads_dir }}"
     mode: 0644
     force: yes

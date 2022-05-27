@@ -453,7 +453,7 @@ compute_port = [40001]
       - compute
     tasks:
       - name: stop compute
-        shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.compute_svc.main {{ deploy_dir }}/compute/config/compute.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
+        shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m fighter.compute_svc.main {{ deploy_dir }}/compute/config/compute.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
         register: result
         changed_when: false
         failed_when: result.rc != 0
@@ -468,7 +468,7 @@ compute_port = [40001]
       - compute
     tasks:
       - name: stop compute
-        shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.compute_svc.main {{ deploy_dir }}/compute2/config/compute.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
+        shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m fighter.compute_svc.main {{ deploy_dir }}/compute2/config/compute.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
         register: result
         changed_when: false
         failed_when: result.rc != 0
@@ -479,7 +479,7 @@ compute_port = [40001]
 
 
     - name: check service compute status
-      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.compute_svc.main {{ deploy_dir }}/compute/config/compute.yml" | grep -v "grep" | awk '{print $2}'
+      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m fighter.compute_svc.main {{ deploy_dir }}/compute/config/compute.yml" | grep -v "grep" | awk '{print $2}'
       register: check_result
       when: check_service_status
 
@@ -487,7 +487,7 @@ compute_port = [40001]
     修改为:
 
     - name: check service compute status
-      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.compute_svc.main {{ deploy_dir }}/compute2/config/compute.yml" | grep -v "grep" | awk '{print $2}'
+      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m fighter.compute_svc.main {{ deploy_dir }}/compute2/config/compute.yml" | grep -v "grep" | awk '{print $2}'
       register: check_result
       when: check_service_status
 
@@ -506,7 +506,7 @@ compute_port = [40001]
       - data
     tasks:
       - name: stop data
-        shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.data_svc.main {{ deploy_dir }}/data/config/data.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
+        shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m fighter.data_svc.main {{ deploy_dir }}/data/config/data.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
         register: result
         changed_when: false
         failed_when: result.rc != 0
@@ -522,7 +522,7 @@ compute_port = [40001]
       - data
     tasks:
       - name: stop data
-        shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.data_svc.main {{ deploy_dir }}/data2/config/data.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
+        shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m fighter.data_svc.main {{ deploy_dir }}/data2/config/data.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
         register: result
         changed_when: false
         failed_when: result.rc != 0
@@ -534,7 +534,7 @@ compute_port = [40001]
 
 
     - name: check service data status
-      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.data_svc.main {{ deploy_dir }}/data/config/data.yml" | grep -v "grep" | awk '{print $2}'
+      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m fighter.data_svc.main {{ deploy_dir }}/data/config/data.yml" | grep -v "grep" | awk '{print $2}'
       register: check_result
       when: check_service_status
 
@@ -542,7 +542,7 @@ compute_port = [40001]
     修改为:
 
     - name: check service data status
-      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.data_svc.main {{ deploy_dir }}/data2/config/data.yml" | grep -v "grep" | awk '{print $2}'
+      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m fighter.data_svc.main {{ deploy_dir }}/data2/config/data.yml" | grep -v "grep" | awk '{print $2}'
       register: check_result
       when: check_service_status
 
