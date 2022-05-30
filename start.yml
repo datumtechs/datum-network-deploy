@@ -55,7 +55,6 @@
       when: 
         - ansible_host == consul_leader_ip 
         - enable_deploy_consul|default(false)
-        - 404 == glacier2_ip_port_content.status
 
     # IceGrid
     - name: get v1/kv/datum/icegrid_ip_port
@@ -79,7 +78,6 @@
       when: 
         - ansible_host == consul_leader_ip 
         - enable_deploy_consul|default(false)
-        - 404 == icegrid_ip_port_content.status
 
     - name: get v1/kv/datum/dataCenter_ip_port
       uri:
@@ -102,7 +100,6 @@
       when: 
         - ansible_host == consul_leader_ip 
         - enable_deploy_consul|default(false)
-        - 404 == dataCenter_ip_port_content.status
 
 - hosts: ice_via
   tags:
