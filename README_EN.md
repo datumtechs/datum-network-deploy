@@ -200,13 +200,13 @@ consul_dns_port = [8600, 8601, 8602]
 
 # admin web service certificate related configuration information.
 enable_tls = False # Whether to enable https. If yes, True, and you need to configure the certificate and the corresponding domain name, the cipher suite in the certificate, etc. If no, False, and just ignore the following configuration.
-admin_server_name = metis-admin.demo.network
+admin_server_name = datum-admin.demo.network
 admin_ssl_protocols = "TLSv1 TLSv1.1 TLSv1.2"
 admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
 
 # mysql related username and password of admin web
-mysql_root_password = metis_root
-amin_user = metis_admin
+mysql_root_password = datum_root
+amin_user = datum_admin
 admin_password = admin_123456
 
 # admin web service port number
