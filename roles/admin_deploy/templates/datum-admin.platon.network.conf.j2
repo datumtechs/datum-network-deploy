@@ -12,8 +12,8 @@ server {
         charset utf-8;
         client_max_body_size 10m;
 
-        location /metis-admin {
-                proxy_pass  http://localhost:{{admin_web_port}}/metis-admin;
+        location /datum-admin {
+                proxy_pass  http://localhost:{{admin_web_port}}/datum-admin;
                 proxy_redirect          default;
                 proxy_set_header        Host $host:$proxy_port;
                 proxy_set_header        X-Real-IP $remote_addr;
@@ -36,8 +36,8 @@ server {
         charset utf-8;
         client_max_body_size 10m;
 
-        location /metis-admin {
-                proxy_pass  http://localhost:{{admin_web_port}}/metis-admin;
+        location /datum-admin {
+                proxy_pass  http://localhost:{{admin_web_port}}/datum-admin;
                 proxy_redirect          default;
                 proxy_set_header        Host $host:$proxy_port;
                 proxy_set_header        X-Real-IP $remote_addr;
