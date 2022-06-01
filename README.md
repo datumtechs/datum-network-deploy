@@ -75,8 +75,8 @@ git clone https://github.com/datumtechs/datum-network-deploy.git
 # 进入项目目录
 cd datum-network-deploy
 
-# 切换项目到 ansible 分支
-git checkout ansible
+# 切换项目到 ansible_v0.4.0 分支
+git checkout ansible_v0.4.0
 
 # 创建日志目录
 mkdir log
