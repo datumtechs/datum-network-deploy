@@ -74,13 +74,13 @@ consul_dns_port: [8600]
 
 # admin web 服务证书相关配置信息
 enable_tls = False # 是否启用 https，启用的需要配置证书和相应的域名，证书里面的密码套件等，不启用的话，忽略下面的配置。
-admin_server_name = metis-admin.demo.network
+admin_server_name = datum-admin.demo.network
 admin_ssl_protocols = "TLSv1 TLSv1.1 TLSv1.2"
 admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
 
 # admin web 的 mysql 相关用户名密码
-mysql_root_password = metis_root
-amin_user = metis_admin
+mysql_root_password = datum_root
+amin_user = datum_admin
 admin_password = admin_123456
 
 # admin 端口号
@@ -177,13 +177,13 @@ consul_dns_port: [8600]
 
 # admin web 服务证书相关配置信息
 enable_tls = False # 是否启用 https，启用的需要配置证书和相应的域名，证书里面的密码套件等，不启用的话，忽略下面的配置。
-admin_server_name = metis-admin.demo.network
+admin_server_name = datum-admin.demo.network
 admin_ssl_protocols = "TLSv1 TLSv1.1 TLSv1.2"
 admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
 
 # admin web 的 mysql 相关用户名密码
-mysql_root_password = metis_root
-amin_user = metis_admin
+mysql_root_password = datum_root
+amin_user = datum_admin
 admin_password = admin_123456
 
 # admin 端口号
@@ -453,7 +453,7 @@ compute_port = [40001]
       - compute
     tasks:
       - name: stop compute
-        shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.compute_svc.main {{ deploy_dir }}/compute/config/compute.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
+        shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m fighter_project.compute_svc.main {{ deploy_dir }}/compute/config/compute.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
         register: result
         changed_when: false
         failed_when: result.rc != 0
@@ -468,7 +468,7 @@ compute_port = [40001]
       - compute
     tasks:
       - name: stop compute
-        shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.compute_svc.main {{ deploy_dir }}/compute2/config/compute.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
+        shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m fighter_project.compute_svc.main {{ deploy_dir }}/compute2/config/compute.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
         register: result
         changed_when: false
         failed_when: result.rc != 0
@@ -479,7 +479,7 @@ compute_port = [40001]
 
 
     - name: check service compute status
-      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.compute_svc.main {{ deploy_dir }}/compute/config/compute.yml" | grep -v "grep" | awk '{print $2}'
+      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m fighter_project.compute_svc.main {{ deploy_dir }}/compute/config/compute.yml" | grep -v "grep" | awk '{print $2}'
       register: check_result
       when: check_service_status
 
@@ -487,7 +487,7 @@ compute_port = [40001]
     修改为:
 
     - name: check service compute status
-      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.compute_svc.main {{ deploy_dir }}/compute2/config/compute.yml" | grep -v "grep" | awk '{print $2}'
+      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m fighter_project.compute_svc.main {{ deploy_dir }}/compute2/config/compute.yml" | grep -v "grep" | awk '{print $2}'
       register: check_result
       when: check_service_status
 
@@ -506,7 +506,7 @@ compute_port = [40001]
       - data
     tasks:
       - name: stop data
-        shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.data_svc.main {{ deploy_dir }}/data/config/data.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
+        shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m fighter_project.data_svc.main {{ deploy_dir }}/data/config/data.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
         register: result
         changed_when: false
         failed_when: result.rc != 0
@@ -522,7 +522,7 @@ compute_port = [40001]
       - data
     tasks:
       - name: stop data
-        shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.data_svc.main {{ deploy_dir }}/data2/config/data.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
+        shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m fighter_project.data_svc.main {{ deploy_dir }}/data2/config/data.yml" | grep -v "grep" | awk '{print $2}' | xargs -r kill -s TERM
         register: result
         changed_when: false
         failed_when: result.rc != 0
@@ -534,7 +534,7 @@ compute_port = [40001]
 
 
     - name: check service data status
-      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.data_svc.main {{ deploy_dir }}/data/config/data.yml" | grep -v "grep" | awk '{print $2}'
+      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m fighter_project.data_svc.main {{ deploy_dir }}/data/config/data.yml" | grep -v "grep" | awk '{print $2}'
       register: check_result
       when: check_service_status
 
@@ -542,7 +542,7 @@ compute_port = [40001]
     修改为:
 
     - name: check service data status
-      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m metis.data_svc.main {{ deploy_dir }}/data2/config/data.yml" | grep -v "grep" | awk '{print $2}'
+      shell: ps -ef | grep "{{ deploy_dir }}/miniconda/envs/python375/bin/python -u -m fighter_project.data_svc.main {{ deploy_dir }}/data2/config/data.yml" | grep -v "grep" | awk '{print $2}'
       register: check_result
       when: check_service_status
 
@@ -707,13 +707,13 @@ consul_dns_port: [8600]
 
 # admin web 服务证书相关配置信息
 enable_tls = False # 是否启用 https，启用的需要配置证书和相应的域名，证书里面的密码套件等，不启用的话，忽略下面的配置。
-admin_server_name = metis-admin.demo.network
+admin_server_name = datum-admin.demo.network
 admin_ssl_protocols = "TLSv1 TLSv1.1 TLSv1.2"
 admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
 
 # admin web 的 mysql 相关用户名密码
-mysql_root_password = metis_root
-amin_user = metis_admin
+mysql_root_password = datum_root
+amin_user = datum_admin
 admin_password = admin_123456
 
 # admin 端口号
@@ -808,13 +808,13 @@ consul_dns_port: [8600]
 
 # admin web 服务证书相关配置信息
 enable_tls = False # 是否启用 https，启用的需要配置证书和相应的域名，证书里面的密码套件等，不启用的话，忽略下面的配置。
-admin_server_name = metis-admin.demo.network
+admin_server_name = datum-admin.demo.network
 admin_ssl_protocols = "TLSv1 TLSv1.1 TLSv1.2"
 admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
 
 # admin web 的 mysql 相关用户名密码
-mysql_root_password = metis_root
-amin_user = metis_admin
+mysql_root_password = datum_root
+amin_user = datum_admin
 admin_password = admin_123456
 
 # admin 端口号

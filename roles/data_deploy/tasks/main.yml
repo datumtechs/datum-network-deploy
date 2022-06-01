@@ -91,12 +91,12 @@
     backup: yes
   with_items:
     - "{{ channel_sdk }}"
-    - "{{ metis_dcv }}"
+    - "{{ fighter_dcv }}"
     - "{{ latticex_psi }}"
 
 # install whl file
 - name: "install whl file"
-  shell : "{{deploy_dir}}/miniconda/envs/python375/bin/python -m pip uninstall channel-sdk metis-dcv latticex-rosetta latticex-psi -y && {{deploy_dir}}/miniconda/envs/python375/bin/python -m pip install {{ deploy_dir }}/data/whl/{{'{'}}{{channel_sdk}},{{metis_dcv}},{{latticex_psi}},{{latticex_rosetta}}{{'}'}} {{python_proxy}}"
+  shell : "{{deploy_dir}}/miniconda/envs/python375/bin/python -m pip uninstall channel-sdk fighter-dcv latticex-rosetta latticex-psi -y && {{deploy_dir}}/miniconda/envs/python375/bin/python -m pip install {{ deploy_dir }}/data/whl/{{'{'}}{{channel_sdk}},{{fighter_dcv}},{{latticex_psi}},{{latticex_rosetta}}{{'}'}} {{python_proxy}}"
   args:
     executable: /bin/bash
 # copy start.sh file

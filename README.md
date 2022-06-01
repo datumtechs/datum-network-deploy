@@ -1,24 +1,24 @@
-# metis 部署 [[English](./README_EN.md)]
+# datum 部署 [[English](./README_EN.md)]
 
-## metis 网络拓扑
+## datum 网络拓扑
 
-metis 网络由多个 metisNode 组成，一个 MetisNode 其实是一个组织的逻辑总称，关于 MetisNode 的网络拓扑具体如下所示：
+datum 网络由多个 datumNode 组成，一个 DatumNode 其实是一个组织的逻辑总称，关于 DatumNode 的网络拓扑具体如下所示：
 
-- ### *各个MetisNode间的网络拓扑*
+- ### *各个DatumNode间的网络拓扑*
 
- ![organizations][MetisNode的各组织网络拓扑]
+ ![organizations][DatumNode的各组织网络拓扑]
 
- MetisNode 间的网络拓扑，其中在各个 MetisNode 之间 (也就是各个组织之间)是通过 p2p 网络互相建立起连接的；每个 MetisNode 通过自身的 carrier 和外界的 MetisNode 的 carrier 进行 p2p 连接。
+ DatumNode 间的网络拓扑，其中在各个 DatumNode 之间 (也就是各个组织之间)是通过 p2p 网络互相建立起连接的；每个 DatumNode 通过自身的 carrier 和外界的 DatumNode 的 carrier 进行 p2p 连接。
 
-- ### *单个MetisNode 内部各个服务的网络拓扑*
+- ### *单个DatumNode 内部各个服务的网络拓扑*
 
- ![inside organization][单个MetisNode的内部各服务网络拓扑]
+ ![inside organization][单个DatumNode的内部各服务网络拓扑]
 
-在 MetisNode 内测的各个服务划分 admin, ice_via(Glacier2, IceGrid), carrier, fighter(data), fighter(compute), consul 等角色服务。admin、carrier、Glacier2、IceGrid、fighter都将自身的信息自动注册到 consul，各个内部服务间通过 consul 中的其他内部服务信息做服务间相互发现。对于组织内部的各服务具体功能如下：
+在 DatumNode 内测的各个服务划分 admin, ice_via(Glacier2, IceGrid), carrier, fighter(data), fighter(compute), consul 等角色服务。admin、carrier、Glacier2、IceGrid、fighter都将自身的信息自动注册到 consul，各个内部服务间通过 consul 中的其他内部服务信息做服务间相互发现。对于组织内部的各服务具体功能如下：
 
 **ice_via 节点**：ice_via节点包括Glacier2和IceGrid服务, Glacier2可作为一个路由器，有穿透防火墙的功能，通过Glacier2转发客户端的请求到服务器；IceGrid可作为一个注册器，将服务器的相关信息以及服务注册到IceGrid服务；Glacier2服务和IceGrid服务提供组织和外部进行多方协助 task 时的唯一外网端口 (内外网端口一致)。
 
-**carrier 节点**：为整个组织的任务调度服务，一个组织只能部署一个调度服务(只能有一个)。carrier 担当起整个 MetisNode 的大脑负责任务调度、资源服务调度和元数据及组织内部资源信息管理以及数据同步、p2p等等。
+**carrier 节点**：为整个组织的任务调度服务，一个组织只能部署一个调度服务(只能有一个)。carrier 担当起整个 DatumNode 的大脑负责任务调度、资源服务调度和元数据及组织内部资源信息管理以及数据同步、p2p等等。
 
 **admin 节点**：为整个组织的管理台 web 后端服务，一个组织有一个管理台服务(可以有多个，建议启一个)。admin 则是 carrier 的管理台方便用户管理内部数据和资源及数据统计报表等。
 
@@ -28,22 +28,22 @@ metis 网络由多个 metisNode 组成，一个 MetisNode 其实是一个组织�
 
 **consul 节点**：为整个组织的注册中心服务，一个组织建议配置奇数个（1，3，5等），方便 raft 共识算法选择 leader。
 
-- ### *MetisNode 内部必须存在的服务，以及部署时的顺序*
+- ### *DatumNode 内部必须存在的服务，以及部署时的顺序*
 
-> 从上述图中我们已经知道了 MetisNode 内部各个服务的网络拓扑，那么显而易见组织内部必须要有的服务为 consul、 carrier、 admin，其他的服务根据自身情况而定；如果需要提供数据能力或者提供算力能力去参与多方协同计算，那么还必须有 ice_via(Glacier2/IceGrid)和fighter，其中需要提供数据能力时需部署 fighter(data)、需要提供算力能力时部署 fighter(compute)。
+> 从上述图中我们已经知道了 DatumNode 内部各个服务的网络拓扑，那么显而易见组织内部必须要有的服务为 consul、 carrier、 admin，其他的服务根据自身情况而定；如果需要提供数据能力或者提供算力能力去参与多方协同计算，那么还必须有 ice_via(Glacier2/IceGrid)和fighter，其中需要提供数据能力时需部署 fighter(data)、需要提供算力能力时部署 fighter(compute)。
 
 **服务部署的顺序为:**
 
 > (一)、必须部署部分(不管是否参与任务计算都要部署的):  [1] consul服务 -> [2] carrier 服务 -> [3] admin服务。
 > (二)、非必须部署部分(如需要参与任务计算都要部署的): [4] ice_via服务(Glacier2/IceGrid) -> [5] fighter(data)服务、fighter(compute)服务。
 
-- ### *Moirea 和 MetisNode 的关系*
+- ### *Moirea 和 DatumNode 的关系*
 
-![Moirea and MetisNode][Moirea和MetisNode间的拓扑]
+![Moirea and DatumNode][Moirea和DatumNode间的拓扑]
 
-Moirea 可以理解为是一个提供数据市场、全网数据统计、任务工作流管理的平台。 可以搭建在自己组织内部，那么它和自身组织的 MetisNode 是一对一关系； 也可以通过 moirea 界面添加外部 MetisNode 的carrier 外网 ip 和 port 对接其他外部 MetisNode 这样是一对多关系，moirea 的具体操作说明请参照 moirea 的相关文档。
+Moirea 可以理解为是一个提供数据市场、全网数据统计、任务工作流管理的平台。 可以搭建在自己组织内部，那么它和自身组织的 DatumNode 是一对一关系； 也可以通过 moirea 界面添加外部 DatumNode 的carrier 外网 ip 和 port 对接其他外部 DatumNode 这样是一对多关系，moirea 的具体操作说明请参照 moirea 的相关文档。
 
-## MetisNode 部署脚本说明
+## DatumNode 部署脚本说明
 
 本脚本为 ansible 自动化部署脚本，包括单组织内部 admin, ice_via, carrier, fighter(data), fighter(compute), consul 角色服务，ansible 脚本支持**部署**，**启动**，**停止**，**销毁**各个角色节点。
 
@@ -70,10 +70,10 @@ Moirea 可以理解为是一个提供数据市场、全网数据统计、任务�
 
 ```shell
 # 使用 git 下载脚本项目
-git clone https://github.com/Metisnetwork/Metis-Deploy.git
+git clone https://github.com/datumtechs/datum-network-deploy.git
 
 # 进入项目目录
-cd Metis-Deploy
+cd datum-network-deploy
 
 # 切换项目到 ansible 分支
 git checkout ansible
@@ -86,7 +86,7 @@ mkdir log
 
 ```shell
 # 先进入本项目目录
-cd Metis-Deploy
+cd datum-network-deploy
 
 # 安装 python 相关工具(Ubuntu 18.04 默认的 python 版本为 python2.7， python3 版本为 python3.6)
 sudo apt install -y python python-pip python3 python3-pip
@@ -196,13 +196,13 @@ consul_dns_port = [8600, 8601, 8602]
 
 # admin web 服务证书相关配置信息
 enable_tls = False # 是否启用 https，启用设置为 True，需要配置证书和相应的域名，证书里面的密码套件等，不启用设置为 False，忽略下面的配置。
-admin_server_name = metis-admin.demo.network
+admin_server_name = datum-admin.demo.network
 admin_ssl_protocols = "TLSv1 TLSv1.1 TLSv1.2"
 admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
 
 # admin web 的 mysql 相关用户名密码
-mysql_root_password = metis_root
-amin_user = metis_admin
+mysql_root_password = datum_root
+amin_user = datum_admin
 admin_password = admin_123456
 
 # admin web 服务端口号
@@ -347,12 +347,12 @@ compute_port: 数据服务监听的端口，数组形式[8801, 8802, 8803], 端�
 ### 1. 首次部署前的准备工作 (下面两个命令是前期准备工作，只用在首次部署时执行一次，后续都不用执行)
 
 ```shell
-# 在主控机上执行的准备工作，主要是下载部署相关的二进制文件，在脚本 `Metis-Deploy` 根目录执行(需要输入 sudo 密码）：
+# 在主控机上执行的准备工作，主要是下载部署相关的二进制文件，在脚本 `datum-network-deploy` 根目录执行(需要输入 sudo 密码）：
 
 ansible-playbook --ask-sudo-pass local_prepare.yml
 
 
-# 初始化集群各个节点，主要是检查目标机的环境信息（操作系统版本，python 和 python3 安装），在脚本 `Metis-Deploy` 根目录执行：
+# 初始化集群各个节点，主要是检查目标机的环境信息（操作系统版本，python 和 python3 安装），在脚本 `datum-network-deploy` 根目录执行：
 
 ansible-playbook -i inventory.ini bootstrap.yml
 ```
@@ -360,7 +360,7 @@ ansible-playbook -i inventory.ini bootstrap.yml
 ### 2. 安装相关服务
 
 ```shell
-# 在主控机上给各个目标机安装二进制文件和配置文件 (安装对应的服务)，在脚本 `Metis-Deploy` 根目录执行：
+# 在主控机上给各个目标机安装二进制文件和配置文件 (安装对应的服务)，在脚本 `datum-network-deploy` 根目录执行：
 
 ansible-playbook -i inventory.ini deploy.yml
 ```
@@ -368,7 +368,7 @@ ansible-playbook -i inventory.ini deploy.yml
 ### 3. 启动相关服务
 
 ```shell
-# 在主控机上启动各个目标主机上的相关服务 (后台守护态运行)，在脚本 `Metis-Deploy` 根目录执行：
+# 在主控机上启动各个目标主机上的相关服务 (后台守护态运行)，在脚本 `datum-network-deploy` 根目录执行：
 
 ansible-playbook -i inventory.ini start.yml
 ```
@@ -376,27 +376,27 @@ ansible-playbook -i inventory.ini start.yml
 ### 4. 停止服务
 
 ```shell
-# 在主控机上停止各个目标主机上的相关服务 (用信号优雅停机)，在脚本 `Metis-Deploy` 根目录执行：
+# 在主控机上停止各个目标主机上的相关服务 (用信号优雅停机)，在脚本 `datum-network-deploy` 根目录执行：
 
 ansible-playbook -i inventory.ini stop.yml 
 ```
 
 ### 5. 销毁服务
 
-> **此操作需要先停止服务，此操作为危险操作，会清除全部的数据包括 mysql 数据库里面的 admin 业务库数据，如果当前 MetisNode (组织)之前已经在 admin 管理台操作过【注册过身份信息】，那么需要先在 admin 管理台执行【注销身份】再做cleanup操作。**
+> **此操作需要先停止服务，此操作为危险操作，会清除全部的数据包括 mysql 数据库里面的 admin 业务库数据，如果当前 DatumNode (组织)之前已经在 admin 管理台操作过【注册过身份信息】，那么需要先在 admin 管理台执行【注销身份】再做cleanup操作。**
 
 ```shell
-# 先在主控机上停止各个目标主机上的相关服务 (用信号优雅停机)，在脚本 `Metis-Deploy` 根目录执行：
+# 先在主控机上停止各个目标主机上的相关服务 (用信号优雅停机)，在脚本 `datum-network-deploy` 根目录执行：
 
 ansible-playbook -i inventory.ini stop.yml 
 
-# 然后再在主控机上清除各个目标机上的相关服务的数据和安装的二进文件配置等信息 (清除所有数据)，在脚本 `Metis-Deploy` 根目录执行：
+# 然后再在主控机上清除各个目标机上的相关服务的数据和安装的二进文件配置等信息 (清除所有数据)，在脚本 `datum-network-deploy` 根目录执行：
 ansible-playbook -i inventory.ini cleanup.yml
 ```
 
 ## 使用说明
 
-MetisNode 部署完成后参考：[使用说明](./doc/ZH/MetisNetwork使用说明.md)
+DatumNode 部署完成后参考：[使用说明](./doc/ZH/DatumNetwork使用说明.md)
 
 ## 任务事件类型码对照表
 
@@ -407,6 +407,6 @@ MetisNode 部署完成后参考：[使用说明](./doc/ZH/MetisNetwork使用说�
 部署中常见问题及解决方法参考：[FAQ](./doc/ZH/FAQ.md)
 
 
-[MetisNode的各组织网络拓扑]: ./img/MetisNode的各组织网络拓扑.jpg
-[单个MetisNode的内部各服务网络拓扑]: ./img/单个MetisNode的内部各服务网络拓扑.jpg
-[Moirea和MetisNode间的拓扑]: ./img/Moirea和MetisNode间的拓扑.jpg
+[DatumNode的各组织网络拓扑]: ./img/DatumNode的各组织网络拓扑.jpg
+[单个DatumNode的内部各服务网络拓扑]: ./img/单个DatumNode的内部各服务网络拓扑.jpg
+[Moirea和DatumNode间的拓扑]: ./img/Moirea和DatumNode间的拓扑.jpg

@@ -14,11 +14,11 @@ storage_port: 9090
 
 # #### 下面的变量不建议用户修改 ####
 
-# carrier 服务连接进metis网络时优先连接的引导节点的nodeId数组 (enr前缀格式)
+# carrier 服务连接进datum网络时优先连接的引导节点的nodeId数组 (enr前缀格式)
 # bootstrap_nodes: []
 
 # 服务静态文件下载 url
-download_url: "https://download.technocore.network/metis/0.3.0/"
+download_url: "https://download.technocore.network/datum/0.3.0/"
 consul_download_url: "https://releases.hashicorp.com/consul/1.10.4/consul_1.10.4_linux_amd64.zip"
 
 # 证书文件，非必改目录

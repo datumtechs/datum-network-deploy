@@ -34,9 +34,9 @@
       changed_when: false
       failed_when: result.rc != 0
     # Glacier2
-    - name: get v1/kv/metis/glacier2_ip_port
+    - name: get v1/kv/datum/glacier2_ip_port
       uri:
-        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/metis/glacier2_ip_port
+        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/datum/glacier2_ip_port
         return_content: yes
       when: ansible_host == consul_leader_ip
       register: glacier2_ip_port_content
@@ -49,7 +49,7 @@
 
     - name: Set glacier2 external network address
       uri: 
-        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/metis/glacier2_ip_port
+        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/datum/glacier2_ip_port
         method: PUT
         body: "{{ice_via_external_ip}}_{{ice_glacier2_port}}"
       when: 
@@ -57,9 +57,9 @@
         - enable_deploy_consul|default(false)
 
     # IceGrid
-    - name: get v1/kv/metis/icegrid_ip_port
+    - name: get v1/kv/datum/icegrid_ip_port
       uri:
-        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/metis/icegrid_ip_port
+        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/datum/icegrid_ip_port
         return_content: yes
       when: ansible_host == consul_leader_ip
       register: icegrid_ip_port_content
@@ -72,16 +72,16 @@
 
     - name: Set icegrid external network address
       uri: 
-        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/metis/icegrid_ip_port
+        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/datum/icegrid_ip_port
         method: PUT
         body: "{{ice_via_external_ip}}_{{ice_grid_port}}"
       when: 
         - ansible_host == consul_leader_ip 
         - enable_deploy_consul|default(false)
 
-    - name: get v1/kv/metis/dataCenter_ip_port
+    - name: get v1/kv/datum/dataCenter_ip_port
       uri:
-        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/metis/dataCenter_ip_port
+        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/datum/dataCenter_ip_port
         return_content: yes
       when: ansible_host == consul_leader_ip
       register: dataCenter_ip_port_content
@@ -94,7 +94,7 @@
 
     - name: Set data center address
       uri: 
-        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/metis/dataCenter_ip_port
+        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/datum/dataCenter_ip_port
         method: PUT
         body: "{{storage_ip}}_{{storage_port}}"
       when: 

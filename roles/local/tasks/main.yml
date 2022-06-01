@@ -61,7 +61,7 @@
 
 - name: "check has_outbound_network"
   fail:
-    msg: "The Control Machine must have access to the Internet in order to download Metisnetwork related packages."
+    msg: "The Control Machine must have access to the Internet in order to download Datumnetwork related packages."
   when: not has_outbound_network
 
 # do actual downloading
