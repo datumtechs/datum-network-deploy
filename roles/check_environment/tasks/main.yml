@@ -42,7 +42,7 @@
 
 # 检查 python 
 - name: python check
-  shell: python --version
+  shell: which python|xargs echo -n
   register: py_st
   failed_when: false
   changed_when: false
@@ -53,10 +53,10 @@
   with_items:
     - python
     - python-pip
-  when: "'command not found' in py_st.stdout"
+  when: "'' in py_st.stdout"
 
 - name: python3 check
-  shell: python3 --version
+  shell: which python3|xargs echo -n
   register: py3_st
   failed_when: false
   changed_when: false
@@ -68,7 +68,31 @@
     - python3
     - python3-pip
     - python3-setuptools
-  when: "'command not found' in py3_st.stdout" 
+  when: "'' in py3_st.stdout"
+
+- name: check pip3
+  shell: which pip3|xargs echo -n
+  register: result_pip3
+
+- name: install pip3
+  become: true
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+    python3-pip
+  when:
+    "'' in result_pip3.stdout"
+
+- name: check pip2
+  shell: which pip|xargs echo -n
+  register: result_pip2
+
+- name: install pip2
+  become: true
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+    python-pip
+  when:
+    "'' in result_pip2.stdout"
 
 - name : Get current system self python3 version
   shell: python3 -c "import sys;print('.'.join([str(i) for i in sys.version_info[:3]]))" | xargs echo -n
