@@ -10,7 +10,8 @@
    
 | 所属服务 | 变量名称  | 端口含义 | 对那些服务暴露 |
 |  ----  | ----  |  ----  | ----  | 
-|   via | via_port  |  via grpc 服务端口号  | 需要对全网开放，其他组织的数据或者资源服务通过这个服务转发到内部资源或者数据服务上 | 
+|   ice | ice_glacier2_port  |  ice glacier2 port 服务端口号  | 需要对全网开放 | 
+|   ice | ice_grid_port  |  ice grid port 服务端口号  | 需要对全网开放 |
 |   data | data_port  |  data grpc 服务端口号  | 对组织内部的所有服务开发，不对外开放  | 
 |  compute  | compute_port  |  compute grpc 服务端口号  | 对组织内部的所有服务开发，不对外开放  | 
 |  admin  | admin_web_port  |  admin web 服务端口号  | 对 consul 开放即可  | 
@@ -29,7 +30,3 @@
 **【注意事项】:** 
 
 1、最后需要对浏览器开通80端口策略
-
-2、对于fighter(data)一定要开放 [31000 ~ 31100]端口段 100 个内网端口。
-
-3、对于fighter(compute)一定要开放 [41000 ~ 41100]端口段 100 个内网端口。
