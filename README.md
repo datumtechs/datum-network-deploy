@@ -8,7 +8,7 @@ Datum-network 运维脚本及工具集
 
 datum 网络由多个 Datum-network Node 组成，一个 Datum-network Node 其实是一个组织的逻辑总称，关于 Datum-network Node 的网络拓扑具体如下所示：
 
-- ### *各个DatumNode间的网络拓扑*
+- ### *各个 Datum-network Node 间的网络拓扑*
 
  ![organizations][OrganizationNetworkTopologyOfDatumNetworkNode]
 
