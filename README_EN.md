@@ -10,13 +10,13 @@ The datum network consists of multiple Datum-network Nodes, each of which is act
 
 - ### *Network topology between Datum-network Nodes*
 
-![organizations][OrganizationNetworkTopologyOfDatumNetworkNode]
+ ![organizations][OrganizationNetworkTopologyOfDatumNetworkNode]
 
 The network topology between Datum-network Nodes (that is, between organizations) is connected to each other through a p2p network; the carrier of each Datum-network Node is linked with the carrier of the Datum-network Nodes outside for p2p connection.
 
 - ### *Network topology of each service within a single Datum-network Node*
 
-![inside organization][InternalServiceNetworkTopologyOfASingleDatumNetworkNode]
+ ![inside organization][InternalServiceNetworkTopologyOfASingleDatumNetworkNode]
 
 For each service in the closed beta test of Datum-network Node, there are such role services as admin, Glacier2, IceGrid, carrier, fighter(data), fighter(compute), and consul. Admin, carrier, Glacier2, IceGrid, and fighter all have their information automatically registered to consul, and each internal service discovers each other through other internal service information in consul. The specific functions of each service within the organization are as follows:
 
