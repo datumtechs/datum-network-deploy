@@ -9,8 +9,8 @@ self_python_version: 3.6.9
 check_service_status: true
 
 # consul的 key-value 选项 
-storage_ip: 161.117.189.27
-storage_port: 9090
+storage_ip: testdatacenter.datumtechs.com
+storage_port: 80
 
 # #### 下面的变量不建议用户修改 ####
 
@@ -18,7 +18,7 @@ storage_port: 9090
 # bootstrap_nodes: []
 
 # 服务静态文件下载 url
-download_url: "https://download.technocore.network/datum/0.3.0/"
+download_url: "http://testdownload.datumtechs.com/datum/0.4.0/"
 consul_download_url: "https://releases.hashicorp.com/consul/1.10.4/consul_1.10.4_linux_amd64.zip"
 
 # 证书文件，非必改目录
