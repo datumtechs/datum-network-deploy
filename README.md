@@ -72,11 +72,20 @@ git checkout ansible_v0.4.0
 
 ## 组织内各个服务的网络情况
 
-参考: [network](./network.md)
+网络要求参考：[网络情况](./doc/ZH/network.md)
 
 ## 使用说明
 
-在整个 DatumNetworkNode 部署完成后，需要根据 [使用说明](./DatumNetwork使用说明.md)
+Datum-network Node 部署完成后参考：[使用说明](./doc/ZH/DatumNetwork使用说明.md)
+
+## 任务事件类型码对照表
+
+[点击查看](./doc/ZH/事件码对照表.md)
+
+## FAQ
+
+部署中常见问题及解决方法参考：[FAQ](./doc/ZH/FAQ.md)
+
 
 [OrganizationNetworkTopologyOfDatumNetworkNode]: ./img/OrganizationNetworkTopologyOfDatumNetworkNode.jpg
 [InternalServiceNetworkTopologyOfASingleDatumNetworkNode]: ./img/InternalServiceNetworkTopologyOfASingleDatumNetworkNode.jpg
