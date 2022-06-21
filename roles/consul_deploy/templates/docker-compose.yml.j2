@@ -1,0 +1,20 @@
+# yaml 配置
+version: "3.6"
+services:
+  run_consul:
+    container_name: consul_service
+    restart: always
+    network_mode: "host"
+    volumes:
+      - {{ deploy_dir }}/{{consul_local_path}}/config/consul.json:{{consul_docker_path}}/consul.json
+      - {{ deploy_dir }}/{{consul_local_path}}/log:{{consul_docker_path}}/log
+      - {{ deploy_dir }}/{{consul_local_path}}/data-dir:{{consul_docker_path}}/data-dir
+    image: {{ice_via_consul_image[0]["name"]}}:{{ice_via_consul_image[0]["tag"]}}
+    command: 
+      - sh
+      - -c
+      - |
+          {{consul_docker_path}}/consul agent -config-file {{consul_docker_path}}/consul.json &&
+          "if [ '{{ansible_host}}' != '{{consul_leader_ip}}' ] && [ {{consul_number_int}} > 1 ] && [ '{{enable_deploy_consul}}' == 'True' ];then
+            {{ deploy_dir }}/consul/consul join --http-addr {{ansible_host}}:{{consul_http_port_self | trim}} {{consul_leader_ip}}:{{consul_leader_serf_lan_port}} fi;"
+

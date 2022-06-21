@@ -1,0 +1,43 @@
+---
+
+- name: Install aptitude using apt
+  become: true
+  apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
+- name: Install required system packages
+  become: true
+  apt: name={{ item }} state=latest update_cache=yes
+  loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 
+    'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+
+- name: Add Docker GPG apt Key
+  become: true
+  apt_key:
+    url: "{{ docker_gpg_url }}"
+    state: present
+
+- name: Add Docker Repository
+  become: true
+  apt_repository:
+    repo: "{{ docker_repo }}"
+    state: present
+
+- name: Update apt and install docker-ce
+  apt: name={{ item }} state=latest update_cache=yes
+  loop: ['docker-ce', 'docker-ce-cli', 'containerd.io']
+  become: true
+  retries: 3
+  ignore_errors: True
+
+- name: Install Docker Module for Python
+  become: true
+  pip:
+    name: docker
+
+- name: Add users to docker group
+  become: true
+  user:
+    name: "{{ item }}"
+    group: docker
+    append: yes
+  with_items: "{{ docker.users }}"

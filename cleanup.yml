@@ -1,0 +1,158 @@
+---
+
+# 销毁集群
+- hosts: carrier
+  tags:
+    - carrier_service
+  tasks:
+    - name: Clear the exited carrier container and carrier image
+      become: True
+      become_method: sudo
+      shell: "[ -f {{ deploy_dir }}/{{carrier_dir_name}}/clean_docker.sh ] && 
+        bash {{ deploy_dir }}/{{carrier_dir_name}}/clean_docker.sh {{ item.name }} {{ item.tag }}"
+      register: result
+      when: enable_deploy_carrier|default(false)
+      # rc=1：shell isn't exist
+      failed_when: result.rc != 0 and result.rc != 1
+      with_items: "{{ carrier_image }}"
+
+    - name: Clear the carrier directory 
+      become: True
+      become_method: sudo
+      file:
+        path: "{{ deploy_dir }}/{{carrier_dir_name}}"
+        state: absent
+      when: enable_deploy_carrier|default(false)
+
+- hosts: ice_via
+  tags:
+    - ice_via_service
+  tasks:
+    - name: Clear the exited ice_via container and ice_via image
+      become: True
+      become_method: sudo
+      shell: "[ -f {{ deploy_dir }}/{{ice_via_local_path}}/clean_docker.sh ] && 
+        bash {{ deploy_dir }}/{{ice_via_local_path}}/clean_docker.sh {{ item.name }} {{ item.tag }}"
+      register: result
+      when: enable_deploy_ice_via|default(false)
+      # rc=1：shell isn't exist
+      failed_when: result.rc != 0 and result.rc != 1
+      with_items: "{{ ice_via_consul_image }}"
+
+    - name: Clear the ice_via directory 
+      become: True
+      become_method: sudo
+      file:
+        path: "{{ deploy_dir }}/{{ice_via_local_path}}"
+        state: absent
+      when: enable_deploy_ice_via|default(false)
+
+    - name: If there are no ice_via and consul service directories, clear the ice_via_consul directory.
+      become: True
+      become_method: sudo
+      shell: "[ ! -d {{ deploy_dir }}/{{ice_via_local_path}} ] && 
+        [ ! -d {{ deploy_dir }}/{{consul_local_path}} ] && rm -rf {{ deploy_dir }}/{{ice_via_consul_dir_name}}"
+      register: result
+      when: enable_deploy_ice_via|default(false) and enable_deploy_consul|default(false)
+      failed_when: result.rc != 0 and result.rc != 1
+      changed_when: false
+
+- hosts: data
+  tags:
+    - data_service
+  tasks:
+    - name: Clear the exited fighter_data container and fighter image
+      become: True
+      become_method: sudo
+      shell: "[ -f {{ deploy_dir }}/{{data_local_path}}/clean_docker.sh ] && 
+        bash {{ deploy_dir }}/{{data_local_path}}/clean_docker.sh {{ item.name }} {{ item.tag }}"
+      register: result
+      when: enable_deploy_data|default(false)
+      # rc=1：shell isn't exist
+      failed_when: result.rc != 0 and result.rc != 1
+      with_items: "{{ fighter_image }}"
+
+    - name: Clear the carrier directory 
+      become: True
+      become_method: sudo
+      file:
+        path: "{{ deploy_dir }}/{{data_local_path}}"
+        state: absent
+      when: enable_deploy_data|default(false)
+
+    - name: If there are no data and compute service directories, clear the fighter directory.
+      become: True
+      become_method: sudo
+      shell: "[ ! -d {{ deploy_dir }}/{{compute_local_path}} ] && 
+        [ ! -d {{ deploy_dir }}/{{data_local_path}} ] && rm -rf {{ deploy_dir }}/{{fighter_dir_name}}"
+      register: result
+      when: enable_deploy_compute|default(false) and enable_deploy_data|default(false)
+      failed_when: result.rc != 0 and result.rc != 1
+      changed_when: false
+
+- hosts: compute
+  tags:
+    - compute_service
+  tasks:
+    - name: Clear the exited fighter_compute container and fighter image
+      become: True
+      become_method: sudo
+      shell: "[ -f {{ deploy_dir }}/{{compute_local_path}}/clean_docker.sh ] && 
+        bash {{ deploy_dir }}/{{compute_local_path}}/clean_docker.sh {{ item.name }} {{ item.tag }}"
+      register: result
+      when: enable_deploy_compute|default(false)
+      # rc=1：shell isn't exist
+      failed_when: result.rc != 0 and result.rc != 1
+      with_items: "{{ fighter_image }}"
+
+    - name: Clear the compute directory 
+      become: True
+      become_method: sudo
+      file:
+        path: "{{ deploy_dir }}/{{compute_local_path}}"
+        state: absent
+      when: enable_deploy_compute|default(false)
+
+    - name: If there are no data and compute service directories, clear the fighter directory.
+      become: True
+      become_method: sudo
+      shell: "[ ! -d {{ deploy_dir }}/{{compute_local_path}} ] && 
+        [ ! -d {{ deploy_dir }}/{{data_local_path}} ] && rm -rf {{ deploy_dir }}/{{fighter_dir_name}}"
+      register: result
+      when: enable_deploy_compute|default(false) and enable_deploy_data|default(false)
+      failed_when: result.rc != 0 and result.rc != 1
+      changed_when: false
+
+- hosts: consul
+  tags:
+    - consul_service
+  tasks:
+    - name: Clear the exited consul container and consul image
+      become: True
+      become_method: sudo
+      shell: "[ -f {{ deploy_dir }}/{{consul_local_path}}/clean_docker.sh ] && 
+        bash {{ deploy_dir }}/{{consul_local_path}}/clean_docker.sh {{ item.name }} {{ item.tag }}"
+      register: result
+      when: enable_deploy_consul|default(false)
+      # rc=1：shell isn't exist
+      failed_when: result.rc != 0 and result.rc != 1
+      with_items: "{{ ice_via_consul_image }}"
+
+    - name: Clear the consul directory 
+      become: True
+      become_method: sudo
+      file:
+        path: "{{ deploy_dir }}/{{consul_local_path}}"
+        state: absent
+      when: enable_deploy_consul|default(false)
+
+    - name: If there are no ice_via and consul service directories, clear the ice_via_consul directory.
+      become: True
+      become_method: sudo
+      shell: "[ ! -d {{ deploy_dir }}/{{ice_via_local_path}} ] && 
+        [ ! -d {{ deploy_dir }}/{{consul_local_path}} ] && rm -rf {{ deploy_dir }}/{{ice_via_consul_dir_name}}"
+      register: result
+      when: enable_deploy_ice_via|default(false) and enable_deploy_consul|default(false)
+      failed_when: result.rc != 0 and result.rc != 1
+      changed_when: false
+      

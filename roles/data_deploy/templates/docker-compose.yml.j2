@@ -1,0 +1,21 @@
+# yaml 配置
+version: "3.6"
+services:
+  run_data:
+    image: {{fighter_image[0]["name"]}}:{{fighter_image[0]["tag"]}}
+    container_name: {{fighter_image[0]["service"]}}_data
+    restart: always
+    network_mode: "host"
+    volumes:
+      - {{ deploy_dir }}/{{data_local_path}}/config:{{ fighter_docker_path }}/config
+      - {{ deploy_dir }}/{{data_local_path}}/log:{{ fighter_docker_path }}/log
+      - {{ deploy_dir }}/{{data_local_path}}/data_root:{{ fighter_docker_path }}/data_root
+      - {{ deploy_dir }}/{{data_local_path}}/cert:{{ fighter_docker_path }}/cert
+      - {{ deploy_dir }}/{{data_local_path}}/result_root:{{ fighter_docker_path }}/result_root
+    command: 
+      - sh
+      - -c
+      - |
+          cd {{ fighter_docker_path }}/data_svc &&
+          python3 -u main.py {{ fighter_docker_path }}/config/data.yml >> {{fighter_docker_path}}/log/data.log 2>&1
+          

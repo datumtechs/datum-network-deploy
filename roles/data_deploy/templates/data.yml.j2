@@ -1,0 +1,32 @@
+# 数据节点的配置模板
+file_system: local
+bind_ip: 0.0.0.0
+register_ip: {{inventory_hostname}}
+port: {{data_port_self}}
+task_port_range: [31000, 31100]
+chunk_size: 1024
+pass_via: true
+thread_pool_size: 12
+data_root: {{data_root}}
+code_root_dir: {{code_root_dir}}
+results_root_dir: {{results_root_dir}}
+total_bandwidth: 209715200
+pass_ice: true
+certs:
+  base_path: ""
+  root_cert: ""
+  server_sign_key: SS.key
+  server_sign_cert: SS.crt
+  server_enc_key: SE.key
+  server_enc_cert: SE.crt
+  client_sign_key: CS.key
+  client_sign_cert: CS.crt
+  client_enc_key: CE.key
+  client_enc_cert: CE.crt
+consul:
+  service_ip: {{consul_leader_ip}}
+  service_port: {{consul_leader_port}}
+  name: dataService
+  tag: data
+  interval: 3s
+  deregister: 3s

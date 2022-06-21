@@ -1,0 +1,199 @@
+---
+# 启动所有服务
+- hosts: consul
+  tags:
+    - consul_service
+  tasks:
+    # 启动一个新的ice via容器
+    - name: Start a new consul container 
+      become: True
+      become_method: sudo
+      shell:
+        cmd: docker-compose -f docker-compose.yml run -d run_consul
+        chdir: "{{ deploy_dir }}/{{consul_local_path}}/config"
+      register: run_result
+      failed_when: run_result.rc != 0
+      when: enable_deploy_consul|default(false)
+
+    - name: Debug consul_http_port_self information
+      debug:
+        var: consul_http_port_self | trim
+      when: enable_deploy_consul|default(false)
+
+    - name: wait until the consul http port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port:  "{{consul_http_port_self | trim}}"
+        state: started
+        msg: "the node_exporter port {{ consul_http_port_self | trim }} is not up"
+        timeout: "{{wait_for_timeout|int}}"
+      when: enable_deploy_consul|default(false)
+
+    # Glacier2
+    - name: get v1/kv/datumnetwork/glacier2_ip_port
+      uri:
+        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/datumnetwork/glacier2_ip_port
+        return_content: yes
+      when: ansible_host == consul_leader_ip
+      register: glacier2_ip_port_content
+      failed_when: false
+
+    - name: Debug glacier2_ip_port_content information
+      debug:
+        var: glacier2_ip_port_content
+      when: ansible_host == consul_leader_ip
+
+    - name: Set glacier2 external network address
+      uri: 
+        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/datumnetwork/glacier2_ip_port
+        method: PUT
+        body: "{{ice_via_external_ip}}_{{ice_glacier2_port}}"
+      when: 
+        - ansible_host == consul_leader_ip 
+        - enable_deploy_consul|default(false)
+
+    # IceGrid
+    - name: get v1/kv/datumnetwork/icegrid_ip_port
+      uri:
+        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/datumnetwork/icegrid_ip_port
+        return_content: yes
+      when: ansible_host == consul_leader_ip
+      register: icegrid_ip_port_content
+      failed_when: false
+
+    - name: Debug icegrid_ip_port_content information
+      debug:
+        var: icegrid_ip_port_content
+      when: ansible_host == consul_leader_ip
+
+    - name: Set icegrid external network address
+      uri: 
+        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/datumnetwork/icegrid_ip_port
+        method: PUT
+        body: "{{ice_via_external_ip}}_{{ice_grid_port}}"
+      when: 
+        - ansible_host == consul_leader_ip 
+        - enable_deploy_consul|default(false)
+
+    - name: get v1/kv/datumnetwork/dataCenter_ip_port
+      uri:
+        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/datumnetwork/dataCenter_ip_port
+        return_content: yes
+      when: ansible_host == consul_leader_ip
+      register: dataCenter_ip_port_content
+      failed_when: false
+
+    - name: Debug dataCenter_ip_port_content information
+      debug:
+        var: dataCenter_ip_port_content
+      when: ansible_host == consul_leader_ip
+
+    - name: Set data center address
+      uri: 
+        url: http://{{consul_leader_ip}}:{{consul_leader_port}}/v1/kv/datumnetwork/dataCenter_ip_port
+        method: PUT
+        body: "{{dataCenter_ip}}_{{dataCenter_port}}"
+      when: 
+        - ansible_host == consul_leader_ip 
+        - enable_deploy_consul|default(false)
+
+- hosts: ice_via
+  tags:
+    - ice_via_servers
+  tasks:
+    # ice via和consul在同一个镜像里面，兼容ice via和consul可以部署在同一台机器上，不做检查
+    # 启动一个新的ice via容器
+    - name: Start a new ice_via container 
+      become: True
+      become_method: sudo
+      shell:
+        cmd: docker-compose -f docker-compose.yml run -d run_ice_via
+        chdir: "{{ deploy_dir }}/{{ice_via_local_path}}/config"
+      register: run_result
+      failed_when: run_result.rc != 0
+      when: enable_deploy_ice_via|default(false)
+
+- hosts: carrier
+  tags:
+    - carrier_servers
+  tasks:
+    - name: Check that the Carrier container already exists and exits
+      become: True
+      become_method: sudo
+      shell:
+        cmd: docker ps -a | grep -w {{ item.name }}:{{ item.tag }} | awk '{print $1 }'
+      register: result
+      failed_when: result.rc != 0
+      changed_when: false
+      with_items: "{{ carrier_image }}" 
+    
+    # - name: debug info  
+    #   debug:
+    #     msg: "Check Info:{{result.results[0].stdout}}"
+    
+    # 启动已经存在但是已经退出的carrier容器
+    - name: Start the exited Carrier container 
+      become: True
+      become_method: sudo
+      shell:
+        cmd: docker start {{result.results[0].stdout}}
+      when: result.results[0].stdout != ''
+
+    # 启动一个新的carrier容器
+    - name: Start a new Carrier container 
+      become: True
+      become_method: sudo
+      shell:
+        cmd: docker-compose -f docker-compose.yml run -d run_carrier
+        chdir: "{{ deploy_dir }}/{{carrier_dir_name}}/config"
+      register: run_result
+      failed_when: run_result.rc != 0
+      when: enable_deploy_carrier|default(false) and result.results[0].stdout == ''
+
+- name: start data
+  hosts: data
+  tags:
+    - data_service
+  tasks:
+    - name: Start a new fighter data container 
+      become: True
+      become_method: sudo
+      shell:
+        cmd: docker-compose -f docker-compose.yml run -d run_data
+        chdir: "{{ deploy_dir }}/{{data_local_path}}/config"
+      register: run_result
+      failed_when: run_result.rc != 0
+      when: enable_deploy_data|default(false)
+
+    - name: wait until the data port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ data_port_self }}"
+        state: started
+        msg: "the node_exporter port {{ data_port_self }} is not up"
+        timeout: "{{wait_for_timeout|int}}"
+      when: enable_deploy_data|default(false)
+
+- name: start compute
+  hosts: compute
+  tags:
+    - compute_service
+  tasks:
+    - name: Start a new fighter compute container 
+      become: True
+      become_method: sudo
+      shell:
+        cmd: docker-compose -f docker-compose.yml run -d run_compute
+        chdir: "{{ deploy_dir }}/{{compute_local_path}}/config"
+      register: run_result
+      failed_when: run_result.rc != 0
+      when: enable_deploy_compute|default(false)
+
+    - name: wait until the compute port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ compute_port_self }}"
+        state: started
+        msg: "the node_exporter port {{ compute_port_self }} is not up"
+        timeout: "{{wait_for_timeout|int}}"
+      when: enable_deploy_compute|default(false)

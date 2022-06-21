@@ -1,0 +1,36 @@
+---
+# 在各个节点安装相应服务
+- name: deploying consul
+  hosts: consul
+  tags:
+    - consul_service
+  roles:
+    - { role: consul_deploy, when: enable_deploy_consul|default(false) }
+
+- name: deploying ice via 
+  hosts: ice_via
+  tags:
+    - ice_via_service
+  roles:
+    - { role: ice_via_deploy, when: enable_deploy_ice_via|default(false) }
+
+- name: deploying carrier
+  hosts: carrier
+  tags:
+    - carrier_service
+  roles:
+    - { role: carrier_deploy, when: enable_deploy_carrier|default(false) }    
+
+- name: deploying data
+  hosts: data
+  tags:
+    - data_service
+  roles:
+    - { role: data_deploy, when: enable_deploy_data|default(false) }
+
+- name: deploying compute
+  hosts: compute
+  tags:
+    - compute_servers
+  roles:
+    - { role: compute_deploy, when: enable_deploy_compute|default(false) }

@@ -1,0 +1,8 @@
+---
+# 下载相关安装包
+- name: do local preparation
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - local

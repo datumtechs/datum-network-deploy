@@ -1,0 +1,24 @@
+# yaml 配置
+version: "3.6"
+services:
+  run_ice_via:
+    container_name: ice_via_service
+    restart: always
+    network_mode: "host"
+    image: {{ice_via_consul_image[0]["name"]}}:{{ice_via_consul_image[0]["tag"]}}
+    volumes:
+      - {{ deploy_dir }}/{{ice_via_local_path}}/config/ice_grid.yml:{{ ice_via_docker_path }}/config/config.gridregistry
+      - {{ deploy_dir }}/{{ice_via_local_path}}/config/ice_glacier2.yml:{{ ice_via_docker_path }}/config/config.glacier2
+      - {{ deploy_dir }}/{{ice_via_local_path}}/config/ice_glacier2_ssl.yml:{{ ice_via_docker_path }}/config/config.ssl.glacier2
+      - {{ deploy_dir }}/{{ice_via_local_path}}/logs:{{ ice_via_docker_path }}/logs:rw
+      - {{ deploy_dir }}/{{ice_via_local_path}}/cert:{{ ice_via_docker_path }}/cert
+      - {{ deploy_dir }}/{{ice_via_local_path}}/deploy:{{ ice_via_docker_path }}/deploy
+      - {{ deploy_dir }}/{{ice_via_local_path}}/run_icegrid.sh:{{ ice_via_docker_path }}/bin/run_icegrid.sh
+      - {{ deploy_dir }}/{{ice_via_local_path}}/run_glacier2.sh:{{ ice_via_docker_path }}/bin/run_glacier2.sh
+    command: 
+      - sh
+      - -c
+      - |
+          {{ ice_via_docker_path }}/bin/run_icegrid.sh > {{ ice_via_docker_path }}/logs/icegrid.log 2>&1 &
+          {{ ice_via_docker_path }}/bin/run_glacier2.sh  > {{ ice_via_docker_path }}/logs/glacier.log 2>&1
+          

@@ -1,0 +1,120 @@
+# ---
+
+# 停止所有服务
+- name: stop ice via
+  hosts: ice_via
+  tags:
+    - ice_via
+  tasks:
+    - name: stop ice_via service
+      shell: bash {{ deploy_dir }}/{{ice_via_local_path}}/stop_container.sh {{ item.name }}:{{ item.tag }}
+      register: result
+      changed_when: false
+      failed_when: result.rc != 0
+      when: enable_deploy_ice_via|default(false)
+      with_items: "{{ ice_via_consul_image }}"
+
+    - name: wait until the IceGrid port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ ice_grid_port }}"
+        state: stopped
+        msg: "the pump port {{ ice_grid_port }} is not down"
+        timeout: "{{wait_for_timeout|int}}"
+      when: enable_deploy_ice_via|default(false)
+
+    - name: wait until the Glacier2 port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ ice_glacier2_port }}"
+        state: stopped
+        msg: "the pump port {{ ice_glacier2_port }} is not down"
+        timeout: "{{wait_for_timeout|int}}"
+      when: enable_deploy_ice_via|default(false)
+
+- name: stop carrier
+  hosts: carrier
+  tags:
+    - carrier
+  tasks:
+    - name: stop carrier
+      shell: bash {{ deploy_dir }}/{{carrier_dir_name}}/stop_container.sh {{ item.name }}:{{ item.tag }}
+      register: result
+      changed_when: false
+      failed_when: result.rc != 0
+      when: enable_deploy_carrier|default(false)
+      with_items: "{{ carrier_image }}"
+
+    - name: wait until the carrier_rpc_port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ carrier_rpc_port }}"
+        state: stopped
+        msg: "the pump port {{ carrier_rpc_port }} is not down"
+        timeout: "{{wait_for_timeout|int}}"
+      when: enable_deploy_carrier|default(false)
+
+- name: stop data
+  hosts: data
+  tags:
+    - data
+  tasks:
+    - name: stop data
+      shell: bash {{ deploy_dir }}/{{data_local_path}}/stop_container.sh {{ item.name }}:{{ item.tag }}
+      register: result
+      changed_when: false
+      failed_when: result.rc != 0
+      when: enable_deploy_data|default(false)
+      with_items: "{{ fighter_image }}"
+
+    - name: wait until the data port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ data_port_self }}"
+        state: stopped
+        msg: "the pump port {{ data_port_self }} is not down"
+        timeout: "{{wait_for_timeout|int}}"
+      when: enable_deploy_data|default(false)
+
+- name: stop compute
+  hosts: compute
+  tags:
+    - compute
+  tasks:
+    - name: stop compute
+      shell: bash {{ deploy_dir }}/{{compute_local_path}}/stop_container.sh {{ item.name }}:{{ item.tag }}
+      register: result
+      changed_when: false
+      failed_when: result.rc != 0
+      when: enable_deploy_compute|default(false)
+      with_items: "{{ fighter_image }}"
+
+    - name: wait until the compute port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ compute_port_self }}"
+        state: stopped
+        msg: "the pump port {{ compute_port_self }} is not down"
+        timeout: "{{wait_for_timeout|int}}"
+      when: enable_deploy_compute|default(false)
+
+- name: stop consul
+  hosts: consul
+  tags:
+    - consul
+  tasks:
+    - name: stop consul service
+      shell: bash {{ deploy_dir }}/{{consul_local_path}}/stop_container.sh {{ item.name }}:{{ item.tag }}
+      register: result
+      changed_when: false
+      failed_when: result.rc != 0
+      when: enable_deploy_consul|default(false)
+      with_items: "{{ ice_via_consul_image }}"
+    
+    - name: wait until the consul http port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ consul_http_port_self | trim }}"
+        state: stopped
+        msg: "the pump port {{ consul_http_port_self | trim }} is not down"
+      when: enable_deploy_consul|default(false)

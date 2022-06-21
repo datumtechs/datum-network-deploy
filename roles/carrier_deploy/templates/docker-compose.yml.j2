@@ -1,0 +1,22 @@
+# yaml 配置
+version: "3.6"
+services:
+  run_keytool:
+    image: {{carrier_image[0]["name"]}}:{{carrier_image[0]["tag"]}}
+    volumes:
+      - {{ deploy_dir }}/{{carrier_dir_name}}/p2p_priv_key:{{ carrier_docker_path }}/p2p_priv_key
+    command: /bin/sh -c "({{ carrier_docker_path }}/keytool genkeypair | awk 'NR==1{print $$2}' |xargs echo -n > {{ carrier_docker_path }}/p2p_priv_key/p2p_priv_key)|cat"
+  run_carrier:
+    image: {{carrier_image[0]["name"]}}:{{carrier_image[0]["tag"]}}
+    container_name: {{carrier_image[0]["service"]}}
+    restart: always
+    network_mode: "host"
+    volumes:
+      - {{ deploy_dir }}/{{carrier_dir_name}}/config:{{ carrier_docker_path }}/config
+      - {{ deploy_dir }}/{{carrier_dir_name}}/log:{{ carrier_docker_path }}/log:rw
+      - {{ deploy_dir }}/{{carrier_dir_name}}/cert:{{ carrier_docker_path }}/cert
+      - {{ deploy_dir }}/{{carrier_dir_name}}/p2p_priv_key:{{ carrier_docker_path }}/p2p_priv_key
+      - {{ deploy_dir }}/{{carrier_dir_name}}/datadir:{{ carrier_docker_path }}/datadir:rw
+    command: /bin/sh -c "if [ ! -e {{ carrier_docker_path }}/p2p_priv_key/p2p_priv_key ]; then 
+      ({{ carrier_docker_path }}/keytool genkeypair | awk 'NR==1{print $$2}' |xargs echo -n > {{ carrier_docker_path }}/p2p_priv_key/p2p_priv_key)|cat;
+      fi; {{ carrier_docker_path }}/carrier --config-file {{ carrier_docker_path }}/config/carrier.yml >> {{ carrier_docker_path }}/log/carrier.log 2>&1"

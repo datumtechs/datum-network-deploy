@@ -1,0 +1,8 @@
+--- 
+
+# 检查各个节点信息
+- name: check system
+  hosts: all
+  any_errors_fatal: true
+  roles:
+    - check_environment
