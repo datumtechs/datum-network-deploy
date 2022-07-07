@@ -1,0 +1,119 @@
+---
+
+- name: create admin deploy directories
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+  - "{{ deploy_dir }}/{{admin_dir_name}}"
+  - "{{ deploy_dir }}/{{admin_dir_name}}/sql"
+  - "{{ deploy_dir }}/{{admin_dir_name}}/scripts"
+  - "{{ deploy_dir }}/{{admin_dir_name}}/config"
+  - "{{ deploy_dir }}/{{admin_dir_name}}/cert"
+  - "{{ deploy_dir }}/{{admin_dir_name}}/cert/web"
+  - "{{ deploy_dir }}/{{admin_dir_name}}/logs"
+  - "{{ deploy_dir }}/{{admin_dir_name}}/nginx"
+  - "{{ deploy_dir }}/{{admin_dir_name}}/mysql"
+  - "{{ deploy_dir }}/{{admin_dir_name}}/mysql/init"
+  - "{{ deploy_dir }}/{{admin_dir_name}}/mysql/db"
+
+- name: "copy admin mirror tar file"
+  copy:
+    src: "{{ downloads_dir }}/{{ item.service }}.tar"
+    dest: "{{ deploy_dir }}/{{admin_dir_name}}/{{ item.service }}.tar"
+  with_items: "{{ admin_image }}"
+
+# 加载镜像tar压缩包 
+- name: Load admin image from archive
+  become: True
+  become_method: sudo
+  docker_image:
+    name: "{{ item.name }}"
+    tag: "{{ item.tag }}"
+    # push: yes
+    load_path: "{{ deploy_dir }}/{{admin_dir_name}}/{{ item.service }}.tar"
+    timeout: "{{docker_timeout|int}}"
+    # source: load
+    # force: yes
+  with_items: "{{ admin_image }}"
+
+- name: set admin_log_dir facts
+  set_fact:
+    admin_log_dir: "{{admin_docker_path}}/logs"
+
+- name: "Deploy certificates"
+  copy:
+    src: "{{ admin_cert_dir }}/{{ item }}"
+    dest: "{{ deploy_dir }}/{{admin_dir_name}}/cert/{{ item }}"
+    mode: 0600
+    backup: yes
+  with_items:
+    - server.pem 
+    - server.key
+
+- name: "Deploy web certificates"
+  copy:
+    src: "{{ admin_cert_dir }}/web/{{ item }}"
+    dest: "{{ deploy_dir }}/{{admin_dir_name}}/cert/web/{{ item }}"
+    mode: 0600
+    backup: yes
+  with_items:
+    - server.pem 
+    - server.key
+
+- name: Set web certificate-related facts
+  set_fact:
+    admin_ssl_cetificate: "{{admin_docker_path}}/cert/web/server.pem"
+    admin_ssl_cetificate_key: "{{admin_docker_path}}/cert/web/server.key"
+
+- name: "Generate application-admin.yml configuration file based on application-admin.yml.j2 template file"
+  template:
+    src: "application-admin.yml.j2"
+    dest: "{{ deploy_dir }}/{{admin_dir_name}}/config/application-admin.yml"
+    mode: 0600
+    backup: yes
+
+# sql文件
+- name: "Generate database script create_user.sql based on create_user.sql.j2 template file"
+  template:
+    src: "create_user.sql.j2"
+    dest: "{{ deploy_dir }}/{{admin_dir_name}}/sql/create_user.sql"
+    mode: 0755
+
+- name: "Generate database script init.sql based on init.sql.j2 template file"
+  template:
+    src: "init.sql.j2"
+    dest: "{{ deploy_dir }}/{{admin_dir_name}}/mysql/init/init.sql"
+    mode: 0755
+
+- name: "Copy database initialization script admin.sql"
+  copy:
+    src: "{{ playbook_dir }}/config/admin.sql"
+    dest: "{{ deploy_dir }}/{{admin_dir_name}}/sql/admin.sql"
+    mode: 0755
+    backup: yes
+
+- name: "copy docker script"
+  copy:
+    src: "{{ script_dir }}/{{ item }}"
+    dest: "{{ deploy_dir }}/{{admin_dir_name}}/{{ item }}"
+    mode: 0755
+  with_items:
+    - stop_container.sh
+    - clean_docker.sh
+
+- name: set admin_web_static_dir facts
+  set_fact:
+    admin_web_static_dir: "{{admin_docker_path}}/network"
+
+# nginx配置文件模板
+- name: "Generate nginx configuration file based on nginx.conf.j2 template file"
+  template:
+    src: "nginx.conf.j2"
+    dest: "{{ deploy_dir }}/{{admin_dir_name}}/config/nginx.conf"
+    mode: 0600
+
+- name: "Generate docker-compose.yml configuration file based on docker-compose.yml.j2 template file"
+  template:
+    src: "docker-compose.yml.j2"
+    dest: "{{ deploy_dir }}/{{admin_dir_name}}/config/docker-compose.yml"
+    mode: 0600
+    backup: yes

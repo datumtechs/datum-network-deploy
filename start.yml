@@ -150,6 +150,48 @@
       failed_when: run_result.rc != 0
       when: enable_deploy_carrier|default(false) and result.results[0].stdout == ''
 
+- hosts: admin
+  tags:
+    - admin_servers
+  tasks:
+      # 启动mysql
+    - name: Start the mysql container 
+      become: True
+      become_method: sudo
+      shell:
+        cmd: docker-compose -f docker-compose.yml up -d run_mysql
+        chdir: "{{ deploy_dir }}/{{admin_dir_name}}/config"
+      register: run_result
+      failed_when: run_result.rc != 0
+      when: enable_deploy_admin|default(false)
+    
+    - name: wait until the mysql_listen_port port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{mysql_listen_port}}"
+        state: started
+        msg: "the node_exporter port {{mysql_listen_port}} is not up"
+      when: enable_deploy_admin|default(false)
+
+    # 启动admin
+    - name: Start the admin container 
+      become: True
+      become_method: sudo
+      shell:
+        cmd: docker-compose -f docker-compose.yml up -d run_admin
+        chdir: "{{ deploy_dir }}/{{admin_dir_name}}/config"
+      register: run_result
+      failed_when: run_result.rc != 0
+      when: enable_deploy_admin|default(false)
+    
+    - name: wait until the admin_web_port port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ admin_web_port }}"
+        state: started
+        msg: "the node_exporter port {{ admin_web_port }} is not up"
+      when: enable_deploy_admin|default(false)
+
 - name: start data
   hosts: data
   tags:

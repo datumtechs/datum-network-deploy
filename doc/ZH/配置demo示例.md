@@ -80,7 +80,7 @@ admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-
 
 # admin web 的 mysql 相关用户名密码
 mysql_root_password = datum_root
-amin_user = datum_admin
+admin_user = datum_admin
 admin_password = admin_123456
 
 # admin 端口号
@@ -183,7 +183,7 @@ admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-
 
 # admin web 的 mysql 相关用户名密码
 mysql_root_password = datum_root
-amin_user = datum_admin
+admin_user = datum_admin
 admin_password = admin_123456
 
 # admin 端口号
@@ -713,7 +713,7 @@ admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-
 
 # admin web 的 mysql 相关用户名密码
 mysql_root_password = datum_root
-amin_user = datum_admin
+admin_user = datum_admin
 admin_password = admin_123456
 
 # admin 端口号
@@ -814,7 +814,7 @@ admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-
 
 # admin web 的 mysql 相关用户名密码
 mysql_root_password = datum_root
-amin_user = datum_admin
+admin_user = datum_admin
 admin_password = admin_123456
 
 # admin 端口号

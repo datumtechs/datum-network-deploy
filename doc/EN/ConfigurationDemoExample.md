@@ -80,7 +80,7 @@ admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-
 
 # mysql related username and password of admin web
 mysql_root_password = datum_root
-amin_user = datum_admin
+admin_user = datum_admin
 admin_password = admin_123456
 
 # admin web service port number
@@ -182,7 +182,7 @@ admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-
 
 # mysql related username and password of admin web
 mysql_root_password = datum_root
-amin_user = datum_admin
+admin_user = datum_admin
 admin_password = admin_123456
 
 # admin web service port number
@@ -714,7 +714,7 @@ admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-
 
 # mysql related username and password of admin web
 mysql_root_password = datum_root
-amin_user = datum_admin
+admin_user = datum_admin
 admin_password = admin_123456
 
 # admin web service port number
@@ -815,7 +815,7 @@ admin_ssl_ciphers = ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-
 
 # mysql related username and password of admin web
 mysql_root_password = datum_root
-amin_user = datum_admin
+admin_user = datum_admin
 admin_password = admin_123456
 
 # admin web service port number

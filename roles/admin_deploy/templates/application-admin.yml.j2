@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    druid:
+      url: jdbc:mysql://{{inventory_hostname}}:{{mysql_listen_port}}/datum_admin?useServerPrepStmts=true&rewriteBatchedStatements=true&allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC
+      username: {{admin_user}}
+      password: {{admin_password}}
+  # =============================== consul ===============================
+  cloud:
+    consul:
+      host: {{consul_leader_ip}}
+      port: {{consul_leader_port}}
+      discovery:  # 服务发现配置
+        instance-id: adminService_{{inventory_hostname}}_{{admin_web_port}}
+
+# ==================================== server conf  ==========================================
+server:
+  port: {{admin_web_port}}
+
+# ===== 自定义swagger配置 ===== #
+swagger:
+  enabled: true
+
+# =============================== conf for logger ===================================
+# 日志配置
+logging:
+  file:
+    # 日志文件名格式
+    name: {{admin_log_dir}}/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      # 根据文件大小归档，超过2KB自动归档，次日启动服务时也会自动归档
+      file-name-pattern: {{admin_log_dir}}/%d{yyyyMMdd}/${spring.application.name}.out.log.%d{yyyy-MM-dd}.%i.gz

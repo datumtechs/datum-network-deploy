@@ -19,6 +19,13 @@ wait_for_timeout: 10
 # docker超时时间，等待API响应的最长时间（以秒为单位，默认为60）
 docker_timeout: 300
 ############################## start to set docker path ###################
+#mysql
+mysql_docker_path: /mysql
+
+# admin
+admin_docker_path: /admin
+admin_dir_name: admin_docker_test
+
 # carrier
 carrier_docker_path: /Carrier
 carrier_dir_name: carrier
@@ -81,6 +88,15 @@ docker_packges:
   - "docker-compose"
 
 # 镜像
+mysql_image:
+  - name: mysql
+    tag: 5.7
+    service: mysql_5.7
+admin_image:
+  - name: luodahui/admin
+    tag: v0.5.0
+    service: admin_v0.5.0
+
 carrier_image:
   - name: luodahui/carrier
     tag: v0.5.0

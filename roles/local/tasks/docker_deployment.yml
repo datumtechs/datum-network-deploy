@@ -1,4 +1,38 @@
 ---
+
+# 拉取admin镜像
+- name: Check whether the admin mirror is pulled
+  become: true
+  become_method: sudo
+  shell: docker images | grep -w {{ item.name }} | grep -w {{ item.tag }} | wc -l
+  changed_when: false
+  register: mirror_pulled
+  with_items: "{{ admin_image }}"
+
+- name: Check whether the admin mirror is saved
+  shell: find {{ downloads_dir }} -name {{ item.service }}.tar | wc -l
+  changed_when: false
+  register: mirror_saved
+  with_items: "{{ admin_image }}"
+
+- name: Pull the admin mirror if it's not pulled and it's not saved
+  become: true
+  become_method: sudo
+  shell: docker pull {{ item.name }}:{{ item.tag }}
+  with_items: "{{ admin_image }}"
+  when: (mirror_pulled.results[0].stdout | int == 0) and
+      ((mirror_saved.results[0].stdout | int == 0 ) or ( Tar_Save_Every_Time ))
+
+- name: Save the admin image as a tar file if it's not saved or save every time:{{Tar_Save_Every_Time}}
+  become: true
+  become_method: sudo
+  shell:
+    cmd: "docker save {{ item.name }}:{{ item.tag }} | gzip > {{ item.service }}.tar"
+    chdir: "{{ downloads_dir }}"
+  with_items: "{{ admin_image }}"
+  when: (mirror_saved.results[0].stdout | int == 0 ) or ( Tar_Save_Every_Time )
+
+
 # 拉取carrier镜像
 - name: Check whether the carrier mirror is pulled
   become: true

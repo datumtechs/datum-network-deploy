@@ -274,7 +274,7 @@ DROP TABLE IF EXISTS `resource`;
 CREATE TABLE `resource` (
                             `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '资源ID',
                             `type` tinyint(4) NOT NULL COMMENT '资源类型：1-接口url，2-导航栏菜单，3-页面按钮',
-                            `name` varchar(32) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '资源名称',
+                            `name` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '资源名称',
                             `value` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '资源内容：根据type改变，如果是接口url，则value为url，如果type是其他的，则是前端定义值',
                             `url_resource_id` int(11) DEFAULT NULL COMMENT '按钮或者菜单对应的url的资源id',
                             `parent_id` int(11) NOT NULL DEFAULT '0' COMMENT '父资源ID,如果没有父资源ID，则设置0',
@@ -492,10 +492,10 @@ INSERT INTO `role_resource` (`role_id`, `resource_id`) VALUES ('1', '75');
 DROP TABLE IF EXISTS `sys_config`;
 CREATE TABLE `sys_config` (
                               `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '序号',
-                              `key` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '配置项',
+                              `key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '配置项',
                               `value` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '配置值',
                               `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '配置状态 0-失效，1-有效',
-                              `desc` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '配置描述',
+                              `desc` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '配置描述',
                               `rec_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
                               `rec_create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                               PRIMARY KEY (`id`),

@@ -24,6 +24,40 @@
         state: absent
       when: enable_deploy_carrier|default(false)
 
+- hosts: admin
+  tags:
+    - admin_service
+  tasks:
+    - name: Clear the exited mysql container and mysql image
+      become: True
+      become_method: sudo
+      shell: "[ -f {{ deploy_dir }}/{{admin_dir_name}}/clean_docker.sh ] && 
+        bash {{ deploy_dir }}/{{admin_dir_name}}/clean_docker.sh {{ item.name }} {{ item.tag }}"
+      register: result
+      when: enable_deploy_admin|default(false)
+      # rc=1：shell isn't exist
+      failed_when: result.rc != 0 and result.rc != 1
+      with_items: "{{ mysql_image }}"
+
+    - name: Clear the exited admin container and admin image
+      become: True
+      become_method: sudo
+      shell: "[ -f {{ deploy_dir }}/{{admin_dir_name}}/clean_docker.sh ] && 
+        bash {{ deploy_dir }}/{{admin_dir_name}}/clean_docker.sh {{ item.name }} {{ item.tag }}"
+      register: result
+      when: enable_deploy_admin|default(false)
+      # rc=1：shell isn't exist
+      failed_when: result.rc != 0 and result.rc != 1
+      with_items: "{{ admin_image }}"
+
+    - name: Clear the admin directory 
+      become: True
+      become_method: sudo
+      file:
+        path: "{{ deploy_dir }}/{{admin_dir_name}}"
+        state: absent
+      when: enable_deploy_admin|default(false)
+
 - hosts: ice_via
   tags:
     - ice_via_service

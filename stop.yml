@@ -7,6 +7,8 @@
     - ice_via
   tasks:
     - name: stop ice_via service
+      become: True
+      become_method: sudo
       shell: bash {{ deploy_dir }}/{{ice_via_local_path}}/stop_container.sh {{ item.name }}:{{ item.tag }}
       register: result
       changed_when: false
@@ -38,6 +40,8 @@
     - carrier
   tasks:
     - name: stop carrier
+      become: True
+      become_method: sudo
       shell: bash {{ deploy_dir }}/{{carrier_dir_name}}/stop_container.sh {{ item.name }}:{{ item.tag }}
       register: result
       changed_when: false
@@ -54,12 +58,57 @@
         timeout: "{{wait_for_timeout|int}}"
       when: enable_deploy_carrier|default(false)
 
+- name: stop admin
+  hosts: admin
+  tags:
+    - admin
+  tasks:
+    - name: stop admin
+      become: True
+      become_method: sudo
+      shell: bash {{ deploy_dir }}/{{admin_dir_name}}/stop_container.sh {{ item.name }}:{{ item.tag }}
+      register: result
+      changed_when: false
+      failed_when: result.rc != 0
+      when: enable_deploy_admin|default(false)
+      with_items: "{{ admin_image }}"
+
+    - name: wait until the admin_web_port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ admin_web_port }}"
+        state: stopped
+        msg: "the pump port {{ admin_web_port }} is not down"
+        timeout: "{{wait_for_timeout|int}}"
+      when: enable_deploy_admin|default(false)
+
+    - name: stop mysql
+      become: True
+      become_method: sudo
+      shell: bash {{ deploy_dir }}/{{admin_dir_name}}/stop_container.sh {{ item.name }}:{{ item.tag }}
+      register: result
+      changed_when: false
+      failed_when: result.rc != 0
+      when: enable_deploy_admin|default(false)
+      with_items: "{{ mysql_image }}"
+
+    - name: wait until the mysql_listen_port is down
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ mysql_listen_port }}"
+        state: stopped
+        msg: "the pump port {{ mysql_listen_port }} is not down"
+        timeout: "{{wait_for_timeout|int}}"
+      when: enable_deploy_admin|default(false)
+
 - name: stop data
   hosts: data
   tags:
     - data
   tasks:
     - name: stop data
+      become: True
+      become_method: sudo
       shell: bash {{ deploy_dir }}/{{data_local_path}}/stop_container.sh {{ item.name }}:{{ item.tag }}
       register: result
       changed_when: false
@@ -82,6 +131,8 @@
     - compute
   tasks:
     - name: stop compute
+      become: True
+      become_method: sudo
       shell: bash {{ deploy_dir }}/{{compute_local_path}}/stop_container.sh {{ item.name }}:{{ item.tag }}
       register: result
       changed_when: false
@@ -104,6 +155,8 @@
     - consul
   tasks:
     - name: stop consul service
+      become: True
+      become_method: sudo
       shell: bash {{ deploy_dir }}/{{consul_local_path}}/stop_container.sh {{ item.name }}:{{ item.tag }}
       register: result
       changed_when: false

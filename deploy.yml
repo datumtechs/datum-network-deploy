@@ -21,6 +21,13 @@
   roles:
     - { role: carrier_deploy, when: enable_deploy_carrier|default(false) }    
 
+- name: deploying admin
+  hosts: admin
+  tags:
+    - admin_servers
+  roles:
+    - { role: admin_deploy, when: enable_deploy_admin|default(false) }
+
 - name: deploying data
   hosts: data
   tags:

@@ -16,15 +16,15 @@ echo -e "\n\n${YELLOW}Stop docker container, image:$image_name ${NC}"
 
 
 # 停止容器 
-docker ps -a | grep -w $image_name
-if [ $? == 0 ]; then
+ret=`sudo docker ps -a | grep -w $image_name | wc -l`
+if [ $ret -gt 0 ]; then
     echo -e "${YELLOW}======================start to stop container=================${NC}"
-    docker stop $(docker ps -a | grep -w $image_name | awk '{print $1 }')
+    sudo docker stop $(sudo docker ps -a | grep -w $image_name | awk '{print $1 }')
     # 删除容器
-    # docker rm $(docker ps -a | grep -w $image_name | awk '{print $1 }')
+    # sudo docker rm $(sudo docker ps -a | grep -w $image_name | awk '{print $1 }')
 fi
 
 echo -e "${GREEN}=======================list docker processes=====================${NC}"
-docker ps -a
+sudo docker ps -a
 
 echo -e "\n\n"
