@@ -3,7 +3,7 @@ version: "3.6"
 services:
   run_data:
     image: {{fighter_image[0]["name"]}}:{{fighter_image[0]["tag"]}}
-    container_name: {{fighter_image[0]["service"]}}_data
+    container_name: {{fighter_image[0]["services"]["data"]}}
     restart: always
     network_mode: "host"
     volumes:

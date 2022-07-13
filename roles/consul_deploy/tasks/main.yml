@@ -52,15 +52,6 @@
     dest: "{{ deploy_dir }}/{{consul_local_path}}/config/consul.json"
     mode: 0600
 
-- name: "copy script"
-  copy:
-    src: "{{ script_dir }}/{{ item }}"
-    dest: "{{ deploy_dir }}/{{consul_local_path}}/{{ item }}"
-    mode: 0755
-  with_items:
-    - stop_container.sh
-    - clean_docker.sh
-
 - name: "Generate docker-compose.yml configuration file based on docker-compose.yml.j2 template file"
   template:
     src: "docker-compose.yml.j2"

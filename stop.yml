@@ -9,10 +9,10 @@
     - name: stop ice_via service
       become: True
       become_method: sudo
-      shell: bash {{ deploy_dir }}/{{ice_via_local_path}}/stop_container.sh {{ item.name }}:{{ item.tag }}
+      shell: docker stop {{ item.services.ice_via }}
       register: result
       changed_when: false
-      failed_when: result.rc != 0
+      failed_when: result.rc != 0 and result.rc != 1
       when: enable_deploy_ice_via|default(false)
       with_items: "{{ ice_via_consul_image }}"
 
@@ -42,10 +42,10 @@
     - name: stop carrier
       become: True
       become_method: sudo
-      shell: bash {{ deploy_dir }}/{{carrier_dir_name}}/stop_container.sh {{ item.name }}:{{ item.tag }}
+      shell: docker stop {{ item.service }}
       register: result
       changed_when: false
-      failed_when: result.rc != 0
+      failed_when: result.rc != 0 and result.rc != 1
       when: enable_deploy_carrier|default(false)
       with_items: "{{ carrier_image }}"
 
@@ -66,10 +66,10 @@
     - name: stop admin
       become: True
       become_method: sudo
-      shell: bash {{ deploy_dir }}/{{admin_dir_name}}/stop_container.sh {{ item.name }}:{{ item.tag }}
+      shell: docker stop {{ item.service }}
       register: result
       changed_when: false
-      failed_when: result.rc != 0
+      failed_when: result.rc != 0 and result.rc != 1
       when: enable_deploy_admin|default(false)
       with_items: "{{ admin_image }}"
 
@@ -85,10 +85,10 @@
     - name: stop mysql
       become: True
       become_method: sudo
-      shell: bash {{ deploy_dir }}/{{admin_dir_name}}/stop_container.sh {{ item.name }}:{{ item.tag }}
+      shell: docker stop {{ item.service }}
       register: result
       changed_when: false
-      failed_when: result.rc != 0
+      failed_when: result.rc != 0 and result.rc != 1
       when: enable_deploy_admin|default(false)
       with_items: "{{ mysql_image }}"
 
@@ -109,10 +109,10 @@
     - name: stop data
       become: True
       become_method: sudo
-      shell: bash {{ deploy_dir }}/{{data_local_path}}/stop_container.sh {{ item.name }}:{{ item.tag }}
+      shell: docker stop {{ item.services.data }}
       register: result
       changed_when: false
-      failed_when: result.rc != 0
+      failed_when: result.rc != 0 and result.rc != 1
       when: enable_deploy_data|default(false)
       with_items: "{{ fighter_image }}"
 
@@ -133,10 +133,10 @@
     - name: stop compute
       become: True
       become_method: sudo
-      shell: bash {{ deploy_dir }}/{{compute_local_path}}/stop_container.sh {{ item.name }}:{{ item.tag }}
+      shell: docker stop {{ item.services.compute }}
       register: result
       changed_when: false
-      failed_when: result.rc != 0
+      failed_when: result.rc != 0 and result.rc != 1
       when: enable_deploy_compute|default(false)
       with_items: "{{ fighter_image }}"
 
@@ -157,10 +157,10 @@
     - name: stop consul service
       become: True
       become_method: sudo
-      shell: bash {{ deploy_dir }}/{{consul_local_path}}/stop_container.sh {{ item.name }}:{{ item.tag }}
+      shell: docker stop {{ item.services.consul }}
       register: result
       changed_when: false
-      failed_when: result.rc != 0
+      failed_when: result.rc != 0 and result.rc != 1
       when: enable_deploy_consul|default(false)
       with_items: "{{ ice_via_consul_image }}"
     

@@ -61,8 +61,6 @@
     dest: "{{ deploy_dir }}/{{ice_via_local_path}}/{{ item }}"
     mode: 0755
   with_items:
-    - stop_container.sh
-    - clean_docker.sh
     - run_icegrid.sh
     - run_glacier2.sh
 

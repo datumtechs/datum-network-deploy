@@ -4,12 +4,12 @@
   tags:
     - consul_service
   tasks:
-    # 启动一个新的ice via容器
+    # 启动consul容器
     - name: Start a new consul container 
       become: True
       become_method: sudo
       shell:
-        cmd: docker-compose -f docker-compose.yml run -d run_consul
+        cmd: docker-compose -f docker-compose.yml up -d run_consul
         chdir: "{{ deploy_dir }}/{{consul_local_path}}/config"
       register: run_result
       failed_when: run_result.rc != 0
@@ -101,54 +101,88 @@
   tags:
     - ice_via_servers
   tasks:
-    # ice via和consul在同一个镜像里面，兼容ice via和consul可以部署在同一台机器上，不做检查
-    # 启动一个新的ice via容器
+    # 启动ice via容器
     - name: Start a new ice_via container 
       become: True
       become_method: sudo
       shell:
-        cmd: docker-compose -f docker-compose.yml run -d run_ice_via
+        cmd: docker-compose -f docker-compose.yml up -d run_ice_via
         chdir: "{{ deploy_dir }}/{{ice_via_local_path}}/config"
       register: run_result
       failed_when: run_result.rc != 0
       when: enable_deploy_ice_via|default(false)
 
+    - name: wait until the ice_grid_port port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ice_grid_port}}"
+        state: started
+        msg: "the node_exporter port {{ice_grid_port}} is not up"
+      when: enable_deploy_carrier|default(false)
+
+    - name: wait until the ice_glacier2_port port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ice_glacier2_port}}"
+        state: started
+        msg: "the node_exporter port {{ice_glacier2_port}} is not up"
+      when: enable_deploy_carrier|default(false)
+
 - hosts: carrier
   tags:
     - carrier_servers
   tasks:
-    - name: Check that the Carrier container already exists and exits
-      become: True
-      become_method: sudo
-      shell:
-        cmd: docker ps -a | grep -w {{ item.name }}:{{ item.tag }} | awk '{print $1 }'
-      register: result
-      failed_when: result.rc != 0
-      changed_when: false
-      with_items: "{{ carrier_image }}" 
-    
-    # - name: debug info  
-    #   debug:
-    #     msg: "Check Info:{{result.results[0].stdout}}"
-    
-    # 启动已经存在但是已经退出的carrier容器
-    - name: Start the exited Carrier container 
-      become: True
-      become_method: sudo
-      shell:
-        cmd: docker start {{result.results[0].stdout}}
-      when: result.results[0].stdout != ''
-
-    # 启动一个新的carrier容器
+    # 启动carrier容器
     - name: Start a new Carrier container 
       become: True
       become_method: sudo
       shell:
-        cmd: docker-compose -f docker-compose.yml run -d run_carrier
+        cmd: docker-compose -f docker-compose.yml up -d run_carrier
         chdir: "{{ deploy_dir }}/{{carrier_dir_name}}/config"
       register: run_result
       failed_when: run_result.rc != 0
-      when: enable_deploy_carrier|default(false) and result.results[0].stdout == ''
+      when: enable_deploy_carrier|default(false)
+
+    - name: wait until the carrier_rpc_port port is up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{carrier_rpc_port}}"
+        state: started
+        msg: "the node_exporter port {{carrier_rpc_port}} is not up"
+      when: enable_deploy_carrier|default(false)
+    # - name: Check that the Carrier container already exists and exits
+    #   become: True
+    #   become_method: sudo
+    #   shell:
+    #     cmd: docker ps -a | grep -w {{ item.name }}:{{ item.tag }} | awk '{print $1 }'
+    #   register: result
+    #   failed_when: result.rc != 0
+    #   changed_when: false
+    #   with_items: "{{ carrier_image }}" 
+    
+    # # - name: debug info  
+    # #   debug:
+    # #     msg: "Check Info:{{result.results[0].stdout}}"
+    
+    # # 启动已经存在但是已经退出的carrier容器
+    # - name: Start the exited Carrier container 
+    #   become: True
+    #   become_method: sudo
+    #   shell:
+    #     cmd: docker start {{result.results[0].stdout}}
+    #   when: result.results[0].stdout != ''
+
+    # # 启动一个新的carrier容器
+    # - name: Start a new Carrier container 
+    #   become: True
+    #   become_method: sudo
+    #   shell:
+    #     cmd: docker-compose -f docker-compose.yml run -d run_carrier
+    #     chdir: "{{ deploy_dir }}/{{carrier_dir_name}}/config"
+    #   register: run_result
+    #   failed_when: run_result.rc != 0
+    #   when: enable_deploy_carrier|default(false) and result.results[0].stdout == ''
+
 
 - hosts: admin
   tags:
@@ -201,7 +235,7 @@
       become: True
       become_method: sudo
       shell:
-        cmd: docker-compose -f docker-compose.yml run -d run_data
+        cmd: docker-compose -f docker-compose.yml up -d run_data
         chdir: "{{ deploy_dir }}/{{data_local_path}}/config"
       register: run_result
       failed_when: run_result.rc != 0
@@ -225,7 +259,7 @@
       become: True
       become_method: sudo
       shell:
-        cmd: docker-compose -f docker-compose.yml run -d run_compute
+        cmd: docker-compose -f docker-compose.yml up -d run_compute
         chdir: "{{ deploy_dir }}/{{compute_local_path}}/config"
       register: run_result
       failed_when: run_result.rc != 0

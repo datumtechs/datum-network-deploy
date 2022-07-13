@@ -2,7 +2,7 @@
 version: "3.6"
 services:
   run_ice_via:
-    container_name: ice_via_service
+    container_name: {{ice_via_consul_image[0]["services"]["ice_via"]}}
     restart: always
     network_mode: "host"
     image: {{ice_via_consul_image[0]["name"]}}:{{ice_via_consul_image[0]["tag"]}}

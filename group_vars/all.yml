@@ -106,11 +106,18 @@ fighter_image:
   - name: luodahui/fighter
     tag: v0.5.0
     service: fighter_v0.5.0
+    services: 
+      data: data_v0.5.0
+      compute: compute_v0.5.0
 
 ice_via_consul_image:
   - name: luodahui/ice_via_consul
     tag: v2.0.3
-    service: ice_via_consul_v2.0.3
+    service: ice_via_consul_v2.0.3  # 共用镜像, 和镜像压缩文件，避免重复拷贝和加载压缩文件到同一个宿主机上 
+    # 容器启动名称, 用此名称分别管理ice via和consul的容器
+    services: 
+      ice_via: ice_via_v2.0.3
+      consul: consul_v2.0.3
 
 # true表示：Tar文件每次执行都保存，不管是否已经存在；false表示：Tar文件存在即不保存
 Tar_Save_Every_Time: false

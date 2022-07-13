@@ -8,12 +8,13 @@
     - name: Clear the exited carrier container and carrier image
       become: True
       become_method: sudo
-      shell: "[ -f {{ deploy_dir }}/{{carrier_dir_name}}/clean_docker.sh ] && 
-        bash {{ deploy_dir }}/{{carrier_dir_name}}/clean_docker.sh {{ item.name }} {{ item.tag }}"
+      shell: "docker stop {{ item.service }}; docker rm {{ item.service }};
+        docker rmi `docker images | grep {{ item.name }} | grep {{ item.tag }} | awk '{print $3}'`"
       register: result
       when: enable_deploy_carrier|default(false)
       # rc=1：shell isn't exist
       failed_when: result.rc != 0 and result.rc != 1
+      changed_when: false
       with_items: "{{ carrier_image }}"
 
     - name: Clear the carrier directory 
@@ -31,23 +32,25 @@
     - name: Clear the exited mysql container and mysql image
       become: True
       become_method: sudo
-      shell: "[ -f {{ deploy_dir }}/{{admin_dir_name}}/clean_docker.sh ] && 
-        bash {{ deploy_dir }}/{{admin_dir_name}}/clean_docker.sh {{ item.name }} {{ item.tag }}"
+      shell: "docker stop {{ item.service }}; docker rm {{ item.service }}; 
+        docker rmi `docker images | grep {{ item.name }} | grep {{ item.tag }} | awk '{print $3}'`"
       register: result
       when: enable_deploy_admin|default(false)
       # rc=1：shell isn't exist
       failed_when: result.rc != 0 and result.rc != 1
+      changed_when: false
       with_items: "{{ mysql_image }}"
 
     - name: Clear the exited admin container and admin image
       become: True
       become_method: sudo
-      shell: "[ -f {{ deploy_dir }}/{{admin_dir_name}}/clean_docker.sh ] && 
-        bash {{ deploy_dir }}/{{admin_dir_name}}/clean_docker.sh {{ item.name }} {{ item.tag }}"
+      shell: "docker stop {{ item.service }}; docker rm {{ item.service }};
+        docker rmi `docker images | grep {{ item.name }} | grep {{ item.tag }} | awk '{print $3}'`"
       register: result
       when: enable_deploy_admin|default(false)
       # rc=1：shell isn't exist
       failed_when: result.rc != 0 and result.rc != 1
+      changed_when: false
       with_items: "{{ admin_image }}"
 
     - name: Clear the admin directory 
@@ -65,12 +68,13 @@
     - name: Clear the exited ice_via container and ice_via image
       become: True
       become_method: sudo
-      shell: "[ -f {{ deploy_dir }}/{{ice_via_local_path}}/clean_docker.sh ] && 
-        bash {{ deploy_dir }}/{{ice_via_local_path}}/clean_docker.sh {{ item.name }} {{ item.tag }}"
+      shell: "docker stop {{ item.services.ice_via }}; docker rm {{ item.services.ice_via }};
+        docker rmi `docker images | grep {{ item.name }} | grep {{ item.tag }} | awk '{print $3}'`"
       register: result
       when: enable_deploy_ice_via|default(false)
       # rc=1：shell isn't exist
       failed_when: result.rc != 0 and result.rc != 1
+      changed_when: false
       with_items: "{{ ice_via_consul_image }}"
 
     - name: Clear the ice_via directory 
@@ -98,12 +102,13 @@
     - name: Clear the exited fighter_data container and fighter image
       become: True
       become_method: sudo
-      shell: "[ -f {{ deploy_dir }}/{{data_local_path}}/clean_docker.sh ] && 
-        bash {{ deploy_dir }}/{{data_local_path}}/clean_docker.sh {{ item.name }} {{ item.tag }}"
+      shell: "docker stop {{ item.services.data }}; docker rm {{ item.services.data }}; 
+        docker rmi `docker images | grep {{ item.name }} | grep {{ item.tag }} | awk '{print $3}'`"
       register: result
       when: enable_deploy_data|default(false)
       # rc=1：shell isn't exist
       failed_when: result.rc != 0 and result.rc != 1
+      changed_when: false
       with_items: "{{ fighter_image }}"
 
     - name: Clear the carrier directory 
@@ -131,12 +136,13 @@
     - name: Clear the exited fighter_compute container and fighter image
       become: True
       become_method: sudo
-      shell: "[ -f {{ deploy_dir }}/{{compute_local_path}}/clean_docker.sh ] && 
-        bash {{ deploy_dir }}/{{compute_local_path}}/clean_docker.sh {{ item.name }} {{ item.tag }}"
+      shell: "docker stop {{ item.services.compute }}; docker rm {{ item.services.compute }};
+        docker rmi `docker images | grep {{ item.name }} | grep {{ item.tag }} | awk '{print $3}'`"
       register: result
       when: enable_deploy_compute|default(false)
       # rc=1：shell isn't exist
       failed_when: result.rc != 0 and result.rc != 1
+      changed_when: false
       with_items: "{{ fighter_image }}"
 
     - name: Clear the compute directory 
@@ -164,12 +170,13 @@
     - name: Clear the exited consul container and consul image
       become: True
       become_method: sudo
-      shell: "[ -f {{ deploy_dir }}/{{consul_local_path}}/clean_docker.sh ] && 
-        bash {{ deploy_dir }}/{{consul_local_path}}/clean_docker.sh {{ item.name }} {{ item.tag }}"
+      shell: "docker stop {{ item.services.consul }}; docker rm {{ item.services.consul }};
+        docker rmi `docker images | grep {{ item.name }} | grep {{ item.tag }} | awk '{print $3}'`"
       register: result
       when: enable_deploy_consul|default(false)
       # rc=1：shell isn't exist
       failed_when: result.rc != 0 and result.rc != 1
+      changed_when: false
       with_items: "{{ ice_via_consul_image }}"
 
     - name: Clear the consul directory 

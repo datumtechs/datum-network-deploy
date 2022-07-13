@@ -15,13 +15,35 @@
   - "{{ deploy_dir }}/{{admin_dir_name}}/mysql/init"
   - "{{ deploy_dir }}/{{admin_dir_name}}/mysql/db"
 
+# 上传admin镜像压缩包
+- name: "copy mysql mirror tar file"
+  copy:
+    src: "{{ downloads_dir }}/{{ item.service }}.tar"
+    dest: "{{ deploy_dir }}/{{admin_dir_name}}/{{ item.service }}.tar"
+  with_items: "{{ mysql_image }}"
+
+# 加载mysql镜像tar压缩包 
+- name: Load mysql image from archive
+  become: True
+  become_method: sudo
+  docker_image:
+    name: "{{ item.name }}"
+    tag: "{{ item.tag }}"
+    # push: yes
+    load_path: "{{ deploy_dir }}/{{admin_dir_name}}/{{ item.service }}.tar"
+    timeout: "{{docker_timeout|int}}"
+    # source: load
+    # force: yes
+  with_items: "{{ mysql_image }}"
+
+# 上传admin镜像压缩包
 - name: "copy admin mirror tar file"
   copy:
     src: "{{ downloads_dir }}/{{ item.service }}.tar"
     dest: "{{ deploy_dir }}/{{admin_dir_name}}/{{ item.service }}.tar"
   with_items: "{{ admin_image }}"
 
-# 加载镜像tar压缩包 
+# 加载admin镜像tar压缩包 
 - name: Load admin image from archive
   become: True
   become_method: sudo
@@ -90,15 +112,6 @@
     dest: "{{ deploy_dir }}/{{admin_dir_name}}/sql/admin.sql"
     mode: 0755
     backup: yes
-
-- name: "copy docker script"
-  copy:
-    src: "{{ script_dir }}/{{ item }}"
-    dest: "{{ deploy_dir }}/{{admin_dir_name}}/{{ item }}"
-    mode: 0755
-  with_items:
-    - stop_container.sh
-    - clean_docker.sh
 
 - name: set admin_web_static_dir facts
   set_fact:
