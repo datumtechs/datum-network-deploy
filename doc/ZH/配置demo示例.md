@@ -85,6 +85,9 @@ admin_password = admin_123456
 
 # admin 端口号
 admin_web_port = 9090
+nginx_listen_port = 80
+nginx_listen_port_ssl = 443
+mysql_listen_port = 3306
 
 # carrier 外网
 carrier_external_ip = 39.98.126.40
@@ -188,6 +191,9 @@ admin_password = admin_123456
 
 # admin 端口号
 admin_web_port = 9090
+nginx_listen_port = 8080
+nginx_listen_port_ssl = 443
+mysql_listen_port = 3307
 
 # carrier 外网
 carrier_external_ip = 39.98.126.40
