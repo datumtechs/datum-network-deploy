@@ -1,6 +1,7 @@
 # 计算节点的配置模板
 file_system: local
 bind_ip: {{inventory_hostname}}
+register_ip: {{inventory_hostname}}
 port: {{compute_port_self}}
 task_port_range: [41000, 41100]
 thread_pool_size: 12
