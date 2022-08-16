@@ -30,3 +30,19 @@ logging:
     rollingpolicy:
       # 根据文件大小归档，超过2KB自动归档，次日启动服务时也会自动归档
       file-name-pattern: {{admin_log_dir}}/%d{yyyyMMdd}/${spring.application.name}.out.log.%d{yyyy-MM-dd}.%i.gz
+
+# =============================== conf for ipfs ===================================
+#调用pinata接口的jwt
+pinata-token: {{pinata_token}}
+#pinata的网关地址
+pinata-gateway: {{pinata_gateway}}
+#pinata的上传文件域名
+pinata-url: {{pinata_url}}
+
+#无属性数据凭证消耗量更新间隔，单位分钟
+dataToken-updateFee-interval: {{dataToken_updateFee_interval}}
+
+# ==================================== conf for grpc =====================================
+grpc:
+  server:
+    port: {{admin_grpc_server_port}}
