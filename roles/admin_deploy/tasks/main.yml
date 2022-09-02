@@ -49,8 +49,8 @@
     backup: yes
 
 - name: "Copy database initialization script"
-  copy:
-    src: "{{ playbook_dir }}/config/admin.sql"
+  template:
+    src: "admin.sql.j2"
     dest: "{{ deploy_dir }}/admin/sql/admin.sql"
     mode: 0600
     backup: yes
