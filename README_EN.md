@@ -212,6 +212,19 @@ admin_password = admin_123456
 # admin web service port number
 admin_web_port = 9090
 
+#admin web grpc service port number
+admin_grpc_server_port = 9091
+
+#The user needs to apply for a pinata service account,
+#For the generation of pinata_token,please refer to https://docs.pinata.cloud/master#your -api-keys.
+#Only 'pinning/pinfiletoipfs' and 'pinning/pinjsontoipfs' permissions are required
+#Pinata's token, used to upload IPFs images
+pinata_token = To be filled in
+#It is strongly recommended that you apply for Pinata private gateway.please refer to https://docs.pinata.cloud/gateways
+#You can also use the free public gateway of IPFs,Such as https://ipfs.io.Public gateways are generally suitable for testing, and there are many restrictions.
+#Pinata's gateway for accessing IPFs images
+pinata_gateway = To be filled in
+
 # carrier extranet ip address
 carrier_external_ip = ${extranet IP of carrier target computer}
 
