@@ -340,12 +340,12 @@ carrier_p2p_tcp_port: The port on which carrier's p2p tcp server listens. The in
 
 #### 10. The extranet ip address of the ice_via service
 
-ice_via_external_ip: ice_via(Glacier2/IceGrid)服务所在外网ip，其中：IceGrid服务通过此ip用于本组织的服务注册和Glacier2服务寻址；其他组织需要通过此Glacier2服务的ip地址和组织内data，compute服务通信。
+ice_via_external_ip: The IP of the external network where the ice_via(Glacier2/IceGrid) service is located, in which the iceGrid service uses this IP for the service registration of the organization and the addressing of the gladier2 service; Other organizations need to communicate with the data and compute services in the organization through the IP address of this gladier2 service.
 
 #### 11. ice_via service port number
 
-ice_glacier2_port: Glacier2服务监听的port。
-ice_grid_port: IceGrid服务监听的port。
+ice_glacier2_port: The port on which the Glacier2 service listens
+ice_grid_port: The port on which the IceGrid service listens
 
 #### 12. ice_via Service Transport protocol
 
