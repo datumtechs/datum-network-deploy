@@ -208,6 +208,23 @@ admin_password = admin_123456
 # admin web 服务端口号
 admin_web_port = 9090
 
+#admin web grpc服务的端口号
+admin_grpc_server_port = 9091
+
+#需用用户申请Pinata服务账户，
+#pinata_token的生成参考 https://docs.pinata.cloud/master#your-api-keys。 
+#只需要 pinning/pinFileToIPFS  和 pinning/pinJSONToIPFS权限
+#pinata的token，用于上传ipfs图片
+pinata_token = 待填写
+#强烈建议您申请 pinata私有网关。参考 https://docs.pinata.cloud/gateways
+#也可以使用ipfs免费的公有网关。如 https://ipfs.io。公有网关一般适用于测试，存在比较多限制。
+#pinata的网关，用于访问ipfs图片
+pinata_gateway = 待填写
+
+# carrier 外网 ip 地址
+carrier_external_ip = 192.168.112.158
+
+
 # carrier 外网 ip 地址
 carrier_external_ip = ${carrier 目标机外网 IP}
 
