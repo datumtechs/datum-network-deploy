@@ -40,3 +40,6 @@ task.metadata-consume-option: 2
 # 注册中心信息
 discovery-server-ip: {{consul_leader_ip}}
 discovery-server-port: {{consul_leader_port}}
+enable-grpc-gateway-private-check: false
+not-check-private-ip: false
+public-rpc-service: [3,4,5,6,8,9,21,22,30,31,35,38,53,54,56,58,60,61,62,63,64,46,65,66,67,68]
