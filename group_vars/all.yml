@@ -10,7 +10,7 @@ check_service_status: true
 
 # consul的 key-value 选项 
 storage_ip: testdatacenter.datumtechs.com
-storage_port: 80
+storage_port: 8080
 
 # #### 下面的变量不建议用户修改 ####
 
@@ -18,7 +18,7 @@ storage_port: 80
 # bootstrap_nodes: []
 
 # 服务静态文件下载 url
-download_url: "http://testdownload.datumtechs.com/datum/0.4.0/"
+download_url: "http://testdownload.datumtechs.com/datum/0.5.0/"
 consul_download_url: "https://releases.hashicorp.com/consul/1.10.4/consul_1.10.4_linux_amd64.zip"
 
 # 证书文件，非必改目录
@@ -80,31 +80,31 @@ compute_port_self: "{% set compute_number_int = groups['compute'] | length |int 
 #admin web pinata 配置
 #pinata的上传文件的接口地址，用于上传ipfs图片
 pinata_url: https://api.pinata.cloud/
-#凭证工厂合约地址
-data_token_factory_address: '0x1D3ee03b5CF808005886873311E33A4D948456C4'
-#router合约地址
-dex_router_address: '0x4378dAF745E9053f6048c4f78c803f3bC8829703'
+#凭证工厂合约地址(20Factory)
+data_token_factory_address: '0x981850deE5F18B57DfefC7Df1dB37D9485720447'
+#router合约地址(dex router合约)
+dex_router_address: '0x0B96629D683bD184Fe183EDB74CF5a4c42375070'
 #dex链接地址
-dex_web_url: http://10.10.8.181:8080/swap
+dex_web_url: https://test.dipoleswap.exchange/swap
 #网络名称
 chain_name: PlatON开发网
 #链 ID
-chain_id: 2203181
+chain_id: 2206132
 #链rpcUrl，给用户使用，必须是外部ip
-rpc_url: https://devnetopenapi2.platon.network/rpc
+rpc_url: https://devnet2openapi.platon.network/rpc
 #货币符号
 symbol: LAT
 #区块浏览器
-block_explorer_url: https://devnetscan.platon.network/
+block_explorer_url: https://devnet2scan.platon.network/
 #钱包地址前缀hrp
 hrp: lat
 #链rpcUrl，主要是给后台系统用，可以是内部IP
-rpc_url_list: https://devnetopenapi2.platon.network/rpc
-#有属性凭证工厂合约地址
-attribute_data_token_factory_address: '0x6FCf0573c4d95fc927d4319f2f859638d8c8492a'
+rpc_url_list: https://devnet2openapi.platon.network/rpc
+#有属性凭证工厂合约地址(721Factory)
+attribute_data_token_factory_address: '0x25B08817d98AE15F30a33fa720e9d990812363b7'
 #有属性凭证交易所地址，格式为<交易所名称,交易所地址>，多个交易所以英文逗号分割
 attribute_data_token_exchange: <tofunft交易所|https://tofunft.com/>
-#投票合约合约地址,需要用单引号括起来
-vote_contract_address: '待填写'
+#投票合约合约地址,需要用单引号括起来 (Vote合约)
+vote_contract_address: '0x67257C7412A2680daF32FA880aE8CB8cb757702c'
 #投票合约部署的区块，这个配置决定了事件从哪个区块开始读取
-vote_contract_deploy_bn: 待填写
+vote_contract_deploy_bn: 11030433

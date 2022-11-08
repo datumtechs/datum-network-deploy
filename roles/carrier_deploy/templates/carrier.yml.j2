@@ -18,28 +18,40 @@ grpc-gateway-host: {{carrier_grpc_gateway_ip}}
 grpc-gateway-port: {{carrier_grpc_gateway_port}}
 enable-debug-rpc-endpoints: true
 no-discovery: false
-bootstrap-node: []
+# 引导节点 enr
+bootstrap-node: ['enr:-KK4QHkJN25LE2YkZSkb1eJ8G1BmjfUWlMG0lGkb9tMByWx7H1g9kJoIIA1E1daLlvWxx8Jda0_tmVpT-kcPpy20ZCOGAYRRi3PCh2F0dG5ldHOIAAAAAAAAAACCaWSCdjSCaXCECNs_ZIlzZWNwMjU2azGhAkLcF8cm3m-kVolt1S43wMaRNl3qH1VDy4zAB2ZZlzEDg3RjcIInNIN1ZHCCJzM']
 p2p-udp-port: {{carrier_p2p_udp_port}}
 p2p-tcp-port: {{carrier_p2p_tcp_port}}
 p2p-local-ip: {{carrier_p2p_listen_ip}}
 p2p-host-ip: {{carrier_external_ip}}
 p2p-priv-key: {{carrier_p2p_private_key}}
 p2p-max-peers: 200
-kms.key-id: 0ead1984-01c9-44de-8f56-6a4aa450a917
-kms.region-id: cn-hangzhou
-kms.access-key-id: LTAI4GG5R3n1A7euPzEJNUex
-kms.access-key-secret: 7OuIn5EIAOxViSRBuGOHuR88mrHYh7
-blockchain.url: http://8.219.126.197:6789
+# kms相关
+# kms.key-id: 
+# kms.region-id: 
+# kms.access-key-id: 
+# kms.access-key-secret: 
+# 对接的blockchain的选项
+blockchain.url: https://devnet2openapi.platon.network/rpc
 blockchain.hrp: lat
-did.document-contract-proxy: 0x279167d9767b10CEF88b9a81D9C912e475c0B75b
-did.pct-contract-proxy: 0xFa2A71584740c749F1EF055741140833534504CD
-did.credential-contract-proxy: 0x6Afe474d2201525558b50D5D5a8544e88d222E05
-did.proposal-contract-proxy: 0x857027b23F73F5823984d90550A39cAA6FA43A11
-pay-agent-contract-proxy: 0x263B1D39843BF2e1DA27d827e749992fbD1f1577
+# did合约
+did.document-contract-proxy: 0x7A1B3364854f0673F0dd40bf9B605Baf3968f6Cc
+# pct合约
+did.pct-contract-proxy: 0xeeec2bFEb031951770310B5B4eABb846E89F1B1b
+# credential合约
+did.credential-contract-proxy: 0x45dF4C3E1eD34B11CCcFBD87A14af392F4722413
+# 提案合约(vote合约)
+did.proposal-contract-proxy: 0x67257C7412A2680daF32FA880aE8CB8cb757702c
+# datatum network pay 合约 (支付助手合约)
+pay-agent-contract-proxy: 0xf7581573C3D4405e08411D76CaE06ea683E0EdBf
+# 任务的消费选项, 代码修改不完整，考虑后续去掉这个参数 (0: unknown, 1: metadataAuth, 2: tk20)
 task.metadata-consume-option: 2
 # 注册中心信息
 discovery-server-ip: {{consul_leader_ip}}
 discovery-server-port: {{consul_leader_port}}
+# 是否开放 gateway api 的ip检查
 enable-grpc-gateway-private-check: false
+# v 0.5.1新增(是否开放rpc api检查选项)
 not-check-private-ip: false
+# 共有的grpc api id 
 public-rpc-service: [3,4,5,6,8,9,21,22,30,31,35,38,53,54,56,58,60,61,62,63,64,46,65,66,67,68]
