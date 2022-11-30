@@ -68,6 +68,7 @@
   changed_when: false
   register: docker_exist
 
+# 安装 docker 环境
 - name: include tasks yaml if not docker
   include_tasks: install_docker.yml
   when: docker_exist.stdout | int == 0
@@ -98,6 +99,6 @@
   include_tasks: install_docker_compose.yml
   when: docker_compose_exist.stdout | int == 0
 
-# do actual downloading
+# do actual downloading (在docker 分支中，则是docker 镜像相关下载)
 - include_tasks: "{{ deployment_method }}_deployment.yml"
 
