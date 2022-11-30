@@ -1,0 +1,36 @@
+Glacier2.InstanceName=ChannelGlacier2
+
+# 配置IceGrid服务的ip和端口
+Ice.Default.Locator=ChannelIceGrid/Locator:tcp -p {{ice_grid_port}} -h {{inventory_hostname}}
+
+# Glacier2服务的ip和端口
+Glacier2.Client.Endpoints=ssl -p {{ice_glacier2_port}} -h 0.0.0.0
+Glacier2.PermissionsVerifier=ChannelGlacier2/NullPermissionsVerifier
+Glacier2.SessionTimeout=30
+Glacier2.Client.ForwardContext=1
+Glacier2.Server.ForwardContext=1
+
+# 设置跟踪日志
+Glacier2.Client.Trace.Reject=1
+# Glacier2.Client.Trace.Request=1
+# Glacier2.Server.Trace.Request=1
+# Glacier2.Client.Trace.Override=1
+# Glacier2.Server.Trace.Override=1
+# Glacier2.Trace.Session=1
+# Glacier2.Trace.RoutingTable=1
+# 追踪网络连接状态
+Ice.Trace.Network=2
+
+#
+# SSL Configuration
+#
+Ice.Plugin.IceSSL=IceSSL:createIceSSL
+IceSSL.DefaultDir={{ice_via_docker_path}}/cert
+IceSSL.CAs=ca.pem
+IceSSL.CertFile=server.pem
+IceSSL.Password=123456
+IceSSL.Keychain=server.key
+IceSSL.KeychainPassword=123456
+
+Ice.Warn.Connections=1
+Ice.MessageSizeMax=0

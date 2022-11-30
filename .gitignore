@@ -1,6 +1,7 @@
-downloads
-retry_files
-fact_files
-log
+log/*
+downloads/*
+fact_files/*
+retry_files/*
+.vscode/
 
 .idea

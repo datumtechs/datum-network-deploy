@@ -1,0 +1,19 @@
+IceGrid.InstanceName=ChannelIceGrid
+
+# IceGrid地址和ip
+Ice.Default.Locator=ChannelIceGrid/Locator:tcp -p {{ice_grid_port}} -h 0.0.0.0
+
+IceGrid.Registry.ReplicaName=Master
+IceGrid.Registry.Client.Endpoints=tcp -p {{ice_grid_port}} -h 0.0.0.0
+IceGrid.Registry.Server.Endpoints=tcp -h 0.0.0.0
+IceGrid.Registry.Internal.Endpoints=tcp -h 0.0.0.0
+
+IceGrid.Registry.PermissionsVerifier=ChannelIceGrid/NullPermissionsVerifier
+IceGrid.Registry.LMDB.MapSize=10
+IceGrid.Registry.LMDB.Path={{ice_via_docker_path}}/deploy/lmdb/registry
+IceGrid.Registry.DynamicRegistration=1
+
+# 追踪网络连接状态
+Ice.Trace.Network=2
+
+Ice.MessageSizeMax=0

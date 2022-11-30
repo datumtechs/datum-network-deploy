@@ -1,0 +1,155 @@
+
+
+log_file: /var/log/docker_install.log
+
+# consul的 key-value 选项 
+dataCenter_ip: 192.168.10.145
+dataCenter_port: 19090
+
+bin_dir: "{{ playbook_dir }}/bin"
+downloads_dir: "{{ playbook_dir }}/downloads"
+# 目标主机文件安装目录
+deploy_dir: "/home/{{ansible_ssh_user}}"
+
+# 在宿主机上启动 binary 或者是 docker
+deployment_method: docker
+
+# 等待超时时间(s)
+wait_for_timeout: 10
+# docker超时时间，等待API响应的最长时间（以秒为单位，默认为60）
+docker_timeout: 300
+############################## start to set docker path ###################
+#mysql
+mysql_docker_path: /mysql
+
+# admin
+admin_docker_path: /admin
+admin_dir_name: admin_docker_test
+
+# carrier
+carrier_docker_path: /Carrier
+carrier_dir_name: carrier
+
+# ice_via
+ice_via_docker_path: /Ice_Via_Consul/ice_via
+ice_via_consul_dir_name: ice_via_consul
+ice_via_local_path: "{{ice_via_consul_dir_name}}/ice_via"
+
+# consul
+consul_docker_path: /Ice_Via_Consul/consul
+consul_local_path: "{{ice_via_consul_dir_name}}/consul"
+
+# data
+fighter_dir_name: fighter
+data_local_path: "{{fighter_dir_name}}/data"
+fighter_docker_path: /Fighter
+
+# compute
+compute_local_path: "{{fighter_dir_name}}/compute"
+############################## end to set docker path ###################
+
+# 证书文件，非必改目录
+script_dir:   "{{ playbook_dir }}/config/script"
+ice_via_cert_dir:   "{{ playbook_dir }}/config/ice_via_cert"
+carrier_cert_dir:   "{{ playbook_dir }}/config/carrier_cert"
+admin_cert_dir:   "{{ playbook_dir }}/config/admin_cert"
+scan_cert_dir:   "{{ playbook_dir }}/config/scan_cert"
+storage_cert_dir:   "{{ playbook_dir }}/config/storage_cert"
+compute_cert_dir:   "{{ playbook_dir }}/config/compute_cert"
+data_cert_dir:   "{{ playbook_dir }}/config/data_cert"
+
+# 公共变量
+listen_all_ip: 0.0.0.0
+carrier_pprof_ip: "{{ listen_all_ip }}"
+carrier_rpc_ip: "{{ listen_all_ip }}"
+carrier_grpc_gateway_ip: "{{ listen_all_ip }}"
+carrier_p2p_listen_ip: "{{ listen_all_ip }}"
+
+
+####################### start docker configure #############################
+docker:
+  users: user1
+  registry_mirrors: "https://hub.docker.com/"
+
+docker_required_packages:
+  - "apt-transport-https"
+  - "ca-certificates"
+  - "curl"
+  - "gnupg-agent"
+  - "software-properties-common"
+  - "python3-pip"
+  - "python3-setuptools"
+docker_gpg_url: https://download.docker.com/linux/ubuntu/gpg
+docker_repo: deb https://download.docker.com/linux/ubuntu focal stable
+docker_packges:
+  - "docker-ce"
+  - "docker-ce-cli"
+  - "containerd.io"
+  - "docker-compose"
+
+# 镜像
+mysql_image:
+  - name: mysql
+    tag: 5.7
+    service: mysql_5.7
+admin_image:
+  - name: luodahui/admin
+    tag: v0.5.0
+    service: admin_v0.5.0
+
+carrier_image:
+  - name: luodahui/carrier
+    tag: v0.5.0
+    service: carrier_v0.5.0
+
+fighter_image:
+  - name: luodahui/fighter
+    tag: v0.5.0
+    service: fighter_v0.5.0
+    services: 
+      data: data_v0.5.0
+      compute: compute_v0.5.0
+
+ice_via_consul_image:
+  - name: luodahui/ice_via_consul
+    tag: v2.0.3
+    service: ice_via_consul_v2.0.3  # 共用镜像, 和镜像压缩文件，避免重复拷贝和加载压缩文件到同一个宿主机上 
+    # 容器启动名称, 用此名称分别管理ice via和consul的容器
+    services: 
+      ice_via: ice_via_v2.0.3
+      consul: consul_v2.0.3
+
+# true表示：Tar文件每次执行都保存，不管是否已经存在；false表示：Tar文件存在即不保存
+Tar_Save_Every_Time: false
+
+####################### end docker configure #############################
+
+# consul agent 信息
+consul_zip_name: "{{ consul_download_url.split('/')[-1] | trim }}"
+consul_number_int: "{{ groups['consul'] | length | int}}"
+consul_leader_ip: "{{ groups['consul'][0] }}"
+consul_leader_port: "{{ consul_http_port[0] }}"
+consul_leader_serf_lan_port: "{{ consul_serf_lan_port[0] }}"
+consul_http_port_self:   "{% set consul_number_int = consul_number_int | int %}
+                          {% for i in range(consul_number_int) %}
+                              {% if groups['consul'][i] == inventory_hostname %}
+                                {{consul_http_port[i] |int}}
+                              {% endif %}
+                          {% endfor %}"
+
+# data 相关信息
+data_port_self: "{% set data_number_int = groups['data'] | length |int %} 
+                  {% for i in range(data_number_int) %}
+                    {% if groups['data'][i] == inventory_hostname %}
+                      {{data_port[i] |int}}  
+                    {% endif %}
+                  {% endfor %}"
+
+# compute 相关信息
+compute_port_self: "{% set compute_number_int = groups['compute'] | length |int %} 
+                    {% for i in range(compute_number_int) %}
+                      {% if groups['compute'][i] == inventory_hostname %}
+                        {{compute_port[i] |int}}  
+                      {% endif %}
+                    {% endfor %}"
+                    

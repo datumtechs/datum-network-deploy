@@ -1,0 +1,43 @@
+# yaml 配置
+version: "3.6"
+services:
+  run_mysql:
+    image: {{mysql_image[0]["name"]}}:{{mysql_image[0]["tag"]}}
+    container_name: {{mysql_image[0]["service"]}}
+    restart: always
+    privileged: true
+    environment:
+      - MYSQL_ROOT_PASSWORD={{mysql_root_password}}
+{% if mysql_listen_port == 3306 %}
+    network_mode: "host"
+{% else %}
+    ports:
+      - {{mysql_listen_port}}:3306
+{% endif %}
+    volumes:
+      - {{ deploy_dir }}/{{admin_dir_name}}/mysql/db:/var/lib/mysql
+      - {{ deploy_dir }}/{{admin_dir_name}}/sql:{{ mysql_docker_path }}/sql
+      - {{ deploy_dir }}/{{admin_dir_name}}/mysql/init:/docker-entrypoint-initdb.d/
+      - /etc/localtime:/etc/localtime:ro
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+  run_admin:
+    image: {{admin_image[0]["name"]}}:{{admin_image[0]["tag"]}}
+    container_name: {{admin_image[0]["service"]}}
+    restart: always
+    network_mode: "host"
+    privileged: true
+    volumes:
+      - {{ deploy_dir }}/{{admin_dir_name}}/cert/web:{{admin_docker_path}}/cert/web
+      - {{ deploy_dir }}/{{admin_dir_name}}/logs:{{ admin_docker_path }}/logs
+      - {{ deploy_dir }}/{{admin_dir_name}}/nginx:{{ admin_docker_path }}/nginx
+      - {{ deploy_dir }}/{{admin_dir_name}}/config/application-admin.yml:{{ admin_docker_path }}/config/application-admin.yml
+      - {{ deploy_dir }}/{{admin_dir_name}}/config/nginx.conf:/etc/nginx/nginx.conf
+    command:
+      - sh
+      - -c
+      - |
+        service nginx start &&
+        {{ admin_docker_path }}/scripts/start_admin.sh admin &&
+        tail -f /dev/null

@@ -1,0 +1,93 @@
+---
+  
+- name: create deploy directories
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+  - "{{ deploy_dir }}/{{ice_via_consul_dir_name}}"
+  - "{{ deploy_dir }}/{{ice_via_local_path}}"
+  - "{{ deploy_dir }}/{{ice_via_local_path}}/config"
+  - "{{ deploy_dir }}/{{ice_via_local_path}}/cert"
+  - "{{ deploy_dir }}/{{ice_via_local_path}}/logs"
+  - "{{ deploy_dir }}/{{ice_via_local_path}}/deploy/lmdb/registry"
+
+# ice via和consul公用镜像
+- name: "Check whether the ice_via_consul image has been copied"
+  shell: "[ ! -f {{ deploy_dir }}/{{ice_via_consul_dir_name}}/{{ item.service }}.tar ]"
+  register: result
+  failed_when: result.rc|int != 0 and result.rc|int != 1
+  changed_when: false
+  with_items: "{{ ice_via_consul_image }}"
+
+# - name: "debug check"
+#   debug: 
+#     msg: "check result_info:{{result.results[0].rc}}"
+
+- name: "Start copying if the ice_via_consul image is not copied"
+  copy:
+    src: "{{ downloads_dir }}/{{ item.service }}.tar"
+    dest: "{{ deploy_dir }}/{{ice_via_consul_dir_name}}/{{ item.service }}.tar"
+  with_items: "{{ ice_via_consul_image }}"
+  when: result.results[0].rc | int == 0
+
+# 加载镜像tar压缩包 
+- name: Load ice via image from archive
+  become: True
+  become_method: sudo
+  docker_image:
+    name: "{{ item.name }}"
+    tag: "{{ item.tag }}"
+    # push: yes
+    load_path: "{{ deploy_dir }}/{{ice_via_consul_dir_name}}/{{ item.service }}.tar"
+    # source: load
+    # force: yes
+  with_items: "{{ ice_via_consul_image }}"
+
+- name: "copy certificates"
+  copy:
+    src: "{{ ice_via_cert_dir }}/{{ item }}"
+    dest: "{{ deploy_dir }}/{{ice_via_local_path}}/cert/{{ item }}"
+    mode: 0600
+    backup: yes
+  with_items:
+    - ca.pem
+    - server.pem
+    - server.key
+    - client.pem
+    - client.key
+
+- name: "copy script"
+  copy:
+    src: "{{ script_dir }}/{{ item }}"
+    dest: "{{ deploy_dir }}/{{ice_via_local_path}}/{{ item }}"
+    mode: 0755
+  with_items:
+    - run_icegrid.sh
+    - run_glacier2.sh
+
+- name: "Generate ice_grid.yml configuration file based on ice_grid.yml.j2 template file"
+  template:
+    src: "ice_grid.yml.j2"
+    dest: "{{ deploy_dir }}/{{ice_via_local_path}}/config/ice_grid.yml"
+    mode: 0600
+    backup: yes
+
+- name: "Generate ice_glacier2.yml configuration file based on ice_glacier2.yml.j2 template file"
+  template:
+    src: "ice_glacier2.yml.j2"
+    dest: "{{ deploy_dir }}/{{ice_via_local_path}}/config/ice_glacier2.yml"
+    mode: 0600
+    backup: yes
+
+- name: "Generate ice_glacier2_ssl.yml configuration file based on ice_glacier2_ssl.yml.j2 template file"
+  template:
+    src: "ice_glacier2_ssl.yml.j2"
+    dest: "{{ deploy_dir }}/{{ice_via_local_path}}/config/ice_glacier2_ssl.yml"
+    mode: 0600
+    backup: yes
+
+- name: "Generate docker-compose.yml configuration file based on docker-compose.yml.j2 template file"
+  template:
+    src: "docker-compose.yml.j2"
+    dest: "{{ deploy_dir }}/{{ice_via_local_path}}/config/docker-compose.yml"
+    mode: 0600
+    backup: yes

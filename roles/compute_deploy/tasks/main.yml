@@ -1,0 +1,78 @@
+---
+
+- name: create deploy directories
+  file: path={{ item }} state=directory mode=0755
+  with_items:
+  - "{{ deploy_dir }}/{{fighter_dir_name}}"
+  - "{{ deploy_dir }}/{{compute_local_path}}"
+  - "{{ deploy_dir }}/{{compute_local_path}}/config"
+  - "{{ deploy_dir }}/{{compute_local_path}}/log"
+  - "{{ deploy_dir }}/{{compute_local_path}}/cert"
+  - "{{ deploy_dir }}/{{compute_local_path}}/contract_work_dir"
+  - "{{ deploy_dir }}/{{compute_local_path}}/result_root"
+
+# data和compute公用
+- name: "Check whether the Fighter image has been copied"
+  shell: "[ ! -f {{ deploy_dir }}/{{fighter_dir_name}}/{{ item.service }}.tar ]"
+  register: result
+  failed_when: result.rc|int != 0 and result.rc|int != 1
+  changed_when: false
+  with_items: "{{ fighter_image }}"
+
+# - name: "debug check"
+#   debug: 
+#     msg: "check result_info:{{result.results[0].rc}}"
+
+- name: "Start copying if the fighter image is not copied"
+  copy:
+    src: "{{ downloads_dir }}/{{ item.service }}.tar"
+    dest: "{{ deploy_dir }}/{{fighter_dir_name}}/{{ item.service }}.tar"
+  with_items: "{{ fighter_image }}"
+  when: result.results[0].rc | int == 0
+
+# 加载镜像tar压缩包 
+- name: Load fighter image from archive
+  become: True
+  become_method: sudo
+  docker_image:
+    name: "{{ item.name }}"
+    tag: "{{ item.tag }}"
+    # push: yes
+    load_path: "{{ deploy_dir }}/{{fighter_dir_name}}/{{ item.service }}.tar"
+    timeout: "{{docker_timeout|int}}"
+    # source: load
+    # force: yes
+  with_items: "{{ fighter_image }}"
+
+- name: set directory facts
+  set_fact:
+    code_root_dir: "{{ fighter_docker_path }}/contract_work_dir"
+    results_root_dir: "{{ fighter_docker_path }}/result_root"
+
+- name: "Deploy certificates"
+  copy:
+    src: "{{ data_cert_dir }}/{{ item }}"
+    dest: "{{ deploy_dir }}/{{compute_local_path}}/cert/{{ item }}"
+    mode: 0600
+    backup: yes
+  with_items:
+    - server.pem 
+    - server.key
+
+- name: Set certificate-related facts
+  set_fact:
+    base_path: "{{ fighter_docker_path }}/compute/cert/"
+
+- name: "copy configuration file"
+  template:
+    src: "compute.yml.j2"
+    dest: "{{ deploy_dir }}/{{compute_local_path}}/config/compute.yml"
+    mode: 0600
+    backup: yes
+
+- name: "Generate docker-compose.yml configuration file based on docker-compose.yml.j2 template file"
+  template:
+    src: "docker-compose.yml.j2"
+    dest: "{{ deploy_dir }}/{{compute_local_path}}/config/docker-compose.yml"
+    mode: 0600
+    backup: yes

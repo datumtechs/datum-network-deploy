@@ -1,0 +1,3 @@
+create user '{{admin_user}}'@'%' identified by '{{admin_password}}'; 
+grant all privileges on *.* to '{{admin_user}}'@'%' identified by '{{admin_password}}'; 
+flush privileges;

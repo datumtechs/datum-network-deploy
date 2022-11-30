@@ -1,0 +1,36 @@
+# 调度服务相关配置文件模板
+datadir: {{carrier_data_dir}}
+verbosity: debug
+
+# 调试模块
+pprof: true
+pprof-port: {{carrier_pprof_port}}
+pprof-addr: {{carrier_pprof_ip}}
+debug: true
+
+# p2p 模块
+# tls-cert: {{carrier_tls_cert}}
+# tls-key: {{carrier_tls_key}}
+disable-grpc-gateway: false
+rpc-host: {{carrier_rpc_ip}}
+rpc-port: {{carrier_rpc_port}}
+grpc-gateway-host: {{carrier_grpc_gateway_ip}}
+grpc-gateway-port: {{carrier_grpc_gateway_port}}
+enable-debug-rpc-endpoints: true
+no-discovery: false
+bootstrap-node: ["enr:-Jy4QNuSzovguCTjde4K8fRQmdhXbGSCRMhy_6urVtq3kaGHUmvB0hVFLfEF4tPy5mA1HUBWAl3olzwA48qvXz99qbgBh2F0dG5ldHOIAAAAAAAAAACCaWSCdjSCaXCECNYDjolzZWNwMjU2azGhAmZ1XMpoPXtPM0reVi7j4taYTTSoBx9CLu2yCW1VYp6Mg3RjcIInNIN1ZHCCJzM","enr:-Jy4QIpcwXmMYP5PraGAwUttnM-5UP0iQdaHwD3FBhoqvgiXJ6F7fEI-cKzygp4f6KHUWxbmS3tebqSx2GQx2yo_Zv4Bh2F0dG5ldHOIAAAAAAAAAACCaWSCdjSCaXCECNZgBIlzZWNwMjU2azGhAsS7zD1I6mFsih16_JmhCjnI_-u2cJ7SOmWylsb1r_WTg3RjcIInNIN1ZHCCJzM","enr:-Jy4QFOmfaD-Zh1JyBlS0pEXc0EnZ248vV5zv19AMj5VpJR4avdwwForofGlN7v_huQQ-VnKJrcME8PyYhbl2Xe8h5oBh2F0dG5ldHOIAAAAAAAAAACCaWSCdjSCaXCEL_F-ZYlzZWNwMjU2azGhAg4x2T__A5keUCeHkjJb2v45CF4qbT-7kcLWyTP7IL7Ag3RjcIInNIN1ZHCCJzM","enr:-Jy4QIrWoEGEPNJsom5i0w3J-_Wh2nUXBhE4kw1VxK6B7pT1ZT_bzU3pJMpBzzPO9KCiyZQuu4d6T6_8lkeEhL_BL4IBh2F0dG5ldHOIAAAAAAAAAACCaWSCdjSCaXCEL_FOHIlzZWNwMjU2azGhAgcybJ7TOz7gRr1JClH01GHb3ZOb-bLTS2E6Z63YJOdhg3RjcIInNIN1ZHCCJzM","enr:-Jy4QM1LOSmS4d1mGv68KVuSRw6p1B_NVIzwXkfFvOF7ZVSTIudI74VvX7VZLKQnhRLqvwX_Kti8fzdoSUEjrTaNz2sBh2F0dG5ldHOIAAAAAAAAAACCaWSCdjSCaXCECNZeiIlzZWNwMjU2azGhAuv5izWCd9YmlHh787KA3Fk4J6XVPpxJFgoVDCmG8j7Hg3RjcIInNIN1ZHCCJzM"]
+p2p-udp-port: {{carrier_p2p_udp_port}}
+p2p-tcp-port: {{carrier_p2p_tcp_port}}
+p2p-local-ip: {{carrier_p2p_listen_ip}}
+p2p-host-ip: {{carrier_external_ip}}
+p2p-priv-key: {{carrier_p2p_private_key}}
+p2p-max-peers: 200
+kms.key-id: 0ead1984-01c9-44de-8f56-6a4aa450a917
+kms.region-id: cn-hangzhou
+kms.access-key-id: LTAI4GG5R3n1A7euPzEJNUex
+kms.access-key-secret: 7OuIn5EIAOxViSRBuGOHuR88mrHYh7
+blockchain.url: http://34.85.65.222:6789
+task.metadata-consume-option: 2
+# 注册中心信息
+discovery-server-ip: {{consul_leader_ip}}
+discovery-server-port: {{consul_leader_port}}
